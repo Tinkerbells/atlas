@@ -1,34 +1,24 @@
 # file-manager-v2
 
-An Electron application with Solid and TypeScript
+A small file manager built as a learning project to practice OOP principles
+(SOLID, GRASP) and design patterns.
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-## Project Setup
-
-### Install
+## Setup
 
 ```bash
-$ pnpm install
+pnpm install
 ```
 
-### Development
+## Scripts
 
-```bash
-$ pnpm dev
-```
-
-### Build
-
-```bash
-# For windows
-$ pnpm build:win
-
-# For macOS
-$ pnpm build:mac
-
-# For Linux
-$ pnpm build:linux
-```
+- `pnpm dev` — run the app in development
+- `pnpm start` — preview the built app
+- `pnpm build` — typecheck + build
+- `pnpm build:win` — build for Windows
+- `pnpm build:mac` — build for macOS
+- `pnpm build:linux` — build for Linux
+- `pnpm build:unpack` — build unpacked artifacts
+- `pnpm lint` — run ESLint
+- `pnpm lint:fix` — run ESLint with fixes
+- `pnpm format` — format with Prettier
+- `pnpm typecheck` — run TS checks for web and node
