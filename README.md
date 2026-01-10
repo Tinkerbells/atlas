@@ -1,4 +1,4 @@
-# file-manager-v2
+# Atlas
 
 A small file manager built as a learning project to practice OOP principles
 (SOLID, GRASP) and design patterns.
