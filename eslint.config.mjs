@@ -17,6 +17,7 @@ export default antfu({
     quotes: 'double',
   },
   rules: {
+    'no-console': 0,
     'perfectionist/sort-imports': ['error', {
       type: 'line-length',
       internalPattern: ['^@web/.+', '^@/.+'],

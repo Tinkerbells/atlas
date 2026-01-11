@@ -1,10 +1,48 @@
 import type { Component } from 'solid-js'
 
+import { onCleanup, onMount } from 'solid-js'
+
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
+import { commandRegistry } from './common/keybindnigs/commands'
+import { keybindingRegistry } from './common/keybindnigs/keybindings'
+import { KeybindingService } from './common/keybindnigs/keybindings.service'
 
 const App: Component = () => {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+
+  const kbService = new KeybindingService()
+  onMount(() => {
+    const disposeSave = commandRegistry.register('file.save', () => {
+      console.log('SAVING FILE...')
+    })
+
+    const disposeDelete = commandRegistry.register('file.delete', () => {
+      console.log('DELETING FILE...')
+    })
+
+    const disposeBindSave = keybindingRegistry.register({
+      key: 'Ctrl+S',
+      commandId: 'file.save',
+    })
+
+    const disposeBindDelete = keybindingRegistry.register({
+      key: 'Delete',
+      commandId: 'file.delete',
+      when: 'fileListFocus',
+    })
+
+    onCleanup(() => {
+      disposeSave()
+      disposeDelete()
+      disposeBindSave()
+      disposeBindDelete()
+    })
+  })
+
+  onCleanup(() => {
+    kbService.dispose()
+  })
 
   return (
     <>
