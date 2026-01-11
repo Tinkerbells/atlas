@@ -23,9 +23,11 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@ark-ui/solid": "^5.30.0",
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "electron-updater": "^6.3.9",
+    "lucide-solid": "^0.562.0",
     "mobx": "^6.15.0"
   },
   "devDependencies": {
