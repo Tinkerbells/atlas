@@ -1,0 +1,34 @@
+.alert {
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--alert-border);
+  background: var(--alert-bg);
+  padding: 16px 18px;
+  color: var(--alert-title);
+  display: grid;
+  gap: 6px;
+}
+
+.alert[data-variant='success'] {
+  border-color: var(--alert-success-border);
+  background: var(--alert-success-bg);
+}
+
+.alert[data-variant='warning'] {
+  border-color: var(--alert-warning-border);
+  background: var(--alert-warning-bg);
+}
+
+.alert[data-variant='danger'] {
+  border-color: var(--alert-danger-border);
+  background: var(--alert-danger-bg);
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.description {
+  color: var(--alert-text);
+  font-size: 13px;
+}

@@ -1,0 +1,14 @@
+.content {
+  background: var(--tooltip-bg);
+  border: 1px solid var(--tooltip-border);
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: var(--tooltip-text);
+  font-size: 12px;
+  box-shadow: var(--ui-shadow-sm);
+}
+
+.arrow {
+  fill: var(--tooltip-bg);
+  stroke: var(--tooltip-border);
+}
