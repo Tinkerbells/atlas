@@ -1,0 +1,162 @@
+import type { ContextSnapshot, WhenExpression } from '../helpers/context/context'
+import type { ResolvedKeybindingItem } from './keybindings.resolvedKeybindingItem'
+
+import { evaluateWhen } from '../helpers/context/context'
+
+export enum ResultKind {
+  /** Для данной последовательности аккордов не найдено ни одной привязки клавиш */
+  NoMatchingKb,
+
+  /** Существует несколько привязок клавиш, для которых данная последовательность аккордов является префиксом */
+  MoreChordsNeeded,
+
+  /** Найдена одна привязка клавиш, которую можно выполнить/вызвать */
+  KbFound,
+}
+
+export type ResolutionResult = | { kind: ResultKind.NoMatchingKb }
+  | { kind: ResultKind.MoreChordsNeeded }
+  | {
+    kind: ResultKind.KbFound
+    commandId: string | null
+    commandArgs: any
+    // isBubble = false → перехватываем и preventDefault()
+    // isBubble = true → не блокируем событие, браузер / DOM может его обработать дальше
+    isBubble: boolean
+  }
+
+/*
+ * Утилиты для удобной работы с результатом функции resolve
+ */
+export const NoMatchingKb: ResolutionResult = { kind: ResultKind.NoMatchingKb }
+const MoreChordsNeeded: ResolutionResult = { kind: ResultKind.MoreChordsNeeded }
+function KbFound(commandId: string | null, commandArgs: any, isBubble: boolean): ResolutionResult {
+  return { kind: ResultKind.KbFound, commandId, commandArgs, isBubble }
+}
+
+/*
+ * Resolver отвечает за:
+ * 1. За слияние default keybindings и user overriders
+*/
+export class KeybindingResolver {
+  private readonly _defaultKeybindings: ResolvedKeybindingItem[]
+  private readonly _keybindings: ResolvedKeybindingItem[]
+  private readonly _map: Map<string, ResolvedKeybindingItem[]> // первые нажатые chord's
+  // private readonly _defaultBoundCommands: Map<string, boolean>
+  constructor(
+    // встроенные keybindings
+    defaultKeybindings: ResolvedKeybindingItem[],
+    // пользовательские keybindings
+    overrides: ResolvedKeybindingItem[],
+  ) {
+    this._defaultKeybindings = defaultKeybindings
+    this._map = new Map<string, ResolvedKeybindingItem[]>()
+
+    // TODO: добавить логику удаления
+    this._keybindings = [...this._defaultKeybindings, ...overrides]
+
+    for (let i = 0, len = this._keybindings.length; i < len; i++) {
+      const k = this._keybindings[i]
+      if (k.chords.length === 0) {
+        // нет привязанного хоткея
+        continue
+      }
+
+      this._addKeyPress(k.chords[0], k)
+    }
+  }
+
+  private _addKeyPress(keypress: string, item: ResolvedKeybindingItem): void {
+    const list = this._map.get(keypress)
+    if (!list) {
+      this._map.set(keypress, [item])
+    }
+    else {
+      list.push(item)
+    }
+  }
+
+  public resolve(context: ContextSnapshot, currentChords: string[], keypress: string): ResolutionResult {
+    const pressedChords = [...currentChords, keypress]
+    const kbCandidates = this._map.get(pressedChords[0])
+
+    if (kbCandidates === undefined) {
+      // Нет привязок с таким нулевым chords
+      return NoMatchingKb
+    }
+
+    let lookupMap: ResolvedKeybindingItem[] | null = null
+
+    // Если chord только один — кандидаты уже готовы.
+    if (pressedChords.length < 2) {
+      lookupMap = kbCandidates
+    }
+    else {
+      // Fetch all chord bindings for `currentChords`
+      lookupMap = []
+      for (let i = 0, len = kbCandidates.length; i < len; i++) {
+        const candidate = kbCandidates[i]
+
+        if (pressedChords.length > candidate.chords.length) { // # of pressed chords can't be less than # of chords in a keybinding to invoke
+          continue
+        }
+
+        let prefixMatches = true
+        // Если совпал префикс — этот кандидат подходит и остаётся.
+        for (let i = 1; i < pressedChords.length; i++) {
+          if (candidate.chords[i] !== pressedChords[i]) {
+            prefixMatches = false
+            break
+          }
+        }
+        if (prefixMatches) {
+          lookupMap.push(candidate)
+        }
+      }
+    }
+
+    const result = this._findCommand(context, lookupMap)
+    if (!result) {
+      // console.log(`\\ From ${lookupMap.length} keybinding entries, no when clauses matched the context.`)
+      return NoMatchingKb
+    }
+
+    // check we got all chords necessary to be sure a particular keybinding needs to be invoked
+    if (pressedChords.length < result.chords.length) {
+      // The chord sequence is not complete
+      // console.log(`\\ From ${lookupMap.length} keybinding entries, awaiting ${result.chords.length - pressedChords.length} more chord(s), when: ${printWhenExplanation(result.when)}, source: ${printSourceExplanation(result)}.`)
+      return MoreChordsNeeded
+    }
+
+    // console.log(`\\ From ${lookupMap.length} keybinding entries, matched ${result.command}, when: ${printWhenExplanation(result.when)}, source: ${printSourceExplanation(result)}.`)
+
+    return KbFound(result.command, result.commandArgs, result.bubble)
+  }
+
+  private _findCommand(context: ContextSnapshot, matches: ResolvedKeybindingItem[]): ResolvedKeybindingItem | null {
+    for (let i = matches.length - 1; i >= 0; i--) {
+      const k = matches[i]
+
+      if (!KeybindingResolver._contextMatchesRules(context, k.when)) {
+        continue
+      }
+
+      return k
+    }
+
+    return null
+  }
+
+  private static _contextMatchesRules(context: ContextSnapshot, rules: WhenExpression | null | undefined): boolean {
+    if (!rules) {
+      return true
+    }
+
+    return evaluateWhen(rules, context)
+  }
+
+  // TODO: добавить получения списка дефолтных комманд, чтобы делать комментарий в keybindings.json
+  // public getDefaultBoundCommands(): Map<string, boolean> {
+  //   return this._defaultBoundCommands;
+  // }
+}
