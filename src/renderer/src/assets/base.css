@@ -29,6 +29,22 @@
   --color-background-mute: var(--ev-c-black-mute);
 
   --color-text: var(--ev-c-text-1);
+
+  --dialog-backdrop: rgba(0, 0, 0, 0.6);
+  --dialog-surface: var(--color-background-soft);
+  --dialog-border: rgba(255, 255, 255, 0.08);
+  --dialog-title-color: var(--color-text);
+  --dialog-description-color: var(--ev-c-text-2);
+  --dialog-trigger-bg: var(--ev-c-gray-3);
+  --dialog-trigger-text: var(--ev-c-text-1);
+  --dialog-trigger-border: rgba(255, 255, 255, 0.12);
+  --dialog-trigger-hover-bg: var(--ev-c-gray-2);
+  --dialog-close-hover-bg: rgba(255, 255, 255, 0.08);
+  --dialog-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  --dialog-radius: 16px;
+  --dialog-padding: 24px;
+  --dialog-gap: 10px;
+  --dialog-focus: #8ad5ff;
 }
 
 *,

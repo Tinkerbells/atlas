@@ -1,16 +1,15 @@
 import type { Component } from 'solid-js'
 
+import { XIcon } from 'lucide-solid'
+import { Portal } from 'solid-js/web'
 import { onCleanup, onMount } from 'solid-js'
 
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import { Dialog } from './components/dialog'
 import { commandRegistry } from './common/keybindnigs/commands'
 import { keybindingRegistry } from './common/keybindnigs/keybindings'
 import { KeybindingService } from './common/keybindnigs/keybindings.service'
 
 const App: Component = () => {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
   const kbService = new KeybindingService()
   onMount(() => {
     const disposeSave = commandRegistry.register('file.save', () => {
@@ -46,36 +45,21 @@ const App: Component = () => {
 
   return (
     <>
-      <img alt="logo" class="logo" src={electronLogo} />
-      <div class="creator">Powered by electron-vite</div>
-      <div class="text">
-        Build an Electron app with
-        {' '}
-        <span class="solid">Solid</span>
-        &nbsp;and
-        {' '}
-        <span class="ts">TypeScript</span>
-      </div>
-      <p class="tip">
-        Please try pressing
-        {' '}
-        <code>F12</code>
-        {' '}
-        to open the devTool
-      </p>
-      <div class="actions">
-        <div class="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div class="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions />
+      <Dialog.Root defaultOpen>
+        <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Title>Dialog Title</Dialog.Title>
+              <Dialog.Description>Dialog Description</Dialog.Description>
+              <Dialog.CloseTrigger>
+                <XIcon />
+              </Dialog.CloseTrigger>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   )
 }
