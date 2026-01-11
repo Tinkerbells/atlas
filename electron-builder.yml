@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: file-manager-v2
+productName: atlas
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: file-manager-v2
+  executableName: atlas
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

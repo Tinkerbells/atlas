@@ -1,8 +1,8 @@
 {
-  "name": "file-manager-v2",
-  "version": "1.0.0",
-  "description": "An Electron application with Solid and TypeScript",
-  "author": "example.com",
+  "name": "atlas",
+  "version": "0.0.0",
+  "description": "A small file manager built as a learning project to practice OOP principles",
+  "author": "tinkerbells",
   "homepage": "https://electron-vite.org",
   "main": "./out/main/index.js",
   "scripts": {
