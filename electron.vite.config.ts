@@ -2,7 +2,7 @@ import unocss from 'unocss/vite'
 import { resolve } from 'node:path'
 import solid from 'vite-plugin-solid'
 import { defineConfig } from 'electron-vite'
-import { analyzer } from 'vite-bundle-analyzer'
+// import { analyzer } from 'vite-bundle-analyzer'
 
 export default defineConfig({
   main: {},
@@ -13,6 +13,6 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src'),
       },
     },
-    plugins: [unocss(), solid(), analyzer()],
+    plugins: [unocss(), solid()],
   },
 })
