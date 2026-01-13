@@ -1,5 +1,5 @@
+import type { ResolvedKeybindingItem } from './resolved-keybinding-item.ts'
 import type { ContextSnapshot, WhenExpression } from '../helpers/context/context'
-import type { ResolvedKeybindingItem } from './keybindings.resolvedKeybindingItem'
 
 import { evaluateWhen } from '../helpers/context/context'
 
@@ -37,6 +37,8 @@ function KbFound(commandId: string | null, commandArgs: any, isBubble: boolean):
 /*
  * Resolver отвечает за:
  * 1. За слияние default keybindings и user overriders
+ * 2. За проверку аккордов на соотвествие всем правилам
+ * 3. Возвращает результат kind, говорящий сервису, что делать далее
 */
 export class KeybindingResolver {
   private readonly _defaultKeybindings: ResolvedKeybindingItem[]
@@ -153,6 +155,14 @@ export class KeybindingResolver {
     }
 
     return evaluateWhen(rules, context)
+  }
+
+  public getDefaultKeybindings(): readonly ResolvedKeybindingItem[] {
+    return this._defaultKeybindings
+  }
+
+  public getKeybindings(): readonly ResolvedKeybindingItem[] {
+    return this._keybindings
   }
 
   // TODO: добавить получения списка дефолтных комманд, чтобы делать комментарий в keybindings.json

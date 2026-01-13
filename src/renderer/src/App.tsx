@@ -1,47 +1,56 @@
 import type { Component } from 'solid-js'
 
-import { onCleanup, onMount } from 'solid-js'
+import { onCleanup } from 'solid-js'
 
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
-import { commandRegistry } from './common/keybindnigs/commands'
-import { keybindingRegistry } from './common/keybindnigs/keybindings'
-import { KeybindingService } from './common/keybindnigs/keybindings.service'
+import { commandsRegistry } from './common/keybindings/commands'
+import { CommandService } from './common/keybindings/commands.service'
+import { keybindingsRegistry } from './common/keybindings/keybindings.registry'
+import { StandaloneKeybindingService } from './common/keybindings/keybindings.service'
 
 const App: Component = () => {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
-  const kbService = new KeybindingService()
-  onMount(() => {
-    const disposeSave = commandRegistry.register('file.save', () => {
-      console.log('SAVING FILE...')
-    })
+  const commandService = new CommandService()
+  const keybindingService = new StandaloneKeybindingService(commandService)
 
-    const disposeDelete = commandRegistry.register('file.delete', () => {
-      console.log('DELETING FILE...')
-    })
+  commandsRegistry.registerCommand('fileManager.copy', () => {
+    console.log('LOGIC: Files copied to clipboard!')
+  })
 
-    const disposeBindSave = keybindingRegistry.register({
-      key: 'Ctrl+S',
-      commandId: 'file.save',
-    })
+  commandsRegistry.registerCommand('fileManager.save', () => {
+    console.log('LOGIC: File saved!')
+  })
 
-    const disposeBindDelete = keybindingRegistry.register({
-      key: 'Delete',
-      commandId: 'file.delete',
-      when: 'fileListFocus',
-    })
+  commandsRegistry.registerCommand('app.quit', () => {
+    console.log('LOGIC: Quitting application...')
+  })
 
-    onCleanup(() => {
-      disposeSave()
-      disposeDelete()
-      disposeBindSave()
-      disposeBindDelete()
-    })
+  keybindingsRegistry.registerKeybindingRule({
+    id: 'fileManager.copy',
+    keybinding: ['ctrl+KeyC'],
+    weight: 100,
+    when: null,
+  })
+
+  keybindingsRegistry.registerKeybindingRule({
+    id: 'fileManager.save',
+    keybinding: ['ctrl+KeyS'],
+    weight: 100,
+    when: null,
+  })
+
+  keybindingsRegistry.registerKeybindingRule({
+    id: 'app.quit',
+    keybinding: ['ctrl+KeyK', 'KeyQ'],
+    weight: 200,
+    when: null,
   })
 
   onCleanup(() => {
-    kbService.dispose()
+    commandService.dispose()
+    keybindingService.dispose()
   })
 
   return (

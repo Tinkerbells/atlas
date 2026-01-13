@@ -6,38 +6,31 @@ interface ICommand {
 }
 
 class CommandRegistry {
-  private commands = new Map<string, ICommand>()
+  private _commands = new Map<string, ICommand>()
 
   // Регистрируем команду
-  register(id: ICommand['id'], handler: ICommand['handler']) {
-    if (this.commands.has(id)) {
+  registerCommand(id: ICommand['id'], handler: ICommand['handler']) {
+    if (this._commands.has(id)) {
       console.warn(`Command ${id} is already registered!`)
       // Пока заглушка для ts
       return () => { }
     }
 
-    this.commands.set(id, { id, handler })
+    this._commands.set(id, { id, handler })
 
     // Возвращаем функцию для отписки (Pattern Disposable как в VS Code)
     return () => {
-      this.commands.delete(id)
+      this._commands.delete(id)
     }
   }
 
-  // Выполняем команду
-  execute(id: string, ...args: any[]) {
-    const command = this.commands.get(id)
-    if (!command) {
-      console.error(`Command ${id} not found`)
-      return
+  getCommand(id: string) {
+    const list = this._commands.get(id)
+    if (!list) {
+      return undefined
     }
-    command.handler(...args)
-  }
-
-  // Проверка для UI (например, чтобы знать, дизейблить ли кнопку)
-  has(id: string): boolean {
-    return this.commands.has(id)
+    return list
   }
 }
 
-export const commandRegistry = new CommandRegistry()
+export const commandsRegistry = new CommandRegistry()

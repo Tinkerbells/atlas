@@ -58,3 +58,10 @@ export function evaluateWhen(
       return evaluateWhen(expr.left, ctx) || evaluateWhen(expr.right, ctx)
   }
 }
+export interface IContextKeyServiceTarget {
+  parentElement: IContextKeyServiceTarget | null
+  setAttribute: (attr: string, value: string) => void
+  removeAttribute: (attr: string) => void
+  hasAttribute: (attr: string) => boolean
+  getAttribute: (attr: string) => string | null
+}

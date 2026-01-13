@@ -38,7 +38,7 @@ export interface IKeybindingsRegistry {
   registerKeybindingRule: (rule: IKeybindingRule) => () => void
 }
 
-export class KeybindingRegistry implements IKeybindingsRegistry {
+export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
   // TODO: пока используем array O(N), однако для оптимизации лучше LinkedList O(1)
   private _coreKeybindings: IKeybindingItem[]
   private _cachedKeybindings: IKeybindingItem[] | null
@@ -108,3 +108,5 @@ function sorter(a: IKeybindingItem, b: IKeybindingItem): number {
   }
   return a.weight2 - b.weight2
 }
+
+export const keybindingsRegistry: IKeybindingsRegistry = new KeybindingsRegistryImpl()
