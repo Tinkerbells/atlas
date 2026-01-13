@@ -31,11 +31,6 @@ export abstract class ResolvedKeybinding {
   public abstract getUserSettingsLabel(): string | null
 
   /**
-   * True, если то, что видит пользователь, совпадает с тем, что вводится.
-   */
-  public abstract isWYSIWYG(): boolean
-
-  /**
    * Состоит ли биндинг из нескольких шагов (например, "Ctrl+K Ctrl+S")?
    */
   public abstract hasMultipleChords(): boolean

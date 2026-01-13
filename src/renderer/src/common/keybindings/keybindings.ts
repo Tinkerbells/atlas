@@ -1,5 +1,6 @@
+// TODO: очень плохо определяются клавиши, нужно сделать как vscode обработку по scanCode, чтобы брать именно физ расположение клавиш
 // TODO: пока простая строка типа "ctrl+s", позже добавлю логику по работе с KeyCode и битовое сравнение для различных OS
-type Chord = string
+export type Chord = string
 const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
 
 export class Keybinding {

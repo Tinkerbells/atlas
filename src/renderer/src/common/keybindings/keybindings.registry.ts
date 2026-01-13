@@ -1,5 +1,5 @@
 import type { Keybinding } from './keybindings'
-import type { WhenExpression } from '../helpers/context/context'
+import type { ContextKeyExpression } from '../helpers/context/context'
 
 import { decodeKeybinding } from './keybindings'
 
@@ -12,7 +12,7 @@ export interface IKeybindingRule {
   keybinding: string[]
   weight: number
   args?: any
-  when: WhenExpression | null | undefined
+  when: ContextKeyExpression | null | undefined
 }
 
 /*
@@ -22,7 +22,7 @@ export interface IKeybindingItem {
   keybinding: Keybinding | null
   command: string | null
   commandArgs?: any
-  when: WhenExpression | null | undefined
+  when: ContextKeyExpression | null | undefined
   weight1: number
   weight2: number
 }
@@ -67,7 +67,7 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
     commandArgs: any,
     weight1: number,
     weight2: number,
-    when: WhenExpression | null | undefined,
+    when: ContextKeyExpression | null | undefined,
   ) {
     const item: IKeybindingItem = {
       keybinding,

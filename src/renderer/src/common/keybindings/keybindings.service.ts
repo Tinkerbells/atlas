@@ -2,6 +2,7 @@ import type { Keybinding } from './keybindings'
 import type { ICommandService } from './commands.service'
 import type { IKeybindingItem } from './keybindings.registry'
 import type { ResolvedKeybinding } from './resolved-keybinding'
+import type { IContextKeyService } from '../helpers/context/context'
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item'
 
 import { KeyboardLayoutUtils } from './keyboard-layout'
@@ -16,10 +17,13 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
   // private readonly _domNodeListeners: DomNodeListeners[] // DOM event listeners
 
   constructor(
+    protected override _contextKeyService: IContextKeyService,
     protected override _commandService: ICommandService,
   ) {
-    super(_commandService)
-
+    super(
+      _contextKeyService,
+      _commandService,
+    )
     this._cachedResolver = null
     this._dynamicKeybindings = []
     this._registerDOMListeners()
@@ -29,6 +33,15 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
     // В Electron ФМ обычно достаточно слушать window
     // Используем arrow function, чтобы сохранить this
     const handler = (e: KeyboardEvent) => {
+      console.log('[KeybindingService] keydown', {
+        key: e.key,
+        code: e.code,
+        ctrl: e.ctrlKey,
+        meta: e.metaKey,
+        shift: e.shiftKey,
+        alt: e.altKey,
+        target: e.target,
+      })
       // Игнорируем, если фокус в input/textarea (если нужно)
       // В VS Code это решается через контекст 'inputFocus', но можно и грубо:
       /*
@@ -104,6 +117,7 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 
       const resolvedKeybinding = new SimpleResolvedKeybinding(keybinding.chords)
 
+      // TODO: тут что-то очень мутное, надо переделать
       // Создаем финальный айтем для ресолвера
       // Важно: ResolvedKeybindingItem импортируем из твоего файла
       result.push({

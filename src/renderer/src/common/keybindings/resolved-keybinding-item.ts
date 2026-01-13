@@ -1,5 +1,5 @@
 import type { ResolvedKeybinding } from './resolved-keybinding'
-import type { WhenExpression } from '../helpers/context/context'
+import type { ContextKeyExpression } from '../helpers/context/context'
 
 export class ResolvedKeybindingItem {
   _resolvedKeybindingItemBrand: void = undefined
@@ -9,10 +9,10 @@ export class ResolvedKeybindingItem {
   public readonly bubble: boolean
   public readonly command: string | null
   public readonly commandArgs: any
-  public readonly when: WhenExpression | undefined
+  public readonly when: ContextKeyExpression | undefined
   public readonly isDefault: boolean
 
-  constructor(resolvedKeybinding: ResolvedKeybinding | undefined, command: string | null, commandArgs: any, when: WhenExpression | undefined, isDefault: boolean) {
+  constructor(resolvedKeybinding: ResolvedKeybinding | undefined, command: string | null, commandArgs: any, when: ContextKeyExpression | undefined, isDefault: boolean) {
     this.resolvedKeybinding = resolvedKeybinding
     if (resolvedKeybinding) {
       this.chords = toEmptyArrayIfContainsNull(resolvedKeybinding.getDispatchChords())

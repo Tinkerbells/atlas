@@ -1,5 +1,5 @@
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item.ts'
-import type { ContextSnapshot, WhenExpression } from '../helpers/context/context'
+import type { ContextKeyExpression, IContext } from '../helpers/context/context'
 
 import { evaluateWhen } from '../helpers/context/context'
 
@@ -78,7 +78,7 @@ export class KeybindingResolver {
     }
   }
 
-  public resolve(context: ContextSnapshot, currentChords: string[], keypress: string): ResolutionResult {
+  public resolve(context: IContext, currentChords: string[], keypress: string): ResolutionResult {
     const pressedChords = [...currentChords, keypress]
     const kbCandidates = this._map.get(pressedChords[0])
 
@@ -135,7 +135,7 @@ export class KeybindingResolver {
     return KbFound(result.command, result.commandArgs, result.bubble)
   }
 
-  private _findCommand(context: ContextSnapshot, matches: ResolvedKeybindingItem[]): ResolvedKeybindingItem | null {
+  private _findCommand(context: IContext, matches: ResolvedKeybindingItem[]): ResolvedKeybindingItem | null {
     for (let i = matches.length - 1; i >= 0; i--) {
       const k = matches[i]
 
@@ -149,7 +149,7 @@ export class KeybindingResolver {
     return null
   }
 
-  private static _contextMatchesRules(context: ContextSnapshot, rules: WhenExpression | null | undefined): boolean {
+  private static _contextMatchesRules(context: IContext, rules: ContextKeyExpression | null | undefined): boolean {
     if (!rules) {
       return true
     }

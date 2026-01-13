@@ -4,6 +4,7 @@ import type { IKeybindingItem } from './keybindings.registry'
 import type { ResolvedKeybinding } from './resolved-keybinding'
 import type { KeybindingResolver } from './keybindings.resolver'
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item'
+import type { IContextKeyService, IContextKeyServiceTarget } from '../helpers/context/context'
 
 import { Disposable } from '../lifecycle/dispose'
 import { ResultKind } from './keybindings.resolver'
@@ -23,8 +24,7 @@ export abstract class AbstractKeybindingService extends Disposable {
   }
 
   constructor(
-    // TODO: реализовать
-    // private _contextKeyService: IContextKeyService,
+    protected _contextKeyService: IContextKeyService,
     protected _commandService: ICommandService,
   ) {
     super()
@@ -59,8 +59,8 @@ export abstract class AbstractKeybindingService extends Disposable {
     return this._doDispatch(this.resolveKeyboardEvent(e), target)
   }
 
-  private _doDispatch(userKeypress: ResolvedKeybinding, _target: any): boolean {
-    console.log(userKeypress)
+  private _doDispatch(userKeypress: ResolvedKeybinding, target: IContextKeyServiceTarget): boolean {
+    console.log('[KeybindingService] resolved keyboard event', userKeypress)
     let shouldPreventDefault = false
 
     let userPressedChord: string | null = null
@@ -76,12 +76,15 @@ export abstract class AbstractKeybindingService extends Disposable {
       // cannot be dispatched, probably only modifier keys
       return shouldPreventDefault
     }
-    // TODO: обработка таргета
-    // console.log(target)
-    // TODO: тут должен быть вызов сервиса по работе с контекстом
-    const context = {}
-
-    const resolveResult = this._getResolver().resolve(context, currentChords, userPressedChord)
+    const contextValue = this._contextKeyService.getContext(target)
+    console.log('[KeybindingService] dispatch', {
+      target,
+      userPressedChord,
+      currentChords,
+      context: contextValue,
+    })
+    const resolveResult = this._getResolver().resolve(contextValue, currentChords, userPressedChord)
+    console.log('[KeybindingService] resolve result', resolveResult)
 
     switch (resolveResult.kind) {
       case ResultKind.NoMatchingKb: {
@@ -97,6 +100,7 @@ export abstract class AbstractKeybindingService extends Disposable {
         shouldPreventDefault = true
         // Запоминаем первый аккорд для последующего шага
         this._currentChords.push({ keypress: userPressedChord, label: null })
+        console.log('[KeybindingService] chord mode enter', this._currentChords)
         return shouldPreventDefault
       }
 
@@ -136,6 +140,7 @@ export abstract class AbstractKeybindingService extends Disposable {
   }
 
   private _leaveChordMode(): void {
+    console.log('[KeybindingService] chord mode leave')
     this._currentChords = []
   }
 }

@@ -1,7 +1,9 @@
+import type { ResolvedKeybinding } from './resolved-keybinding'
+
 import { SimpleResolvedKeybinding } from './simple-resolved-keybinding'
 
 export class KeyboardLayoutUtils {
-  public static resolveKeyboardEvent(e: KeyboardEvent): SimpleResolvedKeybinding {
+  public static resolveKeyboardEvent(e: KeyboardEvent): ResolvedKeybinding {
     // 1. Если это просто нажатие модификатора (ctrl, shift...) — это не аккорд
     if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
       // Возвращаем пустой биндинг или null (зависит от того, как обработает диспетчер)
