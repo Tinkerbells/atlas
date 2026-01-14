@@ -1,342 +1,181 @@
 import type { Component } from 'solid-js'
 
-import { XIcon } from 'lucide-solid'
-import { Portal } from 'solid-js/web'
-import { For, onCleanup, onMount } from 'solid-js'
+import { createSignal, onCleanup, onMount } from 'solid-js'
 
-import { Card } from './components/card/card'
-import { Menu } from './components/menu/menu'
-import { Tabs } from './components/tabs/tabs'
-import { Alert } from './components/alert/alert'
-import { Badge } from './components/badge/badge'
-import { Input } from './components/input/input'
-import { Avatar } from './components/avatar/avatar'
-import { Button } from './components/button/button'
-import { Dialog } from './components/dialog/dialog'
-import { Switch } from './components/switch/switch'
-import { Popover } from './components/popover/popover'
-import { Tooltip } from './components/tooltip/tooltip'
-import { Checkbox } from './components/checkbox/checkbox'
-import { Textarea } from './components/textarea/textarea'
-import { commandRegistry } from './common/keybindnigs/commands'
-import { ScrollArea } from './components/scroll-area/scroll-area'
-import { IconButton } from './components/icon-button/icon-button'
-import { RadioGroup } from './components/radio-group/radio-group'
-import { keybindingRegistry } from './common/keybindnigs/keybindings'
-import { createListCollection, Select } from './components/select/select'
-import { KeybindingService } from './common/keybindnigs/keybindings.service'
+import type { IContextKey } from './common/helpers/context/context'
+
+import Versions from './components/Versions'
+import electronLogo from './assets/electron.svg'
+import { commandsRegistry } from './common/keybindings/commands'
+import { ContextKeyService } from './common/helpers/context/context'
+import { CommandService } from './common/keybindings/commands.service'
+import { ContextKeyExpression } from './common/helpers/context/parser'
+import { keybindingsRegistry } from './common/keybindings/keybindings.registry'
+import { StandaloneKeybindingService } from './common/keybindings/keybindings.service'
+
+const HoverKeybindingDemo: Component<{ contextKeyService: ContextKeyService }> = (props) => {
+  const [isHovering, setIsHovering] = createSignal(false)
+  const [editMode, setEditMode] = createSignal(false)
+
+  let scopedService: ReturnType<ContextKeyService['createScoped']> | undefined
+  let hoverCtx: IContextKey<boolean> | undefined
+  let editCtx: IContextKey<boolean> | undefined
+  let targetRef: HTMLDivElement | undefined
+
+  onMount(() => {
+    if (!targetRef)
+      return
+    scopedService = props.contextKeyService.createScoped(targetRef)
+    hoverCtx = scopedService.createKey<boolean>('demo.hovered', false)
+    editCtx = scopedService.createKey<boolean>('demo.editMode', false)
+  })
+
+  onCleanup(() => scopedService?.dispose())
+
+  const updateHover = (value: boolean) => {
+    setIsHovering(value)
+    hoverCtx?.set(value)
+  }
+
+  const handleEnter = () => {
+    updateHover(true)
+    targetRef?.focus()
+  }
+
+  const handleLeave = () => {
+    updateHover(false)
+    targetRef?.blur()
+  }
+
+  const toggleEditMode = () => {
+    const next = !editMode()
+    setEditMode(next)
+    editCtx?.set(next)
+  }
+
+  return (
+    <div
+      class="hover-demo"
+      ref={targetRef}
+      tabIndex={0}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <div class="hover-demo__title">Hover to enable scoped keybindings</div>
+      <p class="hover-demo__desc">
+        While this card is hovered and focused, try pressing your keybindings:
+      </p>
+      <ul class="hover-demo__list">
+        <li>⌘C → fileManager.copy (requires hover)</li>
+        <li>Ctrl+S → fileManager.save (requires hover + edit mode)</li>
+        <li>Ctrl+S, then Q → app.quit (requires hover, disabled in edit mode)</li>
+      </ul>
+      <div class="hover-demo__state">
+        <span class={`pill ${isHovering() ? 'pill--on' : ''}`}>
+          Hover:
+          {' '}
+          {isHovering() ? 'active' : 'off'}
+        </span>
+        <span class={`pill ${editMode() ? 'pill--on' : ''}`}>
+          Edit mode:
+          {' '}
+          {editMode() ? 'on' : 'off'}
+        </span>
+      </div>
+      <button class="hover-demo__button" type="button" onClick={toggleEditMode}>
+        Toggle edit mode
+      </button>
+      <div class="hover-demo__hint">
+        Context keys set: demo.hovered =
+        {' '}
+        {String(isHovering())}
+        , demo.editMode =
+        {' '}
+        {String(editMode())}
+      </div>
+    </div>
+  )
+}
 
 const App: Component = () => {
-  const kbService = new KeybindingService()
-  onMount(() => {
-    const disposeSave = commandRegistry.register('file.save', () => {
-      console.log('SAVING FILE...')
-    })
+  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
-    const disposeDelete = commandRegistry.register('file.delete', () => {
-      console.log('DELETING FILE...')
-    })
+  const commandService = new CommandService()
+  const contextKeyService = new ContextKeyService()
+  const keybindingService = new StandaloneKeybindingService(contextKeyService, commandService)
 
-    const disposeBindSave = keybindingRegistry.register({
-      key: 'Ctrl+S',
-      commandId: 'file.save',
-    })
+  commandsRegistry.registerCommand('fileManager.copy', () => {
+    console.log('LOGIC: Files copied to clipboard!')
+  })
 
-    const disposeBindDelete = keybindingRegistry.register({
-      key: 'Delete',
-      commandId: 'file.delete',
-      when: 'fileListFocus',
-    })
+  commandsRegistry.registerCommand('fileManager.save', () => {
+    console.log('LOGIC: File saved!')
+  })
 
-    onCleanup(() => {
-      disposeSave()
-      disposeDelete()
-      disposeBindSave()
-      disposeBindDelete()
-    })
+  commandsRegistry.registerCommand('app.quit', () => {
+    console.log('LOGIC: Quitting application...')
+  })
+
+  keybindingsRegistry.registerKeybindingRule({
+    id: 'fileManager.copy',
+    keybinding: ['meta+KeyC'],
+    weight: 100,
+    when: undefined,
+  })
+
+  keybindingsRegistry.registerKeybindingRule({
+    id: 'fileManager.save',
+    keybinding: ['ctrl+KeyS'],
+    weight: 100,
+    when: ContextKeyExpression.parse('demo.hovered && demo.editMode'),
+  })
+
+  keybindingsRegistry.registerKeybindingRule({
+    id: 'app.quit',
+    keybinding: ['ctrl+KeyS', 'KeyQ'],
+    weight: 200,
+    when: ContextKeyExpression.parse('demo.hovered && !demo.editMode'),
   })
 
   onCleanup(() => {
-    kbService.dispose()
-  })
-
-  const frameworkCollection = createListCollection({
-    items: [
-      { label: 'Solid', value: 'solid' },
-      { label: 'React', value: 'react' },
-      { label: 'Vue', value: 'vue' },
-    ],
+    commandService.dispose()
+    keybindingService.dispose()
+    contextKeyService.dispose()
   })
 
   return (
     <>
-      <ScrollArea.Root style={{ height: '100vh' }}>
-        <ScrollArea.Viewport style={{ height: '100%' }}>
-          <ScrollArea.Content>
-            <div
-              style={{
-                'padding': '32px',
-                'display': 'grid',
-                'gap': '24px',
-                'max-width': '900px',
-                'margin': '0 auto',
-              }}
-            >
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Buttons</h2>
-                <div style={{ 'display': 'flex', 'gap': '12px', 'flex-wrap': 'wrap' }}>
-                  <Button>Primary</Button>
-                  <Button variant="outline">Outline</Button>
-                  <Button variant="ghost">Ghost</Button>
-                  <Button size="sm">Small</Button>
-                  <Button size="lg">Large</Button>
-                  <IconButton aria-label="Settings">
-                    <XIcon />
-                  </IconButton>
-                </div>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Badges & Alerts</h2>
-                <div style={{ 'display': 'flex', 'gap': '8px', 'flex-wrap': 'wrap' }}>
-                  <Badge>New</Badge>
-                  <Badge variant="success">Success</Badge>
-                  <Badge variant="warning">Warning</Badge>
-                  <Badge variant="danger">Danger</Badge>
-                </div>
-                <Alert.Root>
-                  <Alert.Title>Heads up</Alert.Title>
-                  <Alert.Description>
-                    This alert uses the shared UI theme tokens.
-                  </Alert.Description>
-                </Alert.Root>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Inputs</h2>
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  <Input placeholder="Type something..." />
-                  <Input placeholder="Invalid input" invalid />
-                  <Textarea placeholder="Tell us more..." />
-                </div>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Selections</h2>
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  <Checkbox.Root>
-                    <Checkbox.Control>
-                      <Checkbox.Indicator>
-                        <XIcon />
-                      </Checkbox.Indicator>
-                    </Checkbox.Control>
-                    <Checkbox.HiddenInput />
-                    <Checkbox.Label>Remember me</Checkbox.Label>
-                  </Checkbox.Root>
-
-                  <Switch.Root>
-                    <Switch.Control>
-                      <Switch.Thumb />
-                    </Switch.Control>
-                    <Switch.HiddenInput />
-                    <Switch.Label>Enable notifications</Switch.Label>
-                  </Switch.Root>
-
-                  <RadioGroup.Root defaultValue="one">
-                    <RadioGroup.Label>Priority</RadioGroup.Label>
-                    <RadioGroup.Item value="one">
-                      <RadioGroup.ItemControl>
-                        <RadioGroup.Indicator />
-                      </RadioGroup.ItemControl>
-                      <RadioGroup.ItemText>Normal</RadioGroup.ItemText>
-                      <RadioGroup.ItemHiddenInput />
-                    </RadioGroup.Item>
-                    <RadioGroup.Item value="two">
-                      <RadioGroup.ItemControl>
-                        <RadioGroup.Indicator />
-                      </RadioGroup.ItemControl>
-                      <RadioGroup.ItemText>High</RadioGroup.ItemText>
-                      <RadioGroup.ItemHiddenInput />
-                    </RadioGroup.Item>
-                  </RadioGroup.Root>
-
-                  <Select.Root collection={frameworkCollection}>
-                    <Select.Label>Framework</Select.Label>
-                    <Select.Control>
-                      <Select.Trigger>
-                        <Select.ValueText placeholder="Choose..." />
-                        <Select.Indicator>v</Select.Indicator>
-                      </Select.Trigger>
-                    </Select.Control>
-                    <Portal>
-                      <Select.Positioner>
-                        <Select.Content>
-                          <Select.List>
-                            <For each={frameworkCollection.items}>
-                              {item => (
-                                <Select.Item item={item}>
-                                  <Select.ItemText>{item.label}</Select.ItemText>
-                                  <Select.ItemIndicator>ok</Select.ItemIndicator>
-                                </Select.Item>
-                              )}
-                            </For>
-                          </Select.List>
-                        </Select.Content>
-                      </Select.Positioner>
-                    </Portal>
-                  </Select.Root>
-                </div>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Cards & Avatars</h2>
-                <Card.Root>
-                  <Card.Header>
-                    <Card.Title>Workspace</Card.Title>
-                    <Card.Description>Quick status overview</Card.Description>
-                  </Card.Header>
-                  <Card.Body>
-                    Active sessions are healthy. No incidents reported.
-                  </Card.Body>
-                  <Card.Footer>
-                    <Avatar.Root>
-                      <Avatar.Fallback>AJ</Avatar.Fallback>
-                    </Avatar.Root>
-                    <Button size="sm">View</Button>
-                  </Card.Footer>
-                </Card.Root>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Tabs</h2>
-                <Tabs.Root defaultValue="overview">
-                  <Tabs.List>
-                    <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-                    <Tabs.Trigger value="details">Details</Tabs.Trigger>
-                    <Tabs.Trigger value="notes">Notes</Tabs.Trigger>
-                  </Tabs.List>
-                  <Tabs.Content value="overview">Overview content</Tabs.Content>
-                  <Tabs.Content value="details">Detailed metrics</Tabs.Content>
-                  <Tabs.Content value="notes">Notes and next steps</Tabs.Content>
-                </Tabs.Root>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Menu & Popover</h2>
-                <div style={{ 'display': 'flex', 'gap': '12px', 'flex-wrap': 'wrap' }}>
-                  <Menu.Root>
-                    <Menu.Trigger
-                      asChild={props => <Button {...props} variant="outline" />}
-                    >
-                      Open Menu
-                    </Menu.Trigger>
-                    <Portal>
-                      <Menu.Positioner>
-                        <Menu.Content>
-                          <Menu.Item value="profile">
-                            <Menu.ItemText>Profile</Menu.ItemText>
-                          </Menu.Item>
-                          <Menu.Item value="settings">
-                            <Menu.ItemText>Settings</Menu.ItemText>
-                          </Menu.Item>
-                          <Menu.Separator />
-                          <Menu.Item value="signout">
-                            <Menu.ItemText>Sign out</Menu.ItemText>
-                          </Menu.Item>
-                        </Menu.Content>
-                      </Menu.Positioner>
-                    </Portal>
-                  </Menu.Root>
-
-                  <Popover.Root>
-                    <Popover.Trigger
-                      asChild={props => <Button {...props} variant="outline" />}
-                    >
-                      Open Popover
-                    </Popover.Trigger>
-                    <Portal>
-                      <Popover.Positioner>
-                        <Popover.Content>
-                          <Popover.Title>Quick actions</Popover.Title>
-                          <Popover.Description>
-                            Assign or snooze without leaving this view.
-                          </Popover.Description>
-                        </Popover.Content>
-                      </Popover.Positioner>
-                    </Portal>
-                  </Popover.Root>
-                </div>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Tooltip</h2>
-                <Tooltip.Root>
-                  <Tooltip.Trigger
-                    asChild={props => (
-                      <IconButton {...props} aria-label="Tooltip target" />
-                    )}
-                  >
-                    <XIcon />
-                  </Tooltip.Trigger>
-                  <Portal>
-                    <Tooltip.Positioner>
-                      <Tooltip.Content>Close panel</Tooltip.Content>
-                    </Tooltip.Positioner>
-                  </Portal>
-                </Tooltip.Root>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>ScrollArea</h2>
-                <ScrollArea.Root style={{ height: '180px' }}>
-                  <ScrollArea.Viewport style={{ height: '100%' }}>
-                    <ScrollArea.Content style={{ padding: '16px' }}>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur.
-                      </p>
-                    </ScrollArea.Content>
-                  </ScrollArea.Viewport>
-                  <ScrollArea.Scrollbar>
-                    <ScrollArea.Thumb />
-                  </ScrollArea.Scrollbar>
-                  <ScrollArea.Corner />
-                </ScrollArea.Root>
-              </section>
-
-              <section style={{ display: 'grid', gap: '12px' }}>
-                <h2>Dialog</h2>
-                <Dialog.Root>
-                  <Dialog.Trigger>Open Dialog</Dialog.Trigger>
-                  <Portal>
-                    <Dialog.Backdrop />
-                    <Dialog.Positioner>
-                      <Dialog.Content>
-                        <Dialog.Title>Dialog Title</Dialog.Title>
-                        <Dialog.Description>
-                          Dialog Description with consistent styling.
-                        </Dialog.Description>
-                        <Dialog.CloseTrigger aria-label="Close dialog">
-                          <XIcon />
-                        </Dialog.CloseTrigger>
-                      </Dialog.Content>
-                    </Dialog.Positioner>
-                  </Portal>
-                </Dialog.Root>
-              </section>
-            </div>
-          </ScrollArea.Content>
-        </ScrollArea.Viewport>
-        <ScrollArea.Scrollbar>
-          <ScrollArea.Thumb />
-        </ScrollArea.Scrollbar>
-        <ScrollArea.Corner />
-      </ScrollArea.Root>
+      <img alt="logo" class="logo" src={electronLogo} />
+      <div class="creator">Powered by electron-vite</div>
+      <div class="text">
+        Build an Electron app with
+        {' '}
+        <span class="solid">Solid</span>
+        &nbsp;and
+        {' '}
+        <span class="ts">TypeScript</span>
+      </div>
+      <p class="tip">
+        Please try pressing
+        {' '}
+        <code>F12</code>
+        {' '}
+        to open the devTool
+      </p>
+      <HoverKeybindingDemo contextKeyService={contextKeyService} />
+      <div class="actions">
+        <div class="action">
+          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
+            Documentation
+          </a>
+        </div>
+        <div class="action">
+          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
+            Send IPC
+          </a>
+        </div>
+      </div>
+      <Versions />
     </>
   )
 }
