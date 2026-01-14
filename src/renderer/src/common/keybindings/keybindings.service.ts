@@ -3,12 +3,12 @@ import type { ICommandService } from './commands.service'
 import type { IKeybindingItem } from './keybindings.registry'
 import type { ResolvedKeybinding } from './resolved-keybinding'
 import type { IContextKeyService } from '../helpers/context/context'
-import type { ResolvedKeybindingItem } from './resolved-keybinding-item'
 
 import { KeyboardLayoutUtils } from './keyboard-layout'
 import { KeybindingResolver } from './keybindings.resolver'
 import { keybindingsRegistry } from './keybindings.registry'
-import { SimpleResolvedKeybinding } from './simple-resolved-keybinding'
+import { ResolvedKeybindingItem } from './resolved-keybinding-item'
+import { BaseResolvedKeybinding } from './base-resolved-keybinding'
 import { AbstractKeybindingService } from './keybindings.abstract-service'
 
 export class StandaloneKeybindingService extends AbstractKeybindingService {
@@ -94,8 +94,6 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
     return []
   }
 
-  // --- Динамические биндинги (User Settings) ---
-
   public addDynamicKeybinding(item: IKeybindingItem): void {
     this._dynamicKeybindings.push(item)
     this.updateResolver()
@@ -107,29 +105,19 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 
   private _toNormalizedKeybindingItems(items: IKeybindingItem[], isDefault: boolean): ResolvedKeybindingItem[] {
     const result: ResolvedKeybindingItem[] = []
+    let resultLen = 0
 
     for (const item of items) {
+      const when = item.when || undefined
       const keybinding = item.keybinding
 
-      if (!keybinding || keybinding.chords.length === 0) {
+      if (!keybinding) {
         continue
       }
 
-      const resolvedKeybinding = new SimpleResolvedKeybinding(keybinding.chords)
+      const resolvedKeybinding = new BaseResolvedKeybinding(keybinding.chords)
 
-      // TODO: тут что-то очень мутное, надо переделать
-      // Создаем финальный айтем для ресолвера
-      // Важно: ResolvedKeybindingItem импортируем из твоего файла
-      result.push({
-        resolvedKeybinding,
-        chords: keybinding.chords, // Дублируем для быстрого доступа
-        command: item.command,
-        commandArgs: item.commandArgs,
-        when: item.when,
-        isDefault,
-        // Методы, которые требует класс ResolvedKeybindingItem (если ты используешь класс, а не интерфейс)
-        // ... new ResolvedKeybindingItem(...)
-      } as any) // Каст, если типы чуть не сходятся в черновике
+      result[resultLen++] = new ResolvedKeybindingItem(resolvedKeybinding, item.command, item.commandArgs, when, isDefault)
     }
 
     return result

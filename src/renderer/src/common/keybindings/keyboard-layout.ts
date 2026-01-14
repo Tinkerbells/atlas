@@ -1,6 +1,6 @@
 import type { ResolvedKeybinding } from './resolved-keybinding'
 
-import { SimpleResolvedKeybinding } from './simple-resolved-keybinding'
+import { BaseResolvedKeybinding } from './base-resolved-keybinding'
 
 export class KeyboardLayoutUtils {
   public static resolveKeyboardEvent(e: KeyboardEvent): ResolvedKeybinding {
@@ -8,7 +8,7 @@ export class KeyboardLayoutUtils {
     if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
       // Возвращаем пустой биндинг или null (зависит от того, как обработает диспетчер)
       // VS Code тут возвращает спец. объект, но мы упростим:
-      return new SimpleResolvedKeybinding([])
+      return new BaseResolvedKeybinding([])
     }
 
     const parts: string[] = []
@@ -30,6 +30,6 @@ export class KeyboardLayoutUtils {
 
     const chord = parts.join('+') // "ctrl+KeyS"
 
-    return new SimpleResolvedKeybinding([chord])
+    return new BaseResolvedKeybinding([chord])
   }
 }

@@ -3,7 +3,7 @@ import type { ResolvedChord } from './resolved-keybinding'
 
 import { ResolvedKeybinding } from './resolved-keybinding'
 
-export class SimpleResolvedKeybinding<T extends Chord> extends ResolvedKeybinding {
+export class BaseResolvedKeybinding<T extends Chord> extends ResolvedKeybinding {
   private readonly _chords: readonly T[]
 
   constructor(chords: T[]) {
