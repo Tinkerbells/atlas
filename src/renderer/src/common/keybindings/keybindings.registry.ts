@@ -1,5 +1,5 @@
 import type { Keybinding } from './keybindings'
-import type { ContextKeyExpression } from '../helpers/context/context'
+import type { ContextKeyExpression } from '../helpers/context/parser'
 
 import { decodeKeybinding } from './keybindings'
 

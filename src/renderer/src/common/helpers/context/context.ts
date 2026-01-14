@@ -1,9 +1,9 @@
 // TODO: переработать
-import { parseWhen } from './context-key-parser'
+import type { ContextKeyExpression } from './parser'
+
+const KEYBINDING_CONTEXT_ATTR = 'data-ctx-id'
 
 export type ContextValue = string | number | boolean | null | undefined
-
-export type ContextKeyExpression = string | ((ctx: IContext) => boolean)
 
 export interface IContext {
   getValue: <T extends ContextValue = ContextValue>(key: string) => T | undefined
@@ -34,8 +34,6 @@ export interface IContextKeyServiceTarget {
 }
 
 type ContextTarget = HTMLElement | IContextKeyServiceTarget
-
-const CTX_ATTR = 'data-ctx-id'
 
 class ContextContainer implements IContext {
   constructor(public values: Record<string, ContextValue> = {}, public parent?: ContextContainer) { }
@@ -81,7 +79,10 @@ abstract class BaseContextKeyService implements IContextKeyService {
 
   contextMatchesRules(expr?: ContextKeyExpression | null, target?: ContextTarget | null): boolean {
     const ctx = this.getContext(target)
-    const result = evaluateWhen(expr ?? null, ctx)
+    if (!expr) {
+      return false
+    }
+    const result = expr.evaluate(ctx)
     console.log('[ContextKeyService] contextMatchesRules', {
       expr,
       contextId: this.contextId,
@@ -181,45 +182,21 @@ class ScopedContextKeyService extends BaseContextKeyService implements IScopedCo
   }
 }
 
-export function evaluateWhen(expr: ContextKeyExpression | null | undefined, ctx: IContext): boolean {
-  if (!expr) {
-    return true
-  }
-  if (typeof expr === 'function') {
-    return expr(ctx)
-  }
-
-  const compiled = getOrCreateCompiled(expr)
-  return compiled(ctx)
-}
-
-const compiledCache = new Map<string, (ctx: IContext) => boolean>()
-
-function getOrCreateCompiled(expr: string): (ctx: IContext) => boolean {
-  let compiled = compiledCache.get(expr)
-  if (!compiled) {
-    const parsed = parseWhen(expr)
-    compiled = (ctx: IContext) => parsed.eval(ctx)
-    compiledCache.set(expr, compiled)
-  }
-  return compiled
-}
-
 function getParent(target: ContextTarget): ContextTarget | null {
   return (target as HTMLElement).parentElement ?? (target as IContextKeyServiceTarget).parentElement ?? null
 }
 
 function readAttr(target: ContextTarget): number | null {
-  const value = target.getAttribute(CTX_ATTR)
+  const value = target.getAttribute(KEYBINDING_CONTEXT_ATTR)
   return value === null ? null : Number(value)
 }
 
 function setAttr(target: ContextTarget, id: number): void {
-  target.setAttribute(CTX_ATTR, String(id))
+  target.setAttribute(KEYBINDING_CONTEXT_ATTR, String(id))
 }
 
 function removeAttr(target: ContextTarget): void {
-  if (target.hasAttribute(CTX_ATTR)) {
-    target.removeAttribute(CTX_ATTR)
+  if (target.hasAttribute(KEYBINDING_CONTEXT_ATTR)) {
+    target.removeAttribute(KEYBINDING_CONTEXT_ATTR)
   }
 }

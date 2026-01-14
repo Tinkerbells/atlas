@@ -9,6 +9,7 @@ import electronLogo from './assets/electron.svg'
 import { commandsRegistry } from './common/keybindings/commands'
 import { ContextKeyService } from './common/helpers/context/context'
 import { CommandService } from './common/keybindings/commands.service'
+import { ContextKeyExpression } from './common/helpers/context/parser'
 import { keybindingsRegistry } from './common/keybindings/keybindings.registry'
 import { StandaloneKeybindingService } from './common/keybindings/keybindings.service'
 
@@ -126,14 +127,14 @@ const App: Component = () => {
     id: 'fileManager.save',
     keybinding: ['ctrl+KeyS'],
     weight: 100,
-    when: 'demo.hovered && demo.editMode',
+    when: ContextKeyExpression.parse('demo.hovered && demo.editMode'),
   })
 
   keybindingsRegistry.registerKeybindingRule({
     id: 'app.quit',
     keybinding: ['ctrl+KeyS', 'KeyQ'],
     weight: 200,
-    when: 'demo.hovered && !demo.editMode',
+    when: ContextKeyExpression.parse('demo.hovered && !demo.editMode'),
   })
 
   onCleanup(() => {

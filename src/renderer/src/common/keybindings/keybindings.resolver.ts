@@ -1,7 +1,6 @@
+import type { IContext } from '../helpers/context/context'
+import type { ContextKeyExpression } from '../helpers/context/parser'
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item.ts'
-import type { ContextKeyExpression, IContext } from '../helpers/context/context'
-
-import { evaluateWhen } from '../helpers/context/context'
 
 export enum ResultKind {
   /** Для данной последовательности аккордов не найдено ни одной привязки клавиш */
@@ -154,7 +153,7 @@ export class KeybindingResolver {
       return true
     }
 
-    return evaluateWhen(rules, context)
+    return rules.evaluate(context)
   }
 
   public getDefaultKeybindings(): readonly ResolvedKeybindingItem[] {
