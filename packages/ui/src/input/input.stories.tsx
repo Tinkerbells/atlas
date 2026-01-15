@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite'
+import { Camera } from 'lucide-solid'
 
 import { Input } from './input'
 
@@ -11,10 +12,9 @@ const meta = {
       control: 'select',
       options: ['sm', 'md', 'lg', 'extra'],
     },
-    variant: {
-      control: 'select',
-      options: ['border', 'round', 'fill'],
-    },
+    border: { control: 'boolean' },
+    round: { control: 'boolean' },
+    fill: { control: 'boolean' },
     invalid: {
       control: 'boolean',
     },
@@ -24,7 +24,9 @@ const meta = {
   },
   args: {
     size: 'md',
-    variant: 'border',
+    border: true,
+    round: false,
+    fill: false,
     placeholder: 'Type something…',
   },
 } satisfies Meta<typeof Input>
@@ -56,8 +58,8 @@ export const States: Story = {
         <Input
           {...args}
           label="Search"
-          prefixIcon="material-symbols-outlined search"
-          suffixIcon="material-symbols-outlined close front"
+          prefixIcon={<Camera size={18} />}
+          suffixIcon={<Camera size={18} />}
         />
       </div>
     </div>
@@ -78,9 +80,24 @@ export const Sizes: Story = {
 export const Variants: Story = {
   render: args => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
-      <Input {...args} variant="border" label="Border" placeholder="Border input" />
-      <Input {...args} variant="round" label="Round" placeholder="Round input" />
-      <Input {...args} variant="fill" label="Fill" placeholder="Fill input" />
+      <Input {...args} border label="Border" placeholder="Border input" />
+      <Input {...args} border={false} round label="Round" placeholder="Round input" />
+      <Input {...args} border fill label="Fill" placeholder="Fill input" />
+      <Input
+        {...args}
+        border
+        round
+        label="Border + Round"
+        placeholder="Bordered rounded input"
+      />
+      <Input
+        {...args}
+        border
+        round
+        fill
+        label="Border + Round + Fill"
+        placeholder="Combined input"
+      />
     </div>
   ),
 }

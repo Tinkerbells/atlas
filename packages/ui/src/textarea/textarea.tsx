@@ -1,25 +1,28 @@
-import type { ComponentProps } from 'solid-js'
+import type { ComponentProps, JSXElement } from 'solid-js'
 
 import { splitProps } from 'solid-js'
 
-import type { FieldSize, FieldVariant } from '../field'
+import type { FieldSize, FieldVariants } from '../field'
 
 import { Field } from '../field'
+import { cn } from '../utils'
+import fieldStyles from '../field/field.module.css'
 
-export interface TextareaProps extends ComponentProps<typeof Field.Textarea> {
+export type TextareaProps = ComponentProps<typeof Field.Textarea> & FieldVariants & {
   size?: FieldSize
-  variant?: FieldVariant
   label?: string
   helperText?: string
   errorText?: string
-  prefixIcon?: string
-  suffixIcon?: string
+  prefixIcon?: string | JSXElement
+  suffixIcon?: string | JSXElement
 }
 
 export function Textarea(props: TextareaProps) {
   const [local, rest] = splitProps(props, [
     'size',
-    'variant',
+    'border',
+    'round',
+    'fill',
     'class',
     'label',
     'helperText',
@@ -28,10 +31,34 @@ export function Textarea(props: TextareaProps) {
     'suffixIcon',
   ])
 
+  const renderPrefixIcon = () => {
+    if (!local.prefixIcon) return null
+    return typeof local.prefixIcon === 'string'
+      ? <i class={cn(local.prefixIcon, fieldStyles.prefixIcon)} />
+      : (
+          <span class={fieldStyles.prefixIcon}>
+            {local.prefixIcon}
+          </span>
+        )
+  }
+
+  const renderSuffixIcon = () => {
+    if (!local.suffixIcon) return null
+    return typeof local.suffixIcon === 'string'
+      ? <i class={cn(local.suffixIcon, fieldStyles.suffixIcon)} />
+      : (
+          <span class={fieldStyles.suffixIcon}>
+            {local.suffixIcon}
+          </span>
+        )
+  }
+
   return (
     <Field.Root
       size={local.size}
-      variant={local.variant ?? 'border'}
+      border={local.border ?? true}
+      round={local.round}
+      fill={local.fill}
       prefixIcon={local.prefixIcon}
       suffixIcon={local.suffixIcon}
       invalid={props.invalid}
@@ -40,7 +67,7 @@ export function Textarea(props: TextareaProps) {
       readOnly={props.readOnly}
       class={local.class}
     >
-      {local.prefixIcon ? <i class={local.prefixIcon} /> : null}
+      {renderPrefixIcon()}
       <Field.Textarea
         {...rest}
         placeholder={local.label ? ' ' : rest.placeholder}
@@ -55,7 +82,7 @@ export function Textarea(props: TextareaProps) {
               <Field.HelperText>{local.helperText}</Field.HelperText>
             )
           : null}
-      {local.suffixIcon ? <i class={local.suffixIcon} /> : null}
+      {renderSuffixIcon()}
     </Field.Root>
   )
 }

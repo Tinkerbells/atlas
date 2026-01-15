@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'solid-js'
+import type { ComponentProps, JSXElement } from 'solid-js'
 
 import { splitProps } from 'solid-js'
 import { Field as ArkField } from '@ark-ui/solid/field'
@@ -7,27 +7,33 @@ import { cn } from '../utils'
 import styles from './field.module.css'
 
 export type FieldSize = 'sm' | 'md' | 'lg' | 'extra'
-export type FieldVariant = 'border' | 'round' | 'fill'
+
+export interface FieldVariants {
+  border?: boolean
+  round?: boolean
+  fill?: boolean
+}
 
 type WithFieldProps<T> = T & {
   size?: FieldSize
-  variant?: FieldVariant
-  prefixIcon?: string
-  suffixIcon?: string
-}
+  prefixIcon?: string | JSXElement
+  suffixIcon?: string | JSXElement
+} & FieldVariants
 
 function Root(props: WithFieldProps<ComponentProps<typeof ArkField.Root>>) {
   const [local, rest] = splitProps(props, [
     'size',
-    'variant',
+    'border',
+    'round',
+    'fill',
     'class',
     'prefixIcon',
     'suffixIcon',
     'invalid',
   ])
 
-  const sizeClass
-    = local.size === 'sm'
+  const sizeClass = () =>
+    local.size === 'sm'
       ? styles.small
       : local.size === 'lg'
         ? styles.large
@@ -35,10 +41,10 @@ function Root(props: WithFieldProps<ComponentProps<typeof ArkField.Root>>) {
           ? styles.extra
           : undefined
 
-  const variantClasses = [
-    local.variant === 'border' ? styles.border : undefined,
-    local.variant === 'round' ? styles.round : undefined,
-    local.variant === 'fill' ? styles.fill : undefined,
+  const variantClasses = () => [
+    local.border ? styles.border : undefined,
+    local.round ? styles.round : undefined,
+    local.fill ? styles.fill : undefined,
     local.prefixIcon ? styles.prefix : undefined,
     local.suffixIcon ? styles.suffix : undefined,
   ]
@@ -49,8 +55,8 @@ function Root(props: WithFieldProps<ComponentProps<typeof ArkField.Root>>) {
       invalid={local.invalid}
       class={cn(
         styles.root,
-        sizeClass,
-        variantClasses.filter(Boolean).join(' '),
+        sizeClass(),
+        variantClasses().filter(Boolean).join(' '),
         local.invalid && styles.invalid,
         local.class,
       )}

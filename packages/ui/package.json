@@ -45,5 +45,8 @@
     "storybook-solidjs-vite": "^10.0.9",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "lucide-solid": "^0.562.0"
   }
 }
