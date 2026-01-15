@@ -1,0 +1,69 @@
+.root {
+  display: grid;
+  gap: 10px;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  font-size: 14px;
+}
+
+.root[data-size='sm'] {
+  font-size: 12px;
+}
+
+.label {
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.itemControl {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--md-sys-shape-corner-full, 999px);
+  border: 1px solid var(--md-sys-color-outline, #79747e);
+  background: var(--md-sys-color-surface, #fef7ff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.root[data-size='sm'] .itemControl {
+  width: 16px;
+  height: 16px;
+}
+
+.root[data-size='lg'] .itemControl {
+  width: 20px;
+  height: 20px;
+}
+
+.itemControl[data-state='checked'] {
+  border-color: var(--md-sys-color-primary, #6750a4);
+  background: var(--md-sys-color-primary, #6750a4);
+}
+
+.itemControl:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 35%, transparent);
+  outline-offset: 2px;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--md-sys-shape-corner-full, 999px);
+  background: var(--md-sys-color-on-primary, #ffffff);
+}
+
+.itemText {
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}

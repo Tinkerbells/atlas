@@ -1,0 +1,40 @@
+.alert {
+  --_radius: var(--md-sys-shape-corner-medium, 12px);
+  --_padding: 16px 18px;
+  --_border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+
+  display: grid;
+  gap: 6px;
+  border-radius: var(--_radius);
+  border: var(--_border);
+  background: color-mix(in srgb, var(--md-sys-color-surface-variant, #e7e0ec) 80%, var(--md-sys-color-surface, #fef7ff));
+  padding: var(--_padding);
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.alert[data-variant='success'] {
+  background: color-mix(in srgb, var(--md-sys-color-tertiary-container, #ffd8e4) 90%, var(--md-sys-color-surface, #fef7ff));
+  border-color: color-mix(in srgb, var(--md-sys-color-tertiary, #7d5260) 30%, var(--md-sys-color-outline-variant, #cac4d0));
+}
+
+.alert[data-variant='warning'] {
+  background: color-mix(in srgb, #f9de81 85%, var(--md-sys-color-surface, #fef7ff));
+  border-color: color-mix(in srgb, #d29f00 35%, var(--md-sys-color-outline-variant, #cac4d0));
+}
+
+.alert[data-variant='danger'] {
+  background: color-mix(in srgb, var(--md-sys-color-error-container, #f9dedc) 90%, var(--md-sys-color-surface, #fef7ff));
+  border-color: color-mix(in srgb, var(--md-sys-color-error, #b3261e) 30%, var(--md-sys-color-outline-variant, #cac4d0));
+}
+
+.title {
+  font-size: var(--md-sys-typescale-title-small-size, 15px);
+  font-weight: var(--md-sys-typescale-title-small-weight, 600);
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.description {
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  font-size: var(--md-sys-typescale-body-medium-size, 13px);
+  line-height: 1.5;
+}

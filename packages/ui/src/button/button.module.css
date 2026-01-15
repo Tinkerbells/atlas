@@ -1,0 +1,97 @@
+.button {
+  --_size: 2.5rem;
+  --_padding: 1rem;
+  box-sizing: content-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  block-size: var(--_size);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--md-sys-color-on-primary, #ffffff);
+  padding: 0 var(--_padding);
+  background-color: var(--md-sys-color-primary, #6750a4);
+  margin: 0 0.5rem;
+  border-radius: var(--_size);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
+    border-radius var(--md-sys-motion-speed-2, 200ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
+    padding var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
+    background-color var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    color var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.button[data-size='sm'] {
+  --_size: 2rem;
+  --_padding: 0.75rem;
+}
+
+.button[data-size='md'] {
+  --_size: 2.5rem;
+}
+
+.button[data-size='lg'] {
+  --_size: 3rem;
+  --_padding: 1.25rem;
+  font-size: 1rem;
+}
+
+.button[data-variant='solid'],
+.button:not([data-variant]) {
+  background-color: var(--md-sys-color-primary, #6750a4);
+  color: var(--md-sys-color-on-primary, #ffffff);
+  border-color: transparent;
+}
+
+.button[data-variant='outline'] {
+  background-color: transparent;
+  border-color: var(--md-sys-color-outline-variant, #cac4d0);
+  color: var(--md-sys-color-primary, #6750a4);
+}
+
+.button[data-variant='ghost'] {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.button[data-variant='solid']:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 92%, var(--md-sys-color-on-primary, #ffffff));
+}
+
+.button[data-variant='outline']:hover:not(:disabled) {
+  background-color: var(--md-sys-color-inverse-surface, #313033);
+  color: var(--md-sys-color-inverse-on-surface, #f4eff4);
+  border-color: var(--md-sys-color-inverse-surface, #313033);
+}
+
+.button[data-variant='ghost']:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--md-sys-color-surface, #fef7ff) 92%, transparent);
+}
+
+.button:focus-visible {
+  outline: 0.125rem solid var(--md-sys-color-primary, #6750a4);
+  outline-offset: 0.25rem;
+}
+
+.button:active:not(:disabled),
+.button.active:not(:disabled) {
+  border-radius: 0.5rem !important;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 40%, var(--md-sys-color-surface, #fef7ff));
+  color: color-mix(in srgb, var(--md-sys-color-on-primary, #ffffff) 70%, transparent);
+  border-color: transparent;
+  transform: none;
+}

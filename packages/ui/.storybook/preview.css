@@ -1,0 +1,23 @@
+@import '../src/tokens/light.css';
+@import '../src/tokens/dark.css';
+@import '../src/tokens/expressive-core.css';
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+}
+
+.light body {
+  margin: 0;
+  padding: 32px;
+  font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at 10% 10%, #f3f6ff, #ffffff 45%), var(--md-sys-color-surface, #fef7ff);
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.sb-show-main {
+  padding: 32px;
+}

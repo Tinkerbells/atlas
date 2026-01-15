@@ -1,0 +1,26 @@
+.content {
+  background: var(--md-sys-color-surface, #fef7ff);
+  border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+  border-radius: var(--md-sys-shape-corner-medium, 12px);
+  padding: 16px;
+  min-width: 220px;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  box-shadow: var(--md-sys-elevation-level2, 0 8px 16px rgba(0, 0, 0, 0.24));
+  display: grid;
+  gap: 8px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.description {
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  font-size: 13px;
+}
+
+.arrow {
+  fill: var(--md-sys-color-surface, #fef7ff);
+  stroke: var(--md-sys-color-outline-variant, #cac4d0);
+}

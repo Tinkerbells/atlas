@@ -1,0 +1,55 @@
+.root {
+  display: grid;
+  gap: 14px;
+}
+
+.list {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: var(--md-sys-shape-corner-large, 16px);
+  background: var(--md-sys-color-surface-container-low, #f3edf7);
+  border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+  width: fit-content;
+}
+
+.trigger {
+  border: none;
+  background: transparent;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  padding: 8px 14px;
+  border-radius: var(--md-sys-shape-corner-small, 8px);
+  cursor: pointer;
+  font-size: 13px;
+  transition:
+    background-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.trigger[data-selected] {
+  background: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 12%, var(--md-sys-color-surface, #fef7ff));
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary, #6750a4);
+  outline-offset: 2px;
+}
+
+.content {
+  background: var(--md-sys-color-surface, #fef7ff);
+  border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+  border-radius: var(--md-sys-shape-corner-large, 16px);
+  padding: 16px;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.root[data-size='sm'] .trigger {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.root[data-size='lg'] .trigger {
+  padding: 10px 16px;
+  font-size: 14px;
+}

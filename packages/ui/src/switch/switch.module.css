@@ -1,0 +1,82 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  font-size: 14px;
+}
+
+.root[data-size='sm'] {
+  font-size: 12px;
+}
+
+.control {
+  position: relative;
+  width: 52px;
+  height: 32px;
+  border-radius: var(--md-sys-shape-corner-full, 999px);
+  background: var(--md-sys-color-surface-container-highest, #e8def8);
+  border: 1px solid var(--md-sys-color-outline, #79747e);
+  transition:
+    background-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.root[data-size='sm'] .control {
+  width: 44px;
+  height: 28px;
+}
+
+.root[data-size='lg'] .control {
+  width: 60px;
+  height: 36px;
+}
+
+.control[data-state='checked'] {
+  background: var(--md-sys-color-primary, #6750a4);
+  border-color: var(--md-sys-color-primary, #6750a4);
+}
+
+.control:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 35%, transparent);
+  outline-offset: 2px;
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--md-sys-shape-corner-full, 999px);
+  background: var(--md-sys-color-on-primary, #ffffff);
+  transition: transform var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35));
+  box-shadow: var(--md-sys-elevation-level1, 0 1px 2px rgba(0, 0, 0, 0.24), 0 1px 3px 1px rgba(0, 0, 0, 0.16));
+}
+
+.root[data-size='sm'] .thumb {
+  width: 24px;
+  height: 24px;
+}
+
+.root[data-size='lg'] .thumb {
+  width: 32px;
+  height: 32px;
+}
+
+.control[data-state='checked'] .thumb {
+  transform: translateX(20px);
+  background: var(--md-sys-color-on-primary, #ffffff);
+}
+
+.root[data-size='sm'] .control[data-state='checked'] .thumb {
+  transform: translateX(16px);
+}
+
+.root[data-size='lg'] .control[data-state='checked'] .thumb {
+  transform: translateX(24px);
+}
+
+.label {
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}

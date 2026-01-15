@@ -1,0 +1,32 @@
+:root {
+  /* Shapes (Expressive radii) */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-large-increased: 20px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-extra-large-increased: 32px;
+  --md-sys-shape-corner-xxl: 48px;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* Motion durations */
+  --md-sys-motion-duration-fast: 250ms; /* small elements */
+  --md-sys-motion-duration-default: 400ms; /* medium (cards, dialogs) */
+  --md-sys-motion-duration-slow: 600ms; /* large surfaces */
+  --md-sys-motion-speed-1: 100ms;
+  --md-sys-motion-speed-2: 200ms;
+  --md-sys-motion-speed-3: 300ms;
+  --md-sys-motion-speed-4: 400ms;
+
+  /* Motion easings */
+  --md-sys-motion-easing-spatial-expressive: cubic-bezier(0.175, 0.885, 0.32, 1.35);
+  --md-sys-motion-easing-spatial-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-effects: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Elevation presets (align with MD3 levels) */
+  --md-sys-elevation-level1: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.32);
+  --md-sys-elevation-level2: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.4);
+  --md-sys-elevation-level3: 0 0.375rem 0.75rem 0 rgba(0, 0, 0, 0.48);
+}
