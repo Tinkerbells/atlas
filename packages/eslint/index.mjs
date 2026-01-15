@@ -24,7 +24,7 @@ const preset = {
       internalPattern: ['^@web/.+', '^@/.+'],
     }],
     'unicorn/filename-case': [
-      'warning',
+      'warn',
       {
         case: 'kebabCase',
       },
