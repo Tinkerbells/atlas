@@ -4,8 +4,8 @@ import { splitProps } from 'solid-js'
 
 import type { FieldSize, FieldVariants } from '../field'
 
-import { Field } from '../field'
 import { cn } from '../utils'
+import { Field } from '../field'
 import fieldStyles from '../field/field.module.css'
 
 export type TextareaProps = ComponentProps<typeof Field.Textarea> & FieldVariants & {
@@ -13,6 +13,7 @@ export type TextareaProps = ComponentProps<typeof Field.Textarea> & FieldVariant
   label?: string
   helperText?: string
   errorText?: string
+  invalid?: boolean
   prefixIcon?: string | JSXElement
   suffixIcon?: string | JSXElement
 }
@@ -32,7 +33,9 @@ export function Textarea(props: TextareaProps) {
   ])
 
   const renderPrefixIcon = () => {
-    if (!local.prefixIcon) return null
+    if (!local.prefixIcon) {
+      return null
+    }
     return typeof local.prefixIcon === 'string'
       ? <i class={cn(local.prefixIcon, fieldStyles.prefixIcon)} />
       : (
@@ -43,7 +46,9 @@ export function Textarea(props: TextareaProps) {
   }
 
   const renderSuffixIcon = () => {
-    if (!local.suffixIcon) return null
+    if (!local.suffixIcon) {
+      return null
+    }
     return typeof local.suffixIcon === 'string'
       ? <i class={cn(local.suffixIcon, fieldStyles.suffixIcon)} />
       : (

@@ -1,5 +1,5 @@
-import type { IContext } from '../helpers/context/context'
-import type { ContextKeyExpression } from '../helpers/context/parser'
+import type { IContext } from '../context/context'
+import type { ContextKeyExpression } from '../context/parser'
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item.ts'
 
 export enum ResultKind {

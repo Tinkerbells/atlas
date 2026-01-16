@@ -1,8 +1,8 @@
 import type { Keybinding } from './keybindings'
 import type { ICommandService } from './commands.service'
+import type { IContextKeyService } from '../context/context'
 import type { IKeybindingItem } from './keybindings.registry'
 import type { ResolvedKeybinding } from './resolved-keybinding'
-import type { IContextKeyService } from '../helpers/context/context'
 
 import { KeyboardLayoutUtils } from './keyboard-layout'
 import { KeybindingResolver } from './keybindings.resolver'

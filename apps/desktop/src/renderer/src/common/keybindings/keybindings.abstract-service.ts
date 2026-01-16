@@ -4,7 +4,7 @@ import type { IKeybindingItem } from './keybindings.registry'
 import type { ResolvedKeybinding } from './resolved-keybinding'
 import type { KeybindingResolver } from './keybindings.resolver'
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item'
-import type { IContextKeyService, IContextKeyServiceTarget } from '../helpers/context/context'
+import type { IContextKeyService, IContextKeyServiceTarget } from '../context/context'
 
 import { Disposable } from '../lifecycle/dispose'
 import { ResultKind } from './keybindings.resolver'

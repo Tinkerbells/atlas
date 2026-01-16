@@ -1,5 +1,5 @@
+import type { ContextKeyExpression } from '../context/parser'
 import type { ResolvedKeybinding } from './resolved-keybinding'
-import type { ContextKeyExpression } from '../helpers/context/parser'
 
 export class ResolvedKeybindingItem {
   _resolvedKeybindingItemBrand: void = undefined
