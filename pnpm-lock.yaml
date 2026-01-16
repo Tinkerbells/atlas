@@ -8,9 +8,21 @@ importers:
 
   .:
     devDependencies:
+      '@commitlint/cli':
+        specifier: ^20.3.1
+        version: 20.3.1(@types/node@22.19.6)(typescript@5.9.3)
+      '@commitlint/config-conventional':
+        specifier: ^20.3.1
+        version: 20.3.1
       eslint:
         specifier: ^9.39.1
         version: 9.39.2(jiti@2.6.1)
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
+      lint-staged:
+        specifier: ^16.2.7
+        version: 16.2.7
 
   apps/desktop:
     dependencies:
@@ -45,12 +57,6 @@ importers:
       '@atlas/eslint':
         specifier: workspace:*
         version: link:../../packages/eslint
-      '@commitlint/cli':
-        specifier: ^20.3.1
-        version: 20.3.1(@types/node@22.19.6)(typescript@5.9.3)
-      '@commitlint/config-conventional':
-        specifier: ^20.3.1
-        version: 20.3.1
       '@electron-toolkit/eslint-config-prettier':
         specifier: ^3.0.0
         version: 3.0.0(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)
@@ -87,12 +93,6 @@ importers:
       eslint-plugin-solid:
         specifier: ^0.14.5
         version: 0.14.5(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      husky:
-        specifier: ^9.1.7
-        version: 9.1.7
-      lint-staged:
-        specifier: ^16.2.7
-        version: 16.2.7
       prettier:
         specifier: ^3.7.4
         version: 3.7.4

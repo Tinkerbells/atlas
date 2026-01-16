@@ -1,1 +1,1 @@
-npx commitlint --config .husky/commitlint.config.mjs --edit $1
+pnpm exec commitlint --edit "$1"
