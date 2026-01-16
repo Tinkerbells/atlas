@@ -8,8 +8,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./package.json": "./package.json",
-    "./tokens/*": "./src/tokens/*"
+    "./package.json": "./package.json"
   },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -19,12 +18,16 @@
   "scripts": {
     "lint": "eslint --cache .",
     "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "@ark-ui/solid": "^5.30.0",
     "solid-js": "^1.9.10"
+  },
+  "dependencies": {
+    "lucide-solid": "^0.562.0"
   },
   "devDependencies": {
     "@ark-ui/solid": "^5.30.0",
@@ -45,8 +48,5 @@
     "storybook-solidjs-vite": "^10.0.9",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
-  },
-  "dependencies": {
-    "lucide-solid": "^0.562.0"
   }
 }

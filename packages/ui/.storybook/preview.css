@@ -1,6 +1,4 @@
-@import '../src/tokens/light.css';
-@import '../src/tokens/dark.css';
-@import '../src/tokens/expressive-core.css';
+@import '../src/styles/index.css';
 
 * {
   box-sizing: border-box;
