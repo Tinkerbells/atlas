@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite'
+
 import { Camera } from 'lucide-solid'
 
 import { Input } from './input'
@@ -35,7 +36,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const States: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '16px', width: '420px' }}>
       <div>
         <h4>Default</h4>
@@ -67,7 +68,7 @@ export const States: Story = {
 }
 
 export const Sizes: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
       <Input {...args} size="sm" label="Small" placeholder="Small input" />
       <Input {...args} size="md" label="Medium" placeholder="Medium input" />
@@ -78,7 +79,7 @@ export const Sizes: Story = {
 }
 
 export const Variants: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
       <Input {...args} border label="Border" placeholder="Border input" />
       <Input {...args} border={false} round label="Round" placeholder="Round input" />

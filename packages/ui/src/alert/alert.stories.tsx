@@ -21,7 +21,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Variants: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
       <Alert.Root {...args} variant="info">
         <Alert.Title>Heads up</Alert.Title>

@@ -31,7 +31,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const States: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
       <Textarea {...args} />
       <Textarea {...args} invalid placeholder="Something went wrong" />
@@ -41,7 +41,7 @@ export const States: Story = {
 }
 
 export const Sizes: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
       <Textarea {...args} size="sm" placeholder="Small textarea" />
       <Textarea {...args} size="md" placeholder="Medium textarea" />
@@ -51,7 +51,7 @@ export const Sizes: Story = {
 }
 
 export const Variants: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
       <Textarea {...args} border placeholder="Border textarea" />
       <Textarea

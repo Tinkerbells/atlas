@@ -4,8 +4,8 @@ import { splitProps } from 'solid-js'
 
 import type { FieldSize, FieldVariants } from '../field'
 
-import { Field } from '../field'
 import { cn } from '../utils'
+import { Field } from '../field'
 import fieldStyles from '../field/field.module.css'
 
 export type InputProps = ComponentProps<typeof Field.Input> & FieldVariants & {
@@ -33,25 +33,31 @@ export function Input(props: InputProps) {
   ])
 
   const renderPrefixIcon = () => {
-    if (!local.prefixIcon) return null
-    return typeof local.prefixIcon === 'string'
-      ? <i class={cn(local.prefixIcon, fieldStyles.prefixIcon)} />
-      : (
-        <span class={fieldStyles.prefixIcon}>
-          {local.prefixIcon}
-        </span>
-      )
+    if (!local.prefixIcon) {
+      return null
+    }
+    if (typeof local.prefixIcon === 'string') {
+      return <i class={cn(local.prefixIcon, fieldStyles.prefixIcon)} />
+    }
+    return (
+      <span class={fieldStyles.prefixIcon}>
+        {local.prefixIcon}
+      </span>
+    )
   }
 
   const renderSuffixIcon = () => {
-    if (!local.suffixIcon) return null
-    return typeof local.suffixIcon === 'string'
-      ? <i class={cn(local.suffixIcon, fieldStyles.suffixIcon)} />
-      : (
-        <span class={fieldStyles.suffixIcon}>
-          {local.suffixIcon}
-        </span>
-      )
+    if (!local.suffixIcon) {
+      return null
+    }
+    if (typeof local.suffixIcon === 'string') {
+      return <i class={cn(local.suffixIcon, fieldStyles.suffixIcon)} />
+    }
+    return (
+      <span class={fieldStyles.suffixIcon}>
+        {local.suffixIcon}
+      </span>
+    )
   }
 
   return (

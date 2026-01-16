@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite'
 
+import { For } from 'solid-js'
+
 import { createListCollection, Select } from './select'
 
 const frameworks = createListCollection({
@@ -31,7 +33,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Basic: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <Select.Root {...args} collection={frameworks} defaultValue="solid">
       <Select.Label>Framework</Select.Label>
       <Select.Control>
@@ -43,12 +45,14 @@ export const Basic: Story = {
       <Select.Positioner>
         <Select.Content>
           <Select.List>
-            {frameworks.items.map(item => (
-              <Select.Item item={item}>
-                <Select.ItemText>{item.label}</Select.ItemText>
-                <Select.ItemIndicator>✓</Select.ItemIndicator>
-              </Select.Item>
-            ))}
+            <For each={frameworks.items}>
+              {item => (
+                <Select.Item item={item}>
+                  <Select.ItemText>{item.label}</Select.ItemText>
+                  <Select.ItemIndicator>✓</Select.ItemIndicator>
+                </Select.Item>
+              )}
+            </For>
           </Select.List>
         </Select.Content>
       </Select.Positioner>

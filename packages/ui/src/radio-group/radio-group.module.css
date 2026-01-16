@@ -33,8 +33,10 @@
   align-items: center;
   justify-content: center;
   transition:
-    border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    background-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+    border-color var(--md-sys-motion-duration-fast, 250ms)
+      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color var(--md-sys-motion-duration-fast, 250ms)
+      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .root[data-size='sm'] .itemControl {

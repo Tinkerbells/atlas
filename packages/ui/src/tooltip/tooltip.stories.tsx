@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>
 export const Basic: Story = {
   render: () => (
     <Tooltip.Root openDelay={200}>
-      <Tooltip.Trigger style={{ padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--tooltip-border)', background: '#fff', cursor: 'pointer' }}>
+      <Tooltip.Trigger style={{ 'padding': '10px 14px', 'border-radius': '10px', 'border': '1px solid var(--tooltip-border)', 'background': '#fff', 'cursor': 'pointer' }}>
         Hover me
       </Tooltip.Trigger>
       <Tooltip.Positioner>

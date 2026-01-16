@@ -21,8 +21,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Sizes: Story = {
-  render: args => (
-    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+  render: (args: Story['args']) => (
+    <div style={{ 'display': 'flex', 'gap': '12px', 'align-items': 'center' }}>
       <Avatar.Root {...args} size="sm">
         <Avatar.Image src="https://i.pravatar.cc/120?img=3" alt="Person" />
         <Avatar.Fallback>SM</Avatar.Fallback>
@@ -40,8 +40,8 @@ export const Sizes: Story = {
 }
 
 export const Fallbacks: Story = {
-  render: args => (
-    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+  render: (args: Story['args']) => (
+    <div style={{ 'display': 'flex', 'gap': '12px', 'align-items': 'center' }}>
       <Avatar.Root {...args} size="md">
         <Avatar.Fallback>JD</Avatar.Fallback>
       </Avatar.Root>

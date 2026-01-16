@@ -21,7 +21,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const States: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '320px' }}>
       <Switch.Root {...args} defaultChecked>
         <Switch.Control>

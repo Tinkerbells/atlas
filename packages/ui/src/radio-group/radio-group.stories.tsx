@@ -21,7 +21,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Options: Story = {
-  render: args => (
+  render: (args: Story['args']) => (
     <RadioGroup.Root {...args} defaultValue="solid">
       <RadioGroup.Label>Framework</RadioGroup.Label>
       <RadioGroup.Item value="solid">

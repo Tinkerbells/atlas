@@ -7,14 +7,26 @@
   gap: 6px;
   border-radius: var(--_radius);
   border: var(--_border);
-  background: color-mix(in srgb, var(--md-sys-color-surface-variant, #e7e0ec) 80%, var(--md-sys-color-surface, #fef7ff));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-surface-variant, #e7e0ec) 80%,
+    var(--md-sys-color-surface, #fef7ff)
+  );
   padding: var(--_padding);
   color: var(--md-sys-color-on-surface, #1d1b20);
 }
 
 .alert[data-variant='success'] {
-  background: color-mix(in srgb, var(--md-sys-color-tertiary-container, #ffd8e4) 90%, var(--md-sys-color-surface, #fef7ff));
-  border-color: color-mix(in srgb, var(--md-sys-color-tertiary, #7d5260) 30%, var(--md-sys-color-outline-variant, #cac4d0));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-tertiary-container, #ffd8e4) 90%,
+    var(--md-sys-color-surface, #fef7ff)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--md-sys-color-tertiary, #7d5260) 30%,
+    var(--md-sys-color-outline-variant, #cac4d0)
+  );
 }
 
 .alert[data-variant='warning'] {
@@ -23,8 +35,16 @@
 }
 
 .alert[data-variant='danger'] {
-  background: color-mix(in srgb, var(--md-sys-color-error-container, #f9dedc) 90%, var(--md-sys-color-surface, #fef7ff));
-  border-color: color-mix(in srgb, var(--md-sys-color-error, #b3261e) 30%, var(--md-sys-color-outline-variant, #cac4d0));
+  background: color-mix(
+    in srgb,
+    var(--md-sys-color-error-container, #f9dedc) 90%,
+    var(--md-sys-color-surface, #fef7ff)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--md-sys-color-error, #b3261e) 30%,
+    var(--md-sys-color-outline-variant, #cac4d0)
+  );
 }
 
 .title {
