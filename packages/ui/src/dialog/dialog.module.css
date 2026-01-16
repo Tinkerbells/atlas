@@ -8,9 +8,12 @@
   letter-spacing: 0.02em;
   cursor: pointer;
   transition:
-    transform var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
-    background-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+    transform var(--md-sys-motion-duration-fast, 250ms)
+      var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
+    background-color var(--md-sys-motion-duration-fast, 250ms)
+      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    border-color var(--md-sys-motion-duration-fast, 250ms)
+      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .trigger:hover {
@@ -27,11 +30,12 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--md-sys-color-scrim, #000000) 50%, transparent);
-  backdrop-filter: blur(2px);
+  background: color-mix(in srgb, var(--md-sys-color-scrim, #000000) 40%, transparent);
+  backdrop-filter: blur(3px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--md-sys-motion-duration-default, 400ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: opacity var(--md-sys-motion-duration-default, 400ms)
+    var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .positioner {
@@ -45,26 +49,55 @@
 
 .content {
   position: relative;
-  width: min(480px, 92vw);
+  width: min(520px, 92vw);
   border-radius: var(--md-sys-shape-corner-extra-large-increased, 32px);
-  background: var(--md-sys-color-surface, #fef7ff);
+  background: var(--md-sys-color-surface-container-high, #ece6f0);
   color: var(--md-sys-color-on-surface, #1d1b20);
   padding: 20px 24px;
-  border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
-  box-shadow: var(--md-sys-elevation-level3, 0 8px 16px rgba(0, 0, 0, 0.24));
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-outline-variant, #cac4d0) 60%, transparent);
+  box-shadow:
+    var(--md-sys-elevation-level3, 0 8px 16px rgba(0, 0, 0, 0.24)),
+    0 0 0 1px color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 5%, transparent);
   display: grid;
   gap: 14px;
   opacity: 0;
   transform: translateY(16px) scale(0.98);
   transition:
-    opacity var(--md-sys-motion-duration-default, 400ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    transform var(--md-sys-motion-duration-default, 400ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35));
+    opacity var(--md-sys-motion-duration-default, 400ms)
+      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--md-sys-motion-duration-default, 400ms)
+      var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35));
+}
+
+.content[data-size='sm'] {
+  width: min(360px, 92vw);
+  padding: 16px 20px;
+}
+
+.content[data-size='lg'] {
+  width: min(640px, 92vw);
+  padding: 24px 28px;
+}
+
+.content[data-variant='fullscreen'] {
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: var(--md-sys-color-surface-container, #ebe6f0);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .title {
-  font-size: var(--md-sys-typescale-title-large-size, 22px);
-  font-weight: var(--md-sys-typescale-title-large-weight, 600);
+  font-size: var(--md-sys-typescale-headline-small-size, 24px);
+  font-weight: var(--md-sys-typescale-headline-small-weight, 600);
   letter-spacing: 0.01em;
+  line-height: 32px;
 }
 
 .description {
@@ -73,39 +106,30 @@
   line-height: 1.5;
 }
 
+.body {
+  display: grid;
+  gap: 12px;
+  max-height: 50vh;
+  overflow: auto;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.content[data-variant='fullscreen'] .body {
+  max-height: none;
+  flex: 1;
+}
+
+.footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 6px;
+}
+
 .closeTrigger {
-  position: absolute;
+  position: absolute !important;
   top: 14px;
   right: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  border-radius: var(--md-sys-shape-corner-small, 8px);
-  border: 1px solid transparent;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  transition:
-    transform var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
-    background-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.closeTrigger:hover {
-  background: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 8%, var(--md-sys-color-surface, #fef7ff));
-  border-color: var(--md-sys-color-outline-variant, #cac4d0);
-  transform: translateY(-1px);
-}
-
-.closeTrigger:focus-visible {
-  outline: 2px solid var(--md-sys-color-primary, #6750a4);
-  outline-offset: 2px;
-}
-
-.closeTrigger :global(svg) {
-  width: 18px;
-  height: 18px;
 }
 
 .backdrop[data-state='open'] {
@@ -120,6 +144,10 @@
 
 .positioner[data-state='open'] {
   pointer-events: auto;
+}
+
+.positioner[data-state='open'] .content[data-variant='fullscreen'] {
+  transform: none;
 }
 
 @keyframes dialog-fade-in {

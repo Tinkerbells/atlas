@@ -1,45 +1,104 @@
 import type { ComponentProps } from 'solid-js'
 
+import { splitProps } from 'solid-js'
 import { Popover as ArkPopover } from '@ark-ui/solid/popover'
 
 import { cn } from '../utils'
 import styles from './popover.module.css'
 
 function Trigger(props: ComponentProps<typeof ArkPopover.Trigger>) {
-  return <ArkPopover.Trigger {...props} class={props.class} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.Trigger
+      {...rest}
+      class={cn(styles.trigger, local.class)}
+    />
+  )
 }
 
 function Positioner(props: ComponentProps<typeof ArkPopover.Positioner>) {
-  return <ArkPopover.Positioner {...props} class={props.class} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.Positioner
+      {...rest}
+      class={cn(styles.positioner, local.class)}
+    />
+  )
 }
 
 function Content(props: ComponentProps<typeof ArkPopover.Content>) {
-  return <ArkPopover.Content {...props} class={cn(styles.content, props.class)} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.Content
+      {...rest}
+      class={cn(styles.content, local.class)}
+    />
+  )
 }
 
 function Title(props: ComponentProps<typeof ArkPopover.Title>) {
-  return <ArkPopover.Title {...props} class={cn(styles.title, props.class)} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.Title
+      {...rest}
+      class={cn(styles.title, local.class)}
+    />
+  )
 }
 
 function Description(props: ComponentProps<typeof ArkPopover.Description>) {
+  const [local, rest] = splitProps(props, ['class'])
   return (
     <ArkPopover.Description
-      {...props}
-      class={cn(styles.description, props.class)}
+      {...rest}
+      class={cn(styles.description, local.class)}
     />
   )
 }
 
 function Arrow(props: ComponentProps<typeof ArkPopover.Arrow>) {
-  return <ArkPopover.Arrow {...props} class={cn(styles.arrow, props.class)} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.Arrow
+      {...rest}
+      class={cn(styles.arrow, local.class)}
+    />
+  )
 }
 
 function ArrowTip(props: ComponentProps<typeof ArkPopover.ArrowTip>) {
-  return <ArkPopover.ArrowTip {...props} class={props.class} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.ArrowTip
+      {...rest}
+      class={cn(styles.arrowTip, local.class)}
+    />
+  )
 }
 
 function CloseTrigger(props: ComponentProps<typeof ArkPopover.CloseTrigger>) {
-  return <ArkPopover.CloseTrigger {...props} class={props.class} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkPopover.CloseTrigger
+      {...rest}
+      class={cn(styles.closeTrigger, local.class)}
+    />
+  )
+}
+
+function Body(props: ComponentProps<'div'>) {
+  const [local, rest] = splitProps(props, ['class'])
+  return <div {...rest} class={cn(styles.body, local.class)} />
+}
+
+function Header(props: ComponentProps<'div'>) {
+  const [local, rest] = splitProps(props, ['class'])
+  return <div {...rest} class={cn(styles.header, local.class)} />
+}
+
+function Footer(props: ComponentProps<'div'>) {
+  const [local, rest] = splitProps(props, ['class'])
+  return <div {...rest} class={cn(styles.footer, local.class)} />
 }
 
 export const Popover = {
@@ -55,4 +114,7 @@ export const Popover = {
   ArrowTip,
   CloseTrigger,
   Anchor: ArkPopover.Anchor,
+  Body,
+  Header,
+  Footer,
 }
