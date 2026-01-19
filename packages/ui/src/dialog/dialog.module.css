@@ -1,173 +1,243 @@
+/* Trigger - демо-кнопка для открытия диалога */
 .trigger {
-  padding: 10px 18px;
+  padding: 10px 24px;
   border-radius: var(--md-sys-shape-corner-full, 999px);
-  border: 1px solid var(--md-sys-color-outline, #79747e);
-  background: var(--md-sys-color-surface, #fef7ff);
-  color: var(--md-sys-color-primary, #6750a4);
-  font-size: 14px;
-  letter-spacing: 0.02em;
+  border: none;
+  background: var(--md-sys-color-primary, #6750a4);
+  color: var(--md-sys-color-on-primary, #ffffff);
+  font-family: var(--md-sys-typescale-label-large-font, system-ui);
+  font-size: var(--md-sys-typescale-label-large-size, 14px);
+  font-weight: var(--md-sys-typescale-label-large-weight, 500);
+  line-height: var(--md-sys-typescale-label-large-line-height, 20px);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking, 0.1px);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
   transition:
-    transform var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
-    background-color var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    border-color var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+    box-shadow var(--md-sys-motion-duration-short3, 200ms) var(--md-sys-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 }
 
-.trigger:hover {
-  background: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 8%, var(--md-sys-color-surface, #fef7ff));
-  border-color: var(--md-sys-color-primary, #6750a4);
-  transform: translateY(-1px);
+.trigger::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--md-sys-motion-duration-short3, 200ms) var(--md-sys-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.trigger:hover::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity, 0.08);
+}
+
+.trigger:focus-visible::before {
+  opacity: var(--md-sys-state-focus-state-layer-opacity, 0.12);
+}
+
+.trigger:active::before {
+  opacity: var(--md-sys-state-pressed-state-layer-opacity, 0.12);
 }
 
 .trigger:focus-visible {
-  outline: 2px solid var(--md-sys-color-primary, #6750a4);
-  outline-offset: 2px;
+  outline: none;
 }
 
+/* Scrim backdrop - полупрозрачный фон за диалогом */
 .backdrop {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--md-sys-color-scrim, #000000) 40%, transparent);
-  backdrop-filter: blur(3px);
+  background: var(--md-sys-color-scrim, #000000);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--md-sys-motion-duration-default, 400ms)
-    var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+  z-index: 1;
+  transition: opacity var(--md-sys-motion-duration-medium2, 300ms) var(--md-sys-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
 }
 
+/* Positioner - центрирующий контейнер для диалога */
 .positioner {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Content - основной контейнер диалога */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  /* Размеры по M3 спецификации */
+  min-width: 280px;
+  max-width: min(560px, calc(100% - 48px));
+  min-height: 140px;
+  max-height: min(560px, calc(100% - 48px));
+  width: fit-content;
+  height: fit-content;
+  /* Форма */
+  border-radius: var(--md-sys-shape-corner-extra-large, 28px);
+  /* Цвета */
+  background: var(--md-sys-color-surface-container-high, #ece6f0);
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  /* Elevation */
+  box-shadow: var(--md-sys-elevation-level3, 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12));
+  /* Анимация */
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity var(--md-sys-motion-duration-medium2, 300ms) var(--md-sys-motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+    transform var(--md-sys-motion-duration-medium2, 300ms) var(--md-sys-motion-easing-emphasized-decelerate, cubic-bezier(0.05, 0.7, 0.1, 1));
+  overflow: hidden;
   pointer-events: none;
 }
 
-.content {
-  position: relative;
-  width: min(520px, 92vw);
-  border-radius: var(--md-sys-shape-corner-extra-large-increased, 32px);
-  background: var(--md-sys-color-surface-container-high, #ece6f0);
-  color: var(--md-sys-color-on-surface, #1d1b20);
-  padding: 20px 24px;
-  border: 1px solid color-mix(in srgb, var(--md-sys-color-outline-variant, #cac4d0) 60%, transparent);
-  box-shadow:
-    var(--md-sys-elevation-level3, 0 8px 16px rgba(0, 0, 0, 0.24)),
-    0 0 0 1px color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 5%, transparent);
-  display: grid;
-  gap: 14px;
-  opacity: 0;
-  transform: translateY(16px) scale(0.98);
-  transition:
-    opacity var(--md-sys-motion-duration-default, 400ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    transform var(--md-sys-motion-duration-default, 400ms)
-      var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35));
+/* Surface tint для elevation (полупрозрачный primary слой) */
+.content::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--md-sys-color-primary, #6750a4);
+  opacity: 0.05;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
+/* Размеры */
 .content[data-size='sm'] {
-  width: min(360px, 92vw);
-  padding: 16px 20px;
+  max-width: min(360px, calc(100% - 48px));
+}
+
+.content[data-size='md'] {
+  max-width: min(560px, calc(100% - 48px));
 }
 
 .content[data-size='lg'] {
-  width: min(640px, 92vw);
-  padding: 24px 28px;
+  max-width: min(640px, calc(100% - 48px));
 }
 
+/* Fullscreen variant */
 .content[data-variant='fullscreen'] {
-  width: 100vw;
-  height: 100vh;
-  max-height: none;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 100%;
+  min-height: 100%;
   border-radius: 0;
-  border: none;
-  box-shadow: none;
-  background: var(--md-sys-color-surface-container, #ebe6f0);
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  margin: 0;
 }
 
+.content[data-variant='fullscreen']::before {
+  opacity: 0;
+}
+
+/* Title - заголовок диалога */
 .title {
-  font-size: var(--md-sys-typescale-headline-small-size, 24px);
-  font-weight: var(--md-sys-typescale-headline-small-weight, 600);
-  letter-spacing: 0.01em;
-  line-height: 32px;
-}
-
-.description {
-  color: var(--md-sys-color-on-surface-variant, #49454f);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.body {
-  display: grid;
-  gap: 12px;
-  max-height: 50vh;
-  overflow: auto;
-  color: var(--md-sys-color-on-surface, #1d1b20);
-}
-
-.content[data-variant='fullscreen'] .body {
-  max-height: none;
-  flex: 1;
-}
-
-.footer {
+  position: relative;
+  z-index: 1;
+  align-self: stretch;
+  box-sizing: border-box;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 24px 16px;
+  /* Typography */
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  font-family: var(--md-sys-typescale-headline-small-font, system-ui);
+  font-size: var(--md-sys-typescale-headline-small-size, 24px);
+  font-weight: var(--md-sys-typescale-headline-small-weight, 400);
+  line-height: var(--md-sys-typescale-headline-small-line-height, 32px);
+  letter-spacing: var(--md-sys-typescale-headline-small-tracking, 0);
+}
+
+/* Description - описание диалога (supporting text) */
+.description {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 0 24px 16px;
+  /* Typography */
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  font-family: var(--md-sys-typescale-body-medium-font, system-ui);
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking, 0.25px);
+}
+
+/* Body - основное содержимое диалога */
+.body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  box-sizing: border-box;
+  padding: 0 24px;
+  overflow-y: auto;
+  /* Typography */
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  font-family: var(--md-sys-typescale-body-medium-font, system-ui);
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking, 0.25px);
+}
+
+/* Если body первый элемент (нет title/description), добавляем padding сверху */
+.body:first-child {
+  padding-top: 24px;
+}
+
+/* Footer - кнопки действий диалога */
+.footer {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
   justify-content: flex-end;
-  padding-top: 6px;
+  padding: 16px 24px 24px;
 }
 
+/* Если body не последний элемент (есть footer), добавляем padding снизу */
+.body:not(:last-child) {
+  padding-bottom: 8px;
+}
+
+/* Close button - кнопка закрытия */
 .closeTrigger {
-  position: absolute !important;
-  top: 14px;
-  right: 14px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
 }
 
+/* Open state - состояние открытия */
 .backdrop[data-state='open'] {
-  opacity: 1;
+  opacity: 0.32;
   pointer-events: auto;
 }
 
 .content[data-state='open'] {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: scale(1);
+  pointer-events: auto;
 }
 
 .positioner[data-state='open'] {
   pointer-events: auto;
 }
 
-.positioner[data-state='open'] .content[data-variant='fullscreen'] {
+/* Fullscreen в открытом состоянии не анимируется по scale */
+.content[data-state='open'][data-variant='fullscreen'] {
   transform: none;
 }
 
-@keyframes dialog-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes dialog-slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+/* Accessibility - forced colors mode */
+@media (forced-colors: active) {
+  .content {
+    outline: 2px solid WindowText;
   }
 }
