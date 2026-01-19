@@ -22,8 +22,7 @@
   cursor: pointer;
   isolation: isolate;
   transition:
-    background-color var(--md-sys-motion-speed-3, 300ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
     border-color var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
     box-shadow var(--md-sys-motion-speed-2, 200ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
     color var(--md-sys-motion-speed-3, 300ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
@@ -37,8 +36,7 @@
   opacity: 0;
   pointer-events: none;
   border-radius: inherit;
-  transition: opacity var(--md-sys-motion-speed-2, 200ms)
-    var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: opacity var(--md-sys-motion-speed-2, 200ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .iconButton:hover:not(:disabled)::after {
@@ -62,11 +60,9 @@
   cursor: not-allowed;
   pointer-events: none;
   color: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 38%, transparent);
-  background-color: color-mix(
-    in srgb,
-    var(--md-sys-color-on-surface, #1d1b20) 12%,
-    var(--md-sys-color-surface, #fef7ff)
-  );
+  background-color: color-mix(in srgb,
+      var(--md-sys-color-on-surface, #1d1b20) 12%,
+      var(--md-sys-color-surface, #fef7ff));
   border-color: transparent;
   box-shadow: none;
 }
