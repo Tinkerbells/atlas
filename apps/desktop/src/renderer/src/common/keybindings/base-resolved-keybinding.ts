@@ -1,26 +1,22 @@
 import type { Chord } from './keybindings'
 import type { ResolvedChord } from './resolved-keybinding'
+import type { OperatingSystem } from '../platform/platform'
 
 import { ResolvedKeybinding } from './resolved-keybinding'
 
 export class BaseResolvedKeybinding<T extends Chord> extends ResolvedKeybinding {
-  private readonly _chords: readonly T[]
+  protected readonly _os: OperatingSystem
+  protected readonly _chords: readonly T[]
 
-  constructor(chords: T[]) {
+  constructor(os: OperatingSystem, chords: readonly T[]) {
     super()
+    this._os = os
     this._chords = chords
   }
 
   // Используется для отображения в UI (например "Ctrl+S")
   public getLabel(): string | null {
-    // Простая реализация: делаем первую букву заглавной
-    return this._chords.map(p =>
-      p.replace('ctrl', 'Ctrl')
-        .replace('shift', 'Shift')
-        .replace('alt', 'Alt')
-        .replace('meta', 'Cmd')
-        .replace('Key', ''), // KeyS -> S
-    ).join(' ')
+    return null
   }
 
   public getAriaLabel(): string | null {
@@ -32,7 +28,8 @@ export class BaseResolvedKeybinding<T extends Chord> extends ResolvedKeybinding 
   }
 
   public getUserSettingsLabel(): string | null {
-    return this._chords.join(' ')
+    const chords = this.getDispatchChords().filter((chord): chord is string => Boolean(chord))
+    return chords.length ? chords.join(' ') : null
   }
 
   public hasMultipleChords(): boolean {
@@ -45,9 +42,12 @@ export class BaseResolvedKeybinding<T extends Chord> extends ResolvedKeybinding 
     return []
   }
 
+  protected _getChordDispatch(chord: T): string | null {
+    return String(chord)
+  }
+
   // Возвращает массив строк типа ["ctrl+KeyS"]
   public getDispatchChords(): (string | null)[] {
-    //
-    return this._chords.map(keybinding => String(keybinding))
+    return this._chords.map(chord => this._getChordDispatch(chord))
   }
 }

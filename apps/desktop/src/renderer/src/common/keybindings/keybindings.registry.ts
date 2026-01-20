@@ -1,15 +1,34 @@
 import type { Keybinding } from './keybindings'
+import type { IDisposable } from '../lifecycle/dispose'
 import type { ContextKeyExpression } from '../context/parser'
 
 import { decodeKeybinding } from './keybindings'
+import { DisposableStore } from '../lifecycle/dispose'
+import { OperatingSystem, OS } from '../platform/platform'
+
+export interface IKeybindings {
+  primary?: string
+  secondary?: string[]
+  win?: {
+    primary: string
+    secondary?: string[]
+  }
+  linux?: {
+    primary: string
+    secondary?: string[]
+  }
+  mac?: {
+    primary: string
+    secondary?: string[]
+  }
+}
 
 /*
  * То, что передается на вход в registry (сырое правило)
  */
-export interface IKeybindingRule {
+export interface IKeybindingRule extends IKeybindings {
   // NOTE: Id команды, в будущем лучше все подвизать под один тип CommandId
   id: string
-  keybinding: string[]
   weight: number
   args?: any
   when: ContextKeyExpression | null | undefined
@@ -35,7 +54,7 @@ export interface IKeybindingsRegistry {
   // registerCommandAndKeybindingRule - должен также вывызать CommandRegistry
   getDefaultKeybindings: () => IKeybindingItem[]
   // Тут возвращается функция удаления команды, чтобы было удобно при необходимости удалить ее
-  registerKeybindingRule: (rule: IKeybindingRule) => () => void
+  registerKeybindingRule: (rule: IKeybindingRule) => IDisposable
 }
 
 export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
@@ -48,6 +67,16 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
     this._cachedKeybindings = null
   }
 
+  private static bindToCurrentPlatform(kb: IKeybindings): { primary?: string, secondary?: string[] } {
+    if (OS === OperatingSystem.Windows && kb.win)
+      return kb.win
+    if (OS === OperatingSystem.Macintosh && kb.mac)
+      return kb.mac
+    if (kb.linux)
+      return kb.linux
+    return kb
+  }
+
   public getDefaultKeybindings() {
     if (!this._cachedKeybindings) {
       this._cachedKeybindings = this._coreKeybindings.sort(sorter)
@@ -56,9 +85,30 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
     return this._cachedKeybindings.slice(0)
   }
 
-  public registerKeybindingRule(rule: IKeybindingRule) {
-    const keybinding = decodeKeybinding(rule.keybinding)
-    return this._registerDefaultKeybinding(keybinding, rule.id, rule.args, rule.weight, 0, rule.when)
+  public registerKeybindingRule(rule: IKeybindingRule): IDisposable {
+    const actualKb = KeybindingsRegistryImpl.bindToCurrentPlatform(rule)
+
+    const result = new DisposableStore()
+
+    // primary
+    if (actualKb.primary) {
+      const kb = decodeKeybinding(actualKb.primary)
+      if (kb) {
+        result.add(this._registerDefaultKeybinding(kb, rule.id, rule.args, rule.weight, 0, rule.when))
+      }
+    }
+
+    // secondary
+    if (actualKb.secondary) {
+      for (let i = 0; i < actualKb.secondary.length; i++) {
+        const kb = decodeKeybinding(actualKb.secondary[i])
+        if (kb) {
+          // weight2 уходит в минус, чтобы первичный был приоритетнее
+          result.add(this._registerDefaultKeybinding(kb, rule.id, rule.args, rule.weight, -i - 1, rule.when))
+        }
+      }
+    }
+    return result
   }
 
   private _registerDefaultKeybinding(
@@ -68,7 +118,7 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
     weight1: number,
     weight2: number,
     when: ContextKeyExpression | null | undefined,
-  ) {
+  ): IDisposable {
     const item: IKeybindingItem = {
       keybinding,
       command: commandId,
@@ -90,7 +140,9 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
       this._cachedKeybindings = null
     }
 
-    return remove
+    return {
+      dispose: () => remove(),
+    }
   }
 }
 

@@ -69,3 +69,35 @@ export abstract class Disposable implements IDisposable {
     return this._store.add(t)
   }
 }
+
+class FunctionDisposable implements IDisposable {
+  private _isDisposed: boolean
+  private readonly _fn: () => void
+
+  constructor(fn: () => void) {
+    this._isDisposed = false
+    this._fn = fn
+    // trackDisposable(this)
+  }
+
+  dispose() {
+    if (this._isDisposed) {
+      return
+    }
+    if (!this._fn) {
+      throw new Error(`Unbound disposable context: Need to use an arrow function to preserve the value of this`)
+    }
+    this._isDisposed = true
+    // markAsDisposed(this)
+    this._fn()
+  }
+}
+
+/**
+ * Turn a function that implements dispose into an {@link IDisposable}.
+ *
+ * @param fn Clean up function, guaranteed to be called only **once**.
+ */
+export function toDisposable(fn: () => void): IDisposable {
+  return new FunctionDisposable(fn)
+}

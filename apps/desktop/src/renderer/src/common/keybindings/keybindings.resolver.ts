@@ -118,18 +118,14 @@ export class KeybindingResolver {
 
     const result = this._findCommand(context, lookupMap)
     if (!result) {
-      // console.log(`\\ From ${lookupMap.length} keybinding entries, no when clauses matched the context.`)
       return NoMatchingKb
     }
 
     // check we got all chords necessary to be sure a particular keybinding needs to be invoked
     if (pressedChords.length < result.chords.length) {
       // The chord sequence is not complete
-      // console.log(`\\ From ${lookupMap.length} keybinding entries, awaiting ${result.chords.length - pressedChords.length} more chord(s), when: ${printWhenExplanation(result.when)}, source: ${printSourceExplanation(result)}.`)
       return MoreChordsNeeded
     }
-
-    // console.log(`\\ From ${lookupMap.length} keybinding entries, matched ${result.command}, when: ${printWhenExplanation(result.when)}, source: ${printSourceExplanation(result)}.`)
 
     return KbFound(result.command, result.commandArgs, result.bubble)
   }

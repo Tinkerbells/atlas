@@ -1,35 +1,74 @@
-import type { ResolvedKeybinding } from './resolved-keybinding'
+import type { IKeyboardMapper } from './keyboard-mapper'
 
-import { BaseResolvedKeybinding } from './base-resolved-keybinding'
+export interface IWindowsKeyMapping {
+  vkey: string
+  value: string
+  withShift: string
+  withAltGr: string
+  withShiftAltGr: string
+}
+export interface IWindowsKeyboardMapping {
+  [code: string]: IWindowsKeyMapping
+}
+export interface ILinuxKeyMapping {
+  value: string
+  withShift: string
+  withAltGr: string
+  withShiftAltGr: string
+}
+export interface ILinuxKeyboardMapping {
+  [code: string]: ILinuxKeyMapping
+}
+export interface IMacKeyMapping {
+  value: string
+  valueIsDeadKey: boolean
+  withShift: string
+  withShiftIsDeadKey: boolean
+  withAltGr: string
+  withAltGrIsDeadKey: boolean
+  withShiftAltGr: string
+  withShiftAltGrIsDeadKey: boolean
+}
+export interface IMacKeyboardMapping {
+  [code: string]: IMacKeyMapping
+}
 
-export class KeyboardLayoutUtils {
-  public static resolveKeyboardEvent(e: KeyboardEvent): ResolvedKeybinding {
-    // 1. Если это просто нажатие модификатора (ctrl, shift...) — это не аккорд
-    if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
-      // Возвращаем пустой биндинг или null (зависит от того, как обработает диспетчер)
-      // VS Code тут возвращает спец. объект, но мы упростим:
-      return new BaseResolvedKeybinding([])
-    }
+export type IMacLinuxKeyMapping = IMacKeyMapping | ILinuxKeyMapping
+export type IMacLinuxKeyboardMapping = IMacKeyboardMapping | ILinuxKeyboardMapping
+export type IKeyboardMapping = IWindowsKeyboardMapping | ILinuxKeyboardMapping | IMacKeyboardMapping
 
-    const parts: string[] = []
+export interface IWindowsKeyboardLayoutInfo {
+  name: string
+  id: string
+  text: string
+}
 
-    // 2. Строим строку в строгом порядке
-    if (e.ctrlKey)
-      parts.push('ctrl')
-    if (e.shiftKey)
-      parts.push('shift')
-    if (e.altKey)
-      parts.push('alt')
-    if (e.metaKey)
-      parts.push('meta')
+export interface ILinuxKeyboardLayoutInfo {
+  model: string
+  group: number
+  layout: string
+  variant: string
+  options: string
+  rules: string
+}
 
-    // 3. Добавляем код клавиши
-    // Используем e.code (KeyS, Digit1, Enter), так как это физическая клавиша
-    // Это надежнее для шорткатов, чем e.key
-    parts.push(e.code)
+export interface IMacKeyboardLayoutInfo {
+  id: string
+  lang: string
+  localizedName?: string
+}
 
-    const chord = parts.join('+') // "ctrl+KeyS"
+export type IKeyboardLayoutInfo = (IWindowsKeyboardLayoutInfo | ILinuxKeyboardLayoutInfo | IMacKeyboardLayoutInfo) & { isUserKeyboardLayout?: boolean, isUSStandard?: true }
 
-    return new BaseResolvedKeybinding([chord])
-  }
+export interface IKeyboardLayoutService {
+
+  readonly _serviceBrand: undefined
+
+  // readonly onDidChangeKeyboardLayout: Event<void>
+
+  // getRawKeyboardMapping: () => IKeyboardMapping | null
+  // getCurrentKeyboardLayout: () => IKeyboardLayoutInfo | null
+  // getAllKeyboardLayouts: () => IKeyboardLayoutInfo[]
+  getKeyboardMapper: () => IKeyboardMapper
+  // validateCurrentKeyboardMapping: (keyboardEvent: KeyboardEvent) => void
 }

@@ -1,11 +1,12 @@
 import type { Keybinding } from './keybindings'
-import type { ICommandService } from './commands.service'
 import type { IKeybindingItem } from './keybindings.registry'
 import type { ResolvedKeybinding } from './resolved-keybinding'
 import type { KeybindingResolver } from './keybindings.resolver'
+import type { ICommandService } from '../commands/commands.service'
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item'
 import type { IContextKeyService, IContextKeyServiceTarget } from '../context/context'
 
+import { IntervalTimer } from '../async'
 import { Disposable } from '../lifecycle/dispose'
 import { ResultKind } from './keybindings.resolver'
 
@@ -19,6 +20,8 @@ export abstract class AbstractKeybindingService extends Disposable {
 
   protected _currentlyDispatchingCommandId: string | null
 
+  private _currentChordChecker: IntervalTimer
+
   public get inChordMode(): boolean {
     return this._currentChords.length > 0
   }
@@ -31,9 +34,11 @@ export abstract class AbstractKeybindingService extends Disposable {
 
     this._currentChords = []
     this._currentlyDispatchingCommandId = null
+    this._currentChordChecker = new IntervalTimer()
   }
 
   public override dispose(): void {
+    this._leaveChordMode()
     super.dispose()
   }
 
@@ -51,6 +56,22 @@ export abstract class AbstractKeybindingService extends Disposable {
     return this._getResolver().getKeybindings()
   }
 
+  private _scheduleLeaveChordMode(): void {
+    const chordLastInteractedTime = Date.now()
+    this._currentChordChecker.cancelAndSet(() => {
+      if (!this._documentHasFocus()) {
+        // Focus has been lost => leave chord mode
+        this._leaveChordMode()
+        return
+      }
+
+      if (Date.now() - chordLastInteractedTime > 5000) {
+        // 5 seconds elapsed => leave chord mode
+        this._leaveChordMode()
+      }
+    }, 500)
+  }
+
   public dispatchEvent(e: KeyboardEvent, target: any): boolean {
     return this._dispatch(e, target)
   }
@@ -60,7 +81,6 @@ export abstract class AbstractKeybindingService extends Disposable {
   }
 
   private _doDispatch(userKeypress: ResolvedKeybinding, target: IContextKeyServiceTarget): boolean {
-    console.log('[KeybindingService] resolved keyboard event', userKeypress)
     let shouldPreventDefault = false
 
     let userPressedChord: string | null = null
@@ -77,14 +97,10 @@ export abstract class AbstractKeybindingService extends Disposable {
       return shouldPreventDefault
     }
     const contextValue = this._contextKeyService.getContext(target)
-    console.log('[KeybindingService] dispatch', {
-      target,
-      userPressedChord,
-      currentChords,
-      context: contextValue,
-    })
+    const readableChords = [...currentChords, userPressedChord].join(' \u2192 ')
+    // Trace currently pressed chords to make chord sequences visible in logs
+    console.log(`[keybinding] pressed: ${readableChords || '(none)'}`)
     const resolveResult = this._getResolver().resolve(contextValue, currentChords, userPressedChord)
-    console.log('[KeybindingService] resolve result', resolveResult)
 
     switch (resolveResult.kind) {
       case ResultKind.NoMatchingKb: {
@@ -100,7 +116,7 @@ export abstract class AbstractKeybindingService extends Disposable {
         shouldPreventDefault = true
         // Запоминаем первый аккорд для последующего шага
         this._currentChords.push({ keypress: userPressedChord, label: null })
-        console.log('[KeybindingService] chord mode enter', this._currentChords)
+        this._scheduleLeaveChordMode()
         return shouldPreventDefault
       }
 
@@ -140,7 +156,7 @@ export abstract class AbstractKeybindingService extends Disposable {
   }
 
   private _leaveChordMode(): void {
-    console.log('[KeybindingService] chord mode leave')
     this._currentChords = []
+    this._currentChordChecker.cancel()
   }
 }

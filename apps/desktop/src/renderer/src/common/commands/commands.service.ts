@@ -33,7 +33,7 @@ export class CommandService extends Disposable implements ICommandService {
       // const result = this._instantiationService.invokeFunction(command.handler, ...args)
       // this._onDidExecuteCommand.fire({ commandId: id, args })
       // WARN: пока простой вызов, позже будет DI
-      const result = command.handler(args)
+      const result = command.handler(...args)
       return Promise.resolve(result)
     }
     catch (err) {
