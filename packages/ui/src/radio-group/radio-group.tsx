@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'solid-js'
 
-import { splitProps } from 'solid-js'
+import { createMemo, mergeProps, splitProps } from 'solid-js'
 import { RadioGroup as ArkRadioGroup } from '@ark-ui/solid/radio-group'
 
 import { cn } from '../utils'
@@ -12,13 +12,15 @@ interface RadioGroupRootProps extends ComponentProps<typeof ArkRadioGroup.Root> 
   size?: RadioGroupSize
 }
 
-function Root(props: RadioGroupRootProps) {
-  const [local, rest] = splitProps(props, ['size', 'class'])
+function Root(allProps: RadioGroupRootProps) {
+  const mergedProps = mergeProps({ size: 'md' as const }, allProps)
+  const [local, rest] = splitProps(mergedProps, ['size', 'class'])
+  const size = createMemo(() => local.size ?? 'md')
 
   return (
     <ArkRadioGroup.Root
       {...rest}
-      data-size={local.size ?? 'md'}
+      data-size={size()}
       class={cn(styles.root, local.class)}
     />
   )
@@ -28,8 +30,16 @@ function Label(props: ComponentProps<typeof ArkRadioGroup.Label>) {
   return <ArkRadioGroup.Label {...props} class={cn(styles.label, props.class)} />
 }
 
-function Item(props: ComponentProps<typeof ArkRadioGroup.Item>) {
-  return <ArkRadioGroup.Item {...props} class={cn(styles.item, props.class)} />
+function Item(allProps: ComponentProps<typeof ArkRadioGroup.Item>) {
+  const [local, rest] = splitProps(allProps, ['class', 'disabled'])
+
+  return (
+    <ArkRadioGroup.Item
+      {...rest}
+      disabled={local.disabled}
+      class={cn(styles.item, local.class)}
+    />
+  )
 }
 
 function ItemControl(props: ComponentProps<typeof ArkRadioGroup.ItemControl>) {
@@ -60,7 +70,12 @@ function ItemText(props: ComponentProps<typeof ArkRadioGroup.ItemText>) {
 }
 
 function ItemHiddenInput(props: ComponentProps<typeof ArkRadioGroup.ItemHiddenInput>) {
-  return <ArkRadioGroup.ItemHiddenInput {...props} />
+  return (
+    <ArkRadioGroup.ItemHiddenInput
+      {...props}
+      class={cn(styles.itemHiddenInput, props.class)}
+    />
+  )
 }
 
 export const RadioGroup = {
