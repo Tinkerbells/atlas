@@ -14,12 +14,13 @@ interface CheckboxRootProps extends ComponentProps<typeof ArkCheckbox.Root> {
 
 function Root(props: CheckboxRootProps) {
   const merged = mergeProps({ size: 'md' as const }, props)
-  const [local, rest] = splitProps(merged, ['size', 'class'])
+  const [local, rest] = splitProps(merged, ['size', 'class', 'disabled'])
 
   return (
     <ArkCheckbox.Root
       {...rest}
       data-size={local.size}
+      data-disabled={local.disabled ? '' : undefined}
       class={cn(styles.root, local.class)}
     />
   )
@@ -36,7 +37,6 @@ function Control(props: ComponentProps<typeof ArkCheckbox.Control>) {
 
 function Indicator(props: ComponentProps<typeof ArkCheckbox.Indicator>) {
   const checkbox = useCheckboxContext()
-  console.log(checkbox().indeterminate)
   const [local, rest] = splitProps(props, ['class', 'children'])
   return (
     <ArkCheckbox.Indicator
@@ -51,7 +51,7 @@ function Indicator(props: ComponentProps<typeof ArkCheckbox.Indicator>) {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="3"
+            stroke-width="2.5"
             stroke-linecap="round"
             stroke-linejoin="round"
             class={styles.checkIcon}
@@ -87,7 +87,12 @@ function Group(props: ComponentProps<typeof ArkCheckbox.Group>) {
 }
 
 function HiddenInput(props: ComponentProps<typeof ArkCheckbox.HiddenInput>) {
-  return <ArkCheckbox.HiddenInput {...props} />
+  return (
+    <ArkCheckbox.HiddenInput
+      {...props}
+      class={cn(styles.hiddenInput, props.class)}
+    />
+  )
 }
 
 export const Checkbox = {
