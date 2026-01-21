@@ -1,9 +1,13 @@
 .root {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 10px;
   color: var(--md-sys-color-on-surface, #1d1b20);
-  font-size: 14px;
+  font-family: var(--md-sys-typescale-body-large-font-family, 'Roboto', sans-serif);
+  font-size: var(--md-sys-typescale-body-large-font-size, 16px);
+  font-weight: var(--md-sys-typescale-body-large-font-weight, 400);
+  line-height: var(--md-sys-typescale-body-large-line-height, 24px);
+  letter-spacing: var(--md-sys-typescale-body-large-letter-spacing, 0.5px);
   cursor: pointer;
 }
 
@@ -13,122 +17,227 @@
 }
 
 .root[data-size='sm'] {
-  font-size: 12px;
+  font-size: var(--md-sys-typescale-body-medium-font-size, 14px);
+}
+
+.root[data-size='lg'] {
+  font-size: var(--md-sys-typescale-body-large-font-size, 16px);
 }
 
 .control {
   --checkbox-size: 18px;
+  --checkbox-state-layer-size: 40px;
+  --checkbox-outline: var(--md-sys-color-on-surface-variant, #49454f);
+  --checkbox-outline-hover: var(--md-sys-color-on-surface, #1d1b20);
+  --checkbox-bg: var(--md-sys-color-primary, #6750a4);
+  --checkbox-on-bg: var(--md-sys-color-on-primary, #ffffff);
+
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  min-width: 40px;
-  min-height: 40px;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  border-radius: var(--md-sys-shape-corner-extra-small, 4px);
+  border: 2px solid var(--checkbox-outline);
+  background: var(--md-sys-color-surface, #fef7ff);
+  box-sizing: border-box;
   cursor: pointer;
+  transition:
+    border-color 120ms linear,
+    background-color 150ms var(--md-sys-motion-easing-emphasized-decelerate, cubic-bezier(0.05, 0.7, 0.1, 1));
+}
+
+.root[data-size='sm'] .control {
+  --checkbox-size: 16px;
+  --checkbox-state-layer-size: 36px;
+}
+
+.root[data-size='lg'] .control {
+  --checkbox-size: 20px;
+  --checkbox-state-layer-size: 44px;
 }
 
 .control::before {
   content: '';
   position: absolute;
-  width: var(--checkbox-size);
-  height: var(--checkbox-size);
-  border-radius: var(--md-sys-shape-corner-extra-small, 4px);
-  border: 1px solid var(--md-sys-color-outline, #79747e);
-  background: var(--md-sys-color-surface, #fef7ff);
-  transition:
-    border-color var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    background-color var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    box-shadow var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    transform var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.control::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 12%, transparent);
+  left: 50%;
+  top: 50%;
+  width: var(--checkbox-state-layer-size);
+  height: var(--checkbox-state-layer-size);
+  transform: translate(-50%, -50%);
+  border-radius: var(--md-sys-shape-corner-full, 9999px);
+  background: var(--md-sys-color-on-surface, #1d1b20);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--md-sys-motion-duration-fast, 250ms)
-    var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: opacity 120ms var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.root:hover .control::after {
-  opacity: 1;
+.root:not([data-disabled]):hover .control::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity, 0.08);
 }
 
-.root[data-size='sm'] .control {
-  --checkbox-size: 16px;
-  min-width: 36px;
-  min-height: 36px;
+.root:not([data-disabled]):active .control::before {
+  opacity: var(--md-sys-state-pressed-state-layer-opacity, 0.12);
 }
 
-.root[data-size='lg'] .control {
-  --checkbox-size: 20px;
-  min-width: 44px;
-  min-height: 44px;
-}
-
-.control[data-state='checked'] {
-  --md-checkbox-fill: var(--md-sys-color-primary, #6750a4);
-  --md-checkbox-on-fill: var(--md-sys-color-on-primary, #ffffff);
-}
-
-.control[data-state='checked']::before,
-.control[data-state='indeterminate']::before {
-  background: var(--md-checkbox-fill, var(--md-sys-color-primary, #6750a4));
-  border-color: var(--md-checkbox-fill, var(--md-sys-color-primary, #6750a4));
-}
-
+.control[data-state='checked'],
 .control[data-state='indeterminate'] {
-  --md-checkbox-fill: var(--md-sys-color-primary, #6750a4);
-  --md-checkbox-on-fill: var(--md-sys-color-on-primary, #ffffff);
-}
-
-.control[data-state='checked'] .indicator,
-.control[data-state='indeterminate'] .indicator {
-  color: var(--md-checkbox-on-fill, var(--md-sys-color-on-primary, #ffffff));
-}
-
-.control:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 35%, transparent);
-  outline-offset: 2px;
+  background: var(--checkbox-bg);
+  border-color: var(--checkbox-bg);
 }
 
 .indicator {
-  color: var(--md-sys-color-on-surface, #1d1b20);
+  position: relative;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 12px;
-  height: 12px;
   pointer-events: none;
 }
 
 .checkIcon {
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
+  fill: var(--checkbox-on-bg);
   opacity: 0;
+  transition-duration: 150ms, 50ms;
+  transition-property: transform, opacity;
+  transition-timing-function: var(--md-sys-motion-easing-emphasized-accelerate), linear;
   transform: scale(0.6);
-  transition:
-    opacity var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    transform var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
+
+.checkIcon rect {
+  fill: currentColor;
+  stroke: none;
+}
+
+.mark {
+  animation-duration: 150ms;
+  animation-timing-function: var(--md-sys-motion-easing-emphasized-accelerate);
+  transition-duration: 150ms;
+  transition-timing-function: var(--md-sys-motion-easing-emphasized-accelerate);
+  fill: inherit;
+}
+
+.control[data-state='checked'] .mark {
+  animation-duration: 350ms;
+  animation-timing-function: var(--md-sys-motion-easing-emphasized-decelerate);
+  transition-duration: 350ms;
+  transition-timing-function: var(--md-sys-motion-easing-emphasized-decelerate);
+}
+
+.control[data-state='indeterminate'] .mark {
+  animation-duration: 350ms;
+  animation-timing-function: var(--md-sys-motion-easing-emphasized-decelerate);
+  transition-duration: 350ms;
+  transition-timing-function: var(--md-sys-motion-easing-emphasized-decelerate);
+}
+
+.mark.short {
+  height: 2px;
+  width: 2px;
+  transition-property: transform, height;
+  /* Start in indeterminate position (hidden behind long mark) */
+  transform: scaleY(-1) translate(4px, -10px) rotate(0deg);
+}
+
+.mark.long {
+  height: 2px;
+  width: 10px;
+  transition-property: transform, width;
+  /* Start in indeterminate position */
+  transform: scaleY(-1) translate(4px, -10px) rotate(0deg);
+}
+
+.control[data-state='checked'] .mark {
+  transform: scaleY(-1) translate(7px, -14px) rotate(45deg);
+}
+
+.control[data-state='checked'] .mark.short {
+  height: 5.66px;
+}
+
+.control[data-state='checked'] .mark.long {
+  width: 11.31px;
+}
+
+.control[data-state='indeterminate'] .mark,
+.control[data-state='indeterminate'] .mark.short,
+.control[data-state='indeterminate'] .mark.long {
+  transform: scaleY(-1) translate(4px, -10px) rotate(0deg);
+}
+
+/* Fallback selectors mirroring material-web prev state classes (harmless if not set) */
+.control.prev-checked .mark {
+  transform: scaleY(-1) translate(7px, -14px) rotate(45deg);
+}
+
+.control.prev-checked .mark.short {
+  height: 5.66px;
+}
+
+.control.prev-checked .mark.long {
+  width: 11.31px;
+}
+
+.control.prev-indeterminate .mark,
+.control.prev-indeterminate .mark.short,
+.control.prev-indeterminate .mark.long {
+  transform: scaleY(-1) translate(4px, -10px) rotate(0deg);
+}
+
+.control.prev-unselected .mark {
+  transition-property: none;
+}
+
+.control.prev-unselected.checked .mark.long {
+  animation-name: prev-unselected-to-checked;
+}
+
+.control.prev-unselected.indeterminate .mark.long {
+  animation-name: prev-unselected-to-indeterminate;
+}
+
+@keyframes prev-unselected-to-checked {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes prev-unselected-to-indeterminate {
+  from {
+    width: 0;
+  }
+}
+
+/* .checkIcon path, */
+/* .checkIcon line { */
+/*   stroke-dasharray: 22; */
+/*   stroke-dashoffset: 22; */
+/*   transition: stroke-dashoffset 200ms var(--md-sys-motion-easing-emphasized, cubic-bezier(0.2, 0, 0, 1)); */
+/* } */
 
 .control[data-state='checked'] .checkIcon,
 .control[data-state='indeterminate'] .checkIcon {
   opacity: 1;
   transform: scale(1);
+  color: var(--checkbox-on-bg);
+  transition-duration: 350ms, 50ms;
+  transition-timing-function: var(--md-sys-motion-easing-emphasized-decelerate), linear;
+}
+
+.control[data-state='checked'] .checkIcon path,
+.control[data-state='checked'] .checkIcon line,
+.control[data-state='indeterminate'] .checkIcon path,
+.control[data-state='indeterminate'] .checkIcon line {
+  stroke-dashoffset: 0;
 }
 
 .label {
   color: var(--md-sys-color-on-surface, #1d1b20);
+  user-select: none;
 }
 
 .root[data-disabled] {
@@ -141,13 +250,27 @@
 
 .root[data-disabled] .control {
   color: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 38%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-outline, #79747e) 38%, transparent);
+  background: var(--md-sys-color-surface, #fef7ff);
 }
 
 .root[data-disabled] .control[data-state='checked'],
 .root[data-disabled] .control[data-state='indeterminate'] {
-  --md-checkbox-fill: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 12%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 12%, transparent);
+  border-color: color-mix(in srgb, var(--md-sys-color-on-surface, #1d1b20) 12%, transparent);
 }
 
-.root[data-disabled] .control::after {
+.root[data-disabled] .control::before {
   display: none;
+}
+
+.hiddenInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  margin: 0;
+  appearance: none;
 }
