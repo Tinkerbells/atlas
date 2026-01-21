@@ -27,19 +27,43 @@ function Root(props: SwitchRootProps) {
 }
 
 function Control(props: ComponentProps<typeof ArkSwitch.Control>) {
-  return <ArkSwitch.Control {...props} class={cn(styles.control, props.class)} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkSwitch.Control
+      {...rest}
+      class={cn(styles.control, local.class)}
+    />
+  )
 }
 
 function Thumb(props: ComponentProps<typeof ArkSwitch.Thumb>) {
-  return <ArkSwitch.Thumb {...props} class={cn(styles.thumb, props.class)} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkSwitch.Thumb
+      {...rest}
+      class={cn(styles.thumb, local.class)}
+    />
+  )
 }
 
 function Label(props: ComponentProps<typeof ArkSwitch.Label>) {
-  return <ArkSwitch.Label {...props} class={cn(styles.label, props.class)} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkSwitch.Label
+      {...rest}
+      class={cn(styles.label, local.class)}
+    />
+  )
 }
 
 function HiddenInput(props: ComponentProps<typeof ArkSwitch.HiddenInput>) {
-  return <ArkSwitch.HiddenInput {...props} class={styles.input} />
+  const [local, rest] = splitProps(props, ['class'])
+  return (
+    <ArkSwitch.HiddenInput
+      {...rest}
+      class={cn(styles.input, local.class)}
+    />
+  )
 }
 
 export const Switch = {
