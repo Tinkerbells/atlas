@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'solid-js'
 
-import { createEffect, createSignal, mergeProps, Show, splitProps } from 'solid-js'
+import { mergeProps, Show, splitProps } from 'solid-js'
 import { Checkbox as ArkCheckbox, useCheckboxContext } from '@ark-ui/solid/checkbox'
 
 import { cn } from '../utils'
@@ -14,74 +14,51 @@ interface CheckboxRootProps extends ComponentProps<typeof ArkCheckbox.Root> {
 
 function Root(props: CheckboxRootProps) {
   const merged = mergeProps({ size: 'md' as const }, props)
-  const [local, rest] = splitProps(merged, ['size', 'class', 'disabled'])
+  const [local, rest] = splitProps(merged, ['size', 'class'])
 
   return (
     <ArkCheckbox.Root
       {...rest}
       data-size={local.size}
-      data-disabled={local.disabled ? '' : undefined}
       class={cn(styles.root, local.class)}
     />
   )
 }
 
 function Control(props: ComponentProps<typeof ArkCheckbox.Control>) {
-  const checkbox = useCheckboxContext()
-  const [prevState, setPrevState] = createSignal<'checked' | 'indeterminate' | 'unselected'>('unselected')
-  let lastState: 'checked' | 'indeterminate' | 'unselected' = 'unselected'
-
-  createEffect(() => {
-    const current: typeof lastState = checkbox().indeterminate
-      ? 'indeterminate'
-      : checkbox().checked
-        ? 'checked'
-        : 'unselected'
-    setPrevState(lastState)
-    lastState = current
-  })
-
   return (
     <ArkCheckbox.Control
       {...props}
-      class={cn(
-        styles.control,
-        prevState() === 'checked' && styles['prev-checked'],
-        prevState() === 'indeterminate' && styles['prev-indeterminate'],
-        prevState() === 'unselected' && styles['prev-unselected'],
-        props.class,
-      )}
+      class={cn(styles.control, props.class)}
     />
   )
 }
 
 function Indicator(props: ComponentProps<typeof ArkCheckbox.Indicator>) {
   const checkbox = useCheckboxContext()
+  console.log(checkbox().indeterminate)
   const [local, rest] = splitProps(props, ['class', 'children'])
   return (
     <ArkCheckbox.Indicator
       {...rest}
-      class={cn(
-        styles.indicator,
-        checkbox().checked && styles.checked,
-        checkbox().indeterminate && styles.indeterminate,
-        checkbox().checked === false && !checkbox().indeterminate && styles.unselected,
-        local.class,
-      )}
+      class={cn(styles.indicator, local.class)}
       indeterminate={checkbox().indeterminate}
     >
       <Show
         when={local.children}
         fallback={(
           <svg
-            viewBox="0 0 18 18"
+            viewBox="0 0 24 24"
+            fill="none"
             stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
             class={styles.checkIcon}
             aria-hidden="true"
           >
             <title>Checkmark</title>
-            <rect class={cn(styles.mark, styles.short)} />
-            <rect class={cn(styles.mark, styles.long)} />
+            {checkbox().indeterminate ? <path d="M6 12h12" /> : checkbox().checked ? <path d="M20 6 9 17l-5-5" /> : null}
           </svg>
         )}
       >
@@ -110,12 +87,7 @@ function Group(props: ComponentProps<typeof ArkCheckbox.Group>) {
 }
 
 function HiddenInput(props: ComponentProps<typeof ArkCheckbox.HiddenInput>) {
-  return (
-    <ArkCheckbox.HiddenInput
-      {...props}
-      class={cn(styles.hiddenInput, props.class)}
-    />
-  )
+  return <ArkCheckbox.HiddenInput {...props} />
 }
 
 export const Checkbox = {
