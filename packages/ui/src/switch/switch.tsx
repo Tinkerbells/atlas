@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'solid-js'
 
-import { splitProps } from 'solid-js'
+import { mergeProps, splitProps } from 'solid-js'
 import { Switch as ArkSwitch } from '@ark-ui/solid/switch'
 
 import { cn } from '../utils'
@@ -13,12 +13,14 @@ interface SwitchRootProps extends ComponentProps<typeof ArkSwitch.Root> {
 }
 
 function Root(props: SwitchRootProps) {
-  const [local, rest] = splitProps(props, ['size', 'class'])
+  const merged = mergeProps({ size: 'md' as const }, props)
+  const [local, rest] = splitProps(merged, ['size', 'class', 'disabled'])
 
   return (
     <ArkSwitch.Root
       {...rest}
-      data-size={local.size ?? 'md'}
+      data-size={local.size}
+      data-disabled={local.disabled ? '' : undefined}
       class={cn(styles.root, local.class)}
     />
   )
@@ -37,7 +39,7 @@ function Label(props: ComponentProps<typeof ArkSwitch.Label>) {
 }
 
 function HiddenInput(props: ComponentProps<typeof ArkSwitch.HiddenInput>) {
-  return <ArkSwitch.HiddenInput {...props} />
+  return <ArkSwitch.HiddenInput {...props} class={styles.input} />
 }
 
 export const Switch = {
