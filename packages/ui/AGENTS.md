@@ -1,20 +1,110 @@
-# AGENTS: Правила для компонентов @atlas/ui
+**AGENTS.md — Solid MD3 UI на базе Varlet**
 
-- **Структура**: каждый компонент в `src/<name>` с файлами `<name>.tsx` (или сборкой ark-ui-подкомпонентов), `<name>.module.css`, `<name>.stories.tsx`, `index.ts` (реэкспорт). Добавь экспорт в `src/index.ts`.
-- **Логика (ориентир — park-ui)**: копируй паттерны из `park-ui/components/solid/src/components/ui/button.tsx` (splitProps/mergeProps, контексты для variant props, ark primitives и пр.), но исключи `styled-system/*` и их recipes — у нас только CSS-модули. Используй `ComponentProps`, `splitProps`, `mergeProps`, `Show`, `createMemo`, `cn` из `src/utils`, data-атрибуты для variant/size/state, дефолтный `type="button"` и т.п. Не тянем чужие дизайн-системы JS, только headless-слой ark-ui + своя логика.
-- **Стили (Material Design 3)**: только `.module.css`, классы совпадают с именем компонента. Подключай M3 токены из `src/styles` (`--md-*`). Для базовых значений можно брать референсы из `mdui/packages/mdui/src/components/button/style.less` и `beercss/src/cdn/elements/buttons.css`; адаптируй под CSS Modules и наши токены. Состояния/варианты через `[data-variant]`, `[data-size]`, `:focus-visible`, `:disabled` и т.д. Без styled-system — чистый CSS.
-- **Готовые M3 CSS-референсы**: для компонентов `avatar`, `badge`, `bottom-app-bar`, `button`, `button-icon`, `card`, `checkbox`, `chip`, `circular-progress`, `collapse`, `dialog`, `divider`, `dropdown`, `fab`, `icon`, `layout`, `linear-progress`, `list`, `menu`, `navigation-bar`, `navigation-drawer`, `navigation-rail`, `radio`, `range-slider`, `ripple`, `segmented-button`, `select`, `slider`, `snackbar`, `switch`, `tabs`, `text-field`, `tooltip`, `top-app-bar` и связанных подчастей (`*-item`, `*-group`, `*-main`, `*-title`, `tab-panel`) бери готовые стили из склонированных M3 библиотек (beercss/mdui) и адаптируй под module.css + наши токены.
-- **Если компонента нет в списке**: всё равно следуем Material Design 3 токенам, но за основу компоновки/поведения можно взять рецепты из `park-ui/packages/preset/src/recipes/`, переписав стили в `.module.css`.
-- **Storybook**: файл `<name>.stories.tsx` на `storybook-solidjs-vite` с `Meta`/`StoryObj`, `tags: ['autodocs']`, `parameters` (например `layout: 'centered'`), `argTypes` для всех публичных пропсов (варианты, размеры, состояния, кастомные слоты). Добавляй базовую историю (`Base`) с полным набором пропсов по умолчанию, затем отдельные истории для ключевых сценариев/состояний (default, link, disabled и т.д.) с JSDoc-комментариями-описаниями. В конце файла делай историю, показывающую все комбинации/вариации компонента в одном кадре (решетка/список). Документируй поведение и ограничения в описаниях историй/args.
-- **Экспорт и токены**: не забывай про sideEffects для CSS (уже в package.json). Если компонент использует глобальные стили, убедись, что потребитель подтягивает `src/styles/index.css`.
-- **Проверки**: после значимых изменений запускай из `packages/ui` — `pnpm lint`, `pnpm lint:fix` (при необходимости автофикс), `pnpm typecheck`. Не сдаём код без прохождения этих шагов.
+- **Цель**  
+  На основе репо Varlet UI воспроизвести дизайн‑систему Material Design 3 в Solid + CSS Modules, переиспользуя токены, темы и паттерны, но без копирования Vue‑кода.
 
-## Material Design 3 — CSS правила (системный промпт в кратком виде)
+- **Опорные файлы Varlet**  
+  - Темы: `packages/varlet-ui/src/themes/md3-light/index.ts`, `md3-dark/index.ts`, `dark/index.ts`, утилиты `convert.ts`, `toRem.ts`, `toViewport.ts`.  
+  - Токены по умолчанию (MD2 light): `packages/varlet-ui/src/styles/common.less`.  
+  - Провайдер переменных: `packages/varlet-ui/src/style-provider/index.ts`, `StyleProvider.vue`.  
+  - Каркас полей: `packages/varlet-ui/src/field-decorator/*`.  
+  - Пример компонента: `packages/varlet-ui/src/input/*`.
 
-- **Философия**: никаких хардкодов. Все цвета/отступы/формы через токены (`--md-ref-*` → `--md-sys-*` → компонентные). Используем пары роль/on-роль; поддержка светлой/тёмной темы через переопределения `--md-sys-*`.
-- **Цвет**: primary/secondary контейнеры + on-\*; фоны `surface/background`; tint и state layers. Не темним фон напрямую — накладываем state layer.
-- **Типографика**: типовые шкалы (Display/Headline/Title/Body/Label в Large/Medium/Small). Не хардкодим размеры в компонентах — используем заранее заданные типо-токены/утилиты (Roboto Flex, `font-variation-settings`).
-- **Форма**: скругления по токенам `--md-sys-shape-*` (full для кнопок/переключателей, xl для Large FAB, medium для карт, extra-small для тултипов).
-- **Высота и состояния**: elevation через `box-shadow` + surface tint `::before` (прозрачный primary слой по уровням 0.05–0.14). State layer для hover/focus/press/drag с opacity 8/12/12/16% цветом контента (`on-*`). В тёмной теме тени минимальны.
-- **Макет/касание**: шаг 8px (4px для мелких). Touch target ≥48x48; увеличивай padding/прозрачные области если визуально меньше.
-- **Порядок работы над компонентом**: определить семантические токены → геометрию/shape → цвета и роли → elevation + state layers → проверить адаптивность и темы.
+- **Архитектура новой библиотеки (Solid)**  
+  - Папка на компонент: `src/components/<Name>/index.tsx`, `props.ts`, `styles.module.css`.  
+  - Утилиты: `src/utils/namespace.ts` (BEM), `src/utils/styleVars.ts` (format CSS vars).  
+  - Темы: `src/themes/md3-light.ts`, `md3-dark.ts`, `index.ts` (экспорт `Themes`).  
+  - StyleProvider: компонент `StyleProvider.tsx` + функция `applyStyleVars(styleVars?: Record<string,string>)` вставляет `<style id="style-vars">:root{...}</style>`; `null` удаляет.  
+  - Базовые токены в `src/styles/common.css` (плоский `:root` из `md3-light`).
+
+- **Миграция тем**  
+  - Сгенерировать плоские объекты из Varlet тем (учесть спреды компонентных файлов) скриптом `scripts/build-themes.ts`.  
+  - Экспортировать `Themes.md3Light`, `Themes.md3Dark` и конвертеры `toRem`, `toViewport`, `convert` (адаптация из Varlet).
+
+- **Паттерн FieldDecorator**  
+  - Создать `src/components/field-decorator/` в Solid; повторить пропсы (`variant`, `size`, `isFocusing`, `isError`, `disabled`, иконки, hint).  
+  - Стили в `field-decorator.module.css`, перенести логику из `field-decorator.less`: позиционирование label, анимация, линии, состояния; все значения — через CSS vars.
+
+- **Input как шаблон**  
+  - Solid `Input.tsx` с пропсами Varlet (`value/onChange`, `type`, `textarea`, `clearable`, `errorMessage`, `disabled`, `readonly`, `autosize`, и т.д.).  
+  - `input.module.css`: переписать `input.less`, оставить только переменные `--input-*` и `--field-decorator-*`.  
+  - Использовать `FieldDecorator` как оболочку.
+
+- **Стили: Less → современный CSS**  
+  - Вложенность заменить на нативное CSS Nesting или PostCSS `postcss-nesting`.  
+  - Импорты: `@import` / `@layer` в CSS; порядок common → icon → field-decorator → form-details → component.  
+  - Добавить расширения `.css` явно; препроцессорные функции не нужны.
+
+- **Theming для пользователя**  
+  - По умолчанию применять `md3-light` (`common.css` в `:root`).  
+  - Переключение: `applyStyleVars(Themes.md3Dark)` или `<StyleProvider styleVars={Themes.md3Dark}>`.  
+  - Кастомизация: `applyStyleVars({ ...Themes.md3Light, '--color-primary': 'rebeccapurple' })`.
+
+- **DX и сборка**  
+  - Vite + Solid + PostCSS (опц. `postcss-nesting`, `autoprefixer`).  
+  - Сгенерировать `src/themes/types.d.ts` из ключей тем.  
+  - Тесты: vitest для утилит; демо‑примеры для визуальной проверки.
+
+- **Лицензия**  
+  - Varlet — MIT (`/LICENSE`). Допустимо заимствовать токены/структуру с упоминанием; Vue‑код не копировать дословно.
+
+- **Порядок работы LLM**  
+  1) Считать указанные файлы Varlet для референса.  
+  2) Сгенерировать темы и общий `common.css`.  
+  3) Реализовать `StyleProvider` и утилиты.  
+  4) Создать `FieldDecorator`, затем `Input` как эталон.  
+  5) Тиражировать паттерн на остальные компоненты.  
+  6) Добавить примеры и базовые тесты.
+
+- **Интеграция с headless Ark UI (Solid)**  
+  - Логику/поведение брать из Ark UI компонентов, а не реализовывать вручную. Использовать `@ark-ui/solid/<component>` как основу для состояния и а11y.  
+  - Паттерн подключения:  
+    ```tsx
+    import { Dialog } from '@ark-ui/solid/dialog'
+    import { Portal } from 'solid-js/web'
+    // свой декоративный слой: стили + обёртки
+    <Dialog.Root {...props}>
+      <Dialog.Trigger class={styles.trigger}>...</Dialog.Trigger>
+      <Portal>
+        <Dialog.Backdrop class={styles.backdrop} />
+        <Dialog.Positioner class={styles.positioner}>
+          <Dialog.Content class={styles.content}>
+            <Dialog.Title class={styles.title}>...</Dialog.Title>
+            <Dialog.Description class={styles.desc}>...</Dialog.Description>
+            <Dialog.CloseTrigger class={styles.close}>
+              <XIcon />
+            </Dialog.CloseTrigger>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+    ```  
+  - UI‑слой (CSS Modules) обязан:  
+    - оборачивать/декорировать слоты Ark UI, сохраняя структуру и пропсы;  
+    - применять CSS variables из текущей темы (через `StyleProvider`), повторяя визуал Varlet/MD3;  
+    - не ломать aria/поведение, заданные Ark UI.  
+  - Для input‑подобных использовать свой `FieldDecorator` как внешний каркас, а внутри — элементы Ark UI (`Field`, `Input`, `Textarea`, `Label`, `HelperText` и т.п.).  
+  - Если Ark UI не предоставляет нужный подэлемент, только тогда добавить тонкую прослойку логики (но не переизобретать состояние).  
+  - Тесты: сравнивать визуал (скриншоты) и проверять, что DOM‑структура/aria от Ark UI остаётся нетронутой.  
+  - Документация: в примерах всегда показывать, что логика — из Ark UI, стили — из вашей темы (MD3), чтобы отделить ответственность слоёв.
+
+- **Референс на готовый слой стилей (Park UI)**  
+  - Если в Ark UI нет нужного компонента или нужна подсказка по структурной разметке, смотреть в Park UI:  
+    - Логика/JSX: `/Users/user/projects/atlas/packages/ui/park-ui/components/solid/src/components/ui/<component>.tsx`  
+    - Стайлинг (PandaCSS recipes): `/Users/user/projects/atlas/packages/ui/park-ui/packages/preset/src/recipes/<component>.ts`  
+  - Park UI тоже поверх Ark UI, поэтому можно заимствовать разметку слотов и сопоставление состояний. CSS-in-JS там Panda, но полезно увидеть, какие токены и псевдоклассы они накладывают; конвертировать идеи в CSS Modules и ваши MD3 переменные.  
+  - Приоритет: сначала Ark UI API, затем Park UI как справочник; не переносить Panda-инфраструктуру, только идеи по слоям/вариантам/стейтам.
+
+- **Storybook требования**  
+  - Каждый компонент обязан иметь сторис `*.stories.tsx` (storybook-solidjs-vite) рядом с реализацией.  
+  - Сторис должны:  
+    - Экспортировать `meta` с `title`, `component`, `tags: ['autodocs']`, `parameters.layout = 'centered'` (или подходящее).  
+    - Определять `argTypes`/`args` для всех публичных пропсов (варианты, размеры, состояния).  
+    - Давать несколько демонстраций: базовый рендер с args, варианты (variant matrix), размеры, disabled, loading, иконки, группировки и «gallery» для снапшотов.  
+  - При использовании Ark UI/FieldDecorator — сторис должны показывать, что логика из Ark UI, стили из вашей темы (MD3).  
+  - Пример структуры см. в шаблоне для Button (variants/sizes/disabled/loading/icons/grouped/gallery).
+
+- **Проверки качества**  
+  - Регулярно гонять качество: `pnpm lint`, `pnpm lint:fix` (при необходимости автоправки), `pnpm typecheck`.  
+  - Перед пушем/PR запускать минимум `pnpm lint` и `pnpm typecheck`; для локальных правок — `pnpm lint:fix` чтобы синхронизировать стиль.  
+  - Если добавлены новые компоненты/сторис — убедиться, что проверки проходят без варнингов.

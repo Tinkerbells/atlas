@@ -3,9 +3,8 @@ import { defineConfig } from '@atlas/eslint'
 export default defineConfig({
   ignores: [
     'components/**',
+    'varlet/**',
     'park-ui/**',
-    'beercss/**',
-    'mdui/**',
   ],
   formatters: true,
   unocss: true,
