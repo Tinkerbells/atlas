@@ -1,8 +1,20 @@
 .root {
-  --_input: 3rem;
-  --_start: 1.2rem;
+  --_input: 3.5rem;
   --_radius-base: 0.25rem;
   --_bg: var(--md-sys-color-surface, #fef7ff);
+  --_filled-container-color: var(--md-sys-color-surface-container-highest, #e6e0e9);
+  --_filled-container-shape: var(--md-sys-shape-corner-extra-small-top, 0.25rem 0.25rem 0 0);
+  --_filled-hover-layer-color: var(--md-sys-color-on-surface, #1d1b20);
+  --_filled-hover-layer-opacity: 0.08;
+  --_indicator-color: var(--md-sys-color-on-surface-variant, #49454f);
+  --_indicator-hover-color: var(--md-sys-color-on-surface, #1d1b20);
+  --_indicator-focus-color: var(--md-sys-color-primary, #6750a4);
+  --_indicator-error-color: var(--md-sys-color-error, #b3261e);
+  --_indicator-height: 0.0625rem;
+  --_indicator-focus-height: 0.15rem;
+  --_label-resting-color: var(--md-sys-color-on-surface-variant, #49454f);
+  --_label-resting-size: 1rem;
+  --_label-floating-size: 0.75rem;
   --_outline: var(--md-sys-color-outline, #79747e);
   --_primary: var(--md-sys-color-primary, #6750a4);
   --_error: var(--md-sys-color-error, #b3261e);
@@ -16,28 +28,37 @@
   gap: 0;
 }
 
+.outlined {
+  border-radius: var(--_radius-base);
+}
+
+.outlined-rounded {
+  border-radius: 1.5rem;
+}
+
+.filled {
+  --_input: 3.5rem;
+  isolation: isolate;
+}
+
 .fill {
   --_bg: var(--md-sys-color-surface-variant, #e7e0ec);
-  border-radius: var(--_radius-base);
+}
+
+.small.filled {
+  --_input: 3rem;
 }
 
 .small {
-  --_input: 2.5rem;
-  --_start: 1rem;
+  --_input: 3rem;
+}
+
+.medium {
+  --_input: 3.5rem;
 }
 
 .large {
-  --_input: 3.5rem;
-  --_start: 1.4rem;
-}
-
-.extra {
   --_input: 4rem;
-  --_start: 1.6rem;
-}
-
-.border {
-  border-radius: var(--_radius-base);
 }
 
 .round.small {
@@ -52,13 +73,10 @@
   border-radius: 1.75rem;
 }
 
-.round.extra {
-  border-radius: 2rem;
-}
-
 .control {
   all: unset;
   position: relative;
+  z-index: 0;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -72,6 +90,7 @@
   background: none;
   color: var(--_text);
   cursor: text;
+  caret-color: var(--_primary);
   transition:
     border-color var(--md-sys-motion-duration-fast, 250ms)
       var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
@@ -85,11 +104,49 @@
   background-color: var(--_bg);
 }
 
-.border .control {
+.outlined .control,
+.outlined-rounded .control {
   border-color: var(--_outline);
 }
 
-.border .control:focus {
+.filled .control {
+  border: none;
+  background-color: var(--_filled-container-color);
+  min-block-size: var(--_input);
+  padding: 1.25rem 1rem 0.75rem;
+  position: relative;
+  box-shadow: inset 0 calc(-1 * var(--_indicator-height)) 0 0 var(--_indicator-color);
+}
+
+.filled .control:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--_filled-container-color) 92%, var(--_filled-hover-layer-color) 8%);
+}
+
+.filled:has(.control:focus) > .control,
+.filled:has(.control:focus-visible) > .control {
+  box-shadow: inset 0 calc(-1 * var(--_indicator-focus-height)) 0 0 var(--_indicator-focus-color);
+}
+
+.filled.invalid > .control {
+  box-shadow: inset 0 calc(-1 * var(--_indicator-height)) 0 0 var(--_indicator-error-color);
+}
+
+.filled.invalid:has(.control:focus) > .control,
+.filled.invalid:has(.control:focus-visible) > .control {
+  box-shadow: inset 0 calc(-1 * var(--_indicator-focus-height)) 0 0 var(--_indicator-error-color);
+}
+
+.filled:has(> .control:disabled) > .control {
+  box-shadow: inset 0 calc(-1 * var(--_indicator-height)) 0 0
+    color-mix(in srgb, var(--_indicator-color) 60%, transparent);
+}
+
+.filled .control:disabled {
+  background-color: color-mix(in srgb, var(--_filled-container-color) 70%, transparent);
+}
+
+.outlined .control:focus,
+.outlined-rounded .control:focus {
   border-color: var(--_primary);
   border-width: 2px;
 }
@@ -127,9 +184,14 @@
   margin-inline-start: 0;
 }
 
-.prefix .label,
-.prefix .label::after {
-  margin-inline-start: 0.25rem;
+.filled.prefix .control:focus + .label,
+.filled.prefix .control:not(:placeholder-shown) + .label {
+  --_label-start: 3rem;
+}
+
+.filled.prefix .label,
+.filled.prefix .label::after {
+  margin-inline-start: 0;
 }
 
 .suffix .control {
@@ -140,27 +202,8 @@
   padding-inline-end: 2.875rem;
 }
 
-:not(.border, .round) > .control {
-  border-block-end-color: var(--_outline);
-}
-
-:not(.border, .round) > .control:focus {
-  border-block-end-color: var(--_primary);
-}
-
-.round:not(.border, .fill) > .control {
-  box-shadow: var(--md-sys-elevation-level1, 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.32));
-}
-
-.round:not(.border, .fill) > .control:focus {
-  box-shadow: var(--md-sys-elevation-level2, 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.4));
-}
-
-.invalid:not(.border, .round) > .control {
-  border-block-end-color: var(--_error);
-}
-
-.invalid.border > .control {
+.invalid.outlined > .control,
+.invalid.outlined-rounded > .control {
   border-color: var(--_error);
 }
 
@@ -176,6 +219,10 @@
   border-color: color-mix(in srgb, var(--_outline) 50%, transparent);
 }
 
+.filled:has(> .control:disabled)::before {
+  background: color-mix(in srgb, var(--_filled-container-color) 70%, transparent);
+}
+
 /* prefix/suffix icons */
 .prefixIcon,
 .suffixIcon {
@@ -189,6 +236,7 @@
   block-size: 1.5rem;
   margin: auto 0;
   color: inherit;
+  z-index: 2;
 }
 
 .prefixIcon {
@@ -222,6 +270,45 @@
   color: var(--md-sys-color-on-surface-variant, #49454f);
 }
 
+.filled .label {
+  top: calc((var(--_input) / 2) - 0.75rem);
+  left: var(--_label-start, 1rem);
+  right: 1rem;
+  bottom: auto;
+  block-size: auto;
+  line-height: 1.5rem;
+  font-size: var(--_label-resting-size);
+  background: transparent;
+  transform-origin: left top;
+  color: var(--_label-resting-color);
+  transition:
+    transform 150ms cubic-bezier(0.2, 0, 0, 1),
+    font-size 150ms cubic-bezier(0.2, 0, 0, 1),
+    line-height 150ms cubic-bezier(0.2, 0, 0, 1),
+    color 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.filled .label::after {
+  display: none;
+}
+
+.filled .control:focus + .label,
+.filled .control:focus-visible + .label,
+.filled .control:not(:placeholder-shown) + .label {
+  top: 0.5rem;
+  transform: translateY(0) scale(0.8);
+  font-size: var(--_label-floating-size);
+  color: var(--_primary);
+  block-size: auto;
+  line-height: 1rem;
+}
+
+.filled.invalid .control:focus + .label,
+.filled.invalid .control:focus-visible + .label,
+.filled.invalid .control:not(:placeholder-shown) + .label {
+  color: var(--_error);
+}
+
 .control:focus + .label,
 .control:not(:placeholder-shown) + .label {
   block-size: 2.5rem;
@@ -229,8 +316,10 @@
   font-size: 0.75rem;
 }
 
-.border:not(.fill) .control:focus + .label,
-.border:not(.fill) .control:not(:placeholder-shown) + .label {
+.outlined .control:focus + .label,
+.outlined .control:not(:placeholder-shown) + .label,
+.outlined-rounded .control:focus + .label,
+.outlined-rounded .control:not(:placeholder-shown) + .label {
   block-size: 1rem;
   line-height: 1rem;
 }
@@ -254,12 +343,15 @@
   color: var(--_primary);
 }
 
-.border:not(.fill) .control:not(:disabled):focus + .label::after,
-.border:not(.fill) .control:not(:disabled):not(:placeholder-shown) + .label::after {
+.outlined .control:not(:disabled):focus + .label::after,
+.outlined .control:not(:disabled):not(:placeholder-shown) + .label::after,
+.outlined-rounded .control:not(:disabled):focus + .label::after,
+.outlined-rounded .control:not(:disabled):not(:placeholder-shown) + .label::after {
   border-block-start: 0.0625rem solid var(--_primary);
 }
 
-.border:not(.fill) .control:not(:disabled):focus + .label::after {
+.outlined .control:not(:disabled):focus + .label::after,
+.outlined-rounded .control:not(:disabled):focus + .label::after {
   border-block-start-width: 0.125rem;
 }
 
@@ -280,8 +372,10 @@
   border-color: var(--_error);
 }
 
-.invalid.border:not(.fill) .control:focus + .label::after,
-.invalid.border:not(.fill) .control:not(:placeholder-shown) + .label::after {
+.invalid.outlined .control:focus + .label::after,
+.invalid.outlined .control:not(:placeholder-shown) + .label::after,
+.invalid.outlined-rounded .control:focus + .label::after,
+.invalid.outlined-rounded .control:not(:placeholder-shown) + .label::after {
   border-block-start: 0.125rem solid var(--_error);
 }
 
@@ -304,8 +398,10 @@
 }
 
 /* Clip-path notch only when label exists */
-.border:not(.fill):has(.label) > .control:focus,
-.border:not(.fill):has(.label) > .control:not(:placeholder-shown) {
+.outlined:has(.label) > .control:focus,
+.outlined:has(.label) > .control:not(:placeholder-shown),
+.outlined-rounded:has(.label) > .control:focus,
+.outlined-rounded:has(.label) > .control:not(:placeholder-shown) {
   clip-path: polygon(
     -2% -2%,
     0.75rem -2%,
@@ -333,6 +429,29 @@
   padding: 0.25rem 1.5rem;
 }
 
+.filled .helper {
+  padding-inline: 1rem;
+  margin-block-start: 0.2rem;
+}
+
 .invalidText {
   color: var(--_error) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .root {
+    --_filled-container-color: var(--md-sys-color-surface-container-highest, #36343b);
+    --_label-resting-color: var(--md-sys-color-on-surface-variant, #cac4d0);
+    --_text: var(--md-sys-color-on-surface, #e6e1e5);
+    --_outline: var(--md-sys-color-outline, #938f99);
+    --_bg: var(--md-sys-color-surface, #1c1b1f);
+  }
+}
+
+[data-theme='dark'] .root {
+  --_filled-container-color: var(--md-sys-color-surface-container-highest, #36343b);
+  --_label-resting-color: var(--md-sys-color-on-surface-variant, #cac4d0);
+  --_text: var(--md-sys-color-on-surface, #e6e1e5);
+  --_outline: var(--md-sys-color-outline, #938f99);
+  --_bg: var(--md-sys-color-surface, #1c1b1f);
 }

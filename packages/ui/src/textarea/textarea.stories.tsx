@@ -11,18 +11,17 @@ const meta = {
       control: 'select',
       options: ['sm', 'md', 'lg'],
     },
-    border: { control: 'boolean' },
-    round: { control: 'boolean' },
-    fill: { control: 'boolean' },
+    variant: {
+      control: 'select',
+      options: ['outlined', 'outlined-rounded', 'filled'],
+    },
     invalid: {
       control: 'boolean',
     },
   },
   args: {
     size: 'md',
-    border: true,
-    round: false,
-    fill: false,
+    variant: 'filled',
     placeholder: 'Share a little more detail…',
   },
 } satisfies Meta<typeof Textarea>
@@ -53,22 +52,9 @@ export const Sizes: Story = {
 export const Variants: Story = {
   render: (args: Story['args']) => (
     <div style={{ display: 'grid', gap: '12px', width: '420px' }}>
-      <Textarea {...args} border placeholder="Border textarea" />
-      <Textarea
-        {...args}
-        border={false}
-        round
-        placeholder="Round textarea"
-      />
-      <Textarea {...args} border fill placeholder="Fill textarea" />
-      <Textarea {...args} border round placeholder="Border + Round textarea" />
-      <Textarea
-        {...args}
-        border
-        round
-        fill
-        placeholder="Combined textarea"
-      />
+      <Textarea {...args} variant="outlined" placeholder="Outlined textarea" />
+      <Textarea {...args} variant="outlined-rounded" placeholder="Outlined rounded textarea" />
+      <Textarea {...args} variant="filled" placeholder="Filled textarea" />
     </div>
   ),
 }

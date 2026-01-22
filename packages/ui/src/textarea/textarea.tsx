@@ -8,7 +8,7 @@ import { cn } from '../utils'
 import { Field } from '../field'
 import fieldStyles from '../field/field.module.css'
 
-export type TextareaProps = ComponentProps<typeof Field.Textarea> & FieldVariants & {
+export type TextareaProps = ComponentProps<typeof Field.Textarea> & Partial<FieldVariants> & {
   size?: FieldSize
   label?: string
   helperText?: string
@@ -21,15 +21,14 @@ export type TextareaProps = ComponentProps<typeof Field.Textarea> & FieldVariant
 export function Textarea(props: TextareaProps) {
   const [local, rest] = splitProps(props, [
     'size',
-    'border',
-    'round',
-    'fill',
+    'variant',
     'class',
     'label',
     'helperText',
     'errorText',
     'prefixIcon',
     'suffixIcon',
+    'placeholder',
   ])
 
   const renderPrefixIcon = () => {
@@ -61,9 +60,7 @@ export function Textarea(props: TextareaProps) {
   return (
     <Field.Root
       size={local.size}
-      border={local.border ?? true}
-      round={local.round}
-      fill={local.fill}
+      variant={local.variant}
       prefixIcon={local.prefixIcon}
       suffixIcon={local.suffixIcon}
       invalid={props.invalid}
@@ -75,7 +72,7 @@ export function Textarea(props: TextareaProps) {
       {renderPrefixIcon()}
       <Field.Textarea
         {...rest}
-        placeholder={local.label ? ' ' : rest.placeholder}
+        placeholder={local.label ? ' ' : local.placeholder}
       />
       {local.label ? <Field.Label>{local.label}</Field.Label> : null}
       {local.errorText
