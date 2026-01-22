@@ -92,12 +92,9 @@
   cursor: text;
   caret-color: var(--_primary);
   transition:
-    border-color var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
-    padding var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
-    box-shadow var(--md-sys-motion-duration-fast, 250ms)
-      var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+    border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1)),
+    padding var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-spatial-expressive, cubic-bezier(0.175, 0.885, 0.32, 1.35)),
+    box-shadow var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .fill .control {
@@ -107,6 +104,18 @@
 .outlined .control,
 .outlined-rounded .control {
   border-color: var(--_outline);
+}
+
+.outlined:has(.control:focus)>.control,
+.outlined:has(.control:focus-visible)>.control,
+.outlined-rounded:has(.control:focus)>.control,
+.outlined-rounded:has(.control:focus-visible)>.control {
+  caret-color: var(--_indicator-focus-color);
+}
+
+.outlined.invalid>.control,
+.outlined-rounded.invalid>.control {
+  caret-color: var(--_indicator-error-color);
 }
 
 .filled .control {
@@ -122,23 +131,25 @@
   background-color: color-mix(in srgb, var(--_filled-container-color) 92%, var(--_filled-hover-layer-color) 8%);
 }
 
-.filled:has(.control:focus) > .control,
-.filled:has(.control:focus-visible) > .control {
+.filled:has(.control:focus)>.control,
+.filled:has(.control:focus-visible)>.control {
   box-shadow: inset 0 calc(-1 * var(--_indicator-focus-height)) 0 0 var(--_indicator-focus-color);
+  caret-color: var(--_indicator-focus-color);
 }
 
-.filled.invalid > .control {
+.filled.invalid>.control {
   box-shadow: inset 0 calc(-1 * var(--_indicator-height)) 0 0 var(--_indicator-error-color);
+  caret-color: var(--_indicator-error-color);
 }
 
-.filled.invalid:has(.control:focus) > .control,
-.filled.invalid:has(.control:focus-visible) > .control {
+.filled.invalid:has(.control:focus)>.control,
+.filled.invalid:has(.control:focus-visible)>.control {
   box-shadow: inset 0 calc(-1 * var(--_indicator-focus-height)) 0 0 var(--_indicator-error-color);
+  caret-color: var(--_indicator-error-color);
 }
 
-.filled:has(> .control:disabled) > .control {
-  box-shadow: inset 0 calc(-1 * var(--_indicator-height)) 0 0
-    color-mix(in srgb, var(--_indicator-color) 60%, transparent);
+.filled:has(> .control:disabled)>.control {
+  box-shadow: inset 0 calc(-1 * var(--_indicator-height)) 0 0 color-mix(in srgb, var(--_indicator-color) 60%, transparent);
 }
 
 .filled .control:disabled {
@@ -148,7 +159,7 @@
 .outlined .control:focus,
 .outlined-rounded .control:focus {
   border-color: var(--_primary);
-  border-width: 2px;
+  border-width: 1px;
 }
 
 .round .control {
@@ -171,21 +182,21 @@
   --_label-start: 3rem;
 }
 
-.prefix .control:focus + .label {
+.prefix .control:focus+.label {
   --_label-start: 1rem;
 }
 
-.prefix .control:not(:placeholder-shown) + .label {
+.prefix .control:not(:placeholder-shown)+.label {
   --_label-start: 1rem;
   margin-inline-start: 0;
 }
 
-.prefix .control:not(:placeholder-shown) + .label::after {
+.prefix .control:not(:placeholder-shown)+.label::after {
   margin-inline-start: 0;
 }
 
-.filled.prefix .control:focus + .label,
-.filled.prefix .control:not(:placeholder-shown) + .label {
+.filled.prefix .control:focus+.label,
+.filled.prefix .control:not(:placeholder-shown)+.label {
   --_label-start: 3rem;
 }
 
@@ -202,8 +213,8 @@
   padding-inline-end: 2.875rem;
 }
 
-.invalid.outlined > .control,
-.invalid.outlined-rounded > .control {
+.invalid.outlined>.control,
+.invalid.outlined-rounded>.control {
   border-color: var(--_error);
 }
 
@@ -262,8 +273,7 @@
   block-size: calc(var(--_input) + 1rem);
   line-height: calc(var(--_input) + 1rem);
   font-size: 1rem;
-  transition: all var(--md-sys-motion-duration-fast, 250ms)
-    var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: all var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
   gap: 0.25rem;
   white-space: nowrap;
   pointer-events: none;
@@ -292,9 +302,9 @@
   display: none;
 }
 
-.filled .control:focus + .label,
-.filled .control:focus-visible + .label,
-.filled .control:not(:placeholder-shown) + .label {
+.filled .control:focus+.label,
+.filled .control:focus-visible+.label,
+.filled .control:not(:placeholder-shown)+.label {
   top: 0.5rem;
   transform: translateY(0) scale(0.8);
   font-size: var(--_label-floating-size);
@@ -303,23 +313,23 @@
   line-height: 1rem;
 }
 
-.filled.invalid .control:focus + .label,
-.filled.invalid .control:focus-visible + .label,
-.filled.invalid .control:not(:placeholder-shown) + .label {
+.filled.invalid .control:focus+.label,
+.filled.invalid .control:focus-visible+.label,
+.filled.invalid .control:not(:placeholder-shown)+.label {
   color: var(--_error);
 }
 
-.control:focus + .label,
-.control:not(:placeholder-shown) + .label {
+.control:focus+.label,
+.control:not(:placeholder-shown)+.label {
   block-size: 2.5rem;
   line-height: 2.5rem;
   font-size: 0.75rem;
 }
 
-.outlined .control:focus + .label,
-.outlined .control:not(:placeholder-shown) + .label,
-.outlined-rounded .control:focus + .label,
-.outlined-rounded .control:not(:placeholder-shown) + .label {
+.outlined .control:focus+.label,
+.outlined .control:not(:placeholder-shown)+.label,
+.outlined-rounded .control:focus+.label,
+.outlined-rounded .control:not(:placeholder-shown)+.label {
   block-size: 1rem;
   line-height: 1rem;
 }
@@ -330,8 +340,7 @@
   margin: 0.5rem 0 0 0;
   border-block-start: 0.0625rem solid var(--_outline);
   block-size: 1rem;
-  transition: border-color var(--md-sys-motion-duration-fast, 250ms)
-    var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: border-color var(--md-sys-motion-duration-fast, 250ms) var(--md-sys-motion-easing-effects, cubic-bezier(0.4, 0, 0.2, 1));
   flex: auto;
 }
 
@@ -339,24 +348,24 @@
   margin-inline-end: 0.25rem;
 }
 
-.control:focus + .label {
+.control:focus+.label {
   color: var(--_primary);
 }
 
-.outlined .control:not(:disabled):focus + .label::after,
-.outlined .control:not(:disabled):not(:placeholder-shown) + .label::after,
-.outlined-rounded .control:not(:disabled):focus + .label::after,
-.outlined-rounded .control:not(:disabled):not(:placeholder-shown) + .label::after {
+.outlined .control:not(:disabled):focus+.label::after,
+.outlined .control:not(:disabled):not(:placeholder-shown)+.label::after,
+.outlined-rounded .control:not(:disabled):focus+.label::after,
+.outlined-rounded .control:not(:disabled):not(:placeholder-shown)+.label::after {
   border-block-start: 0.0625rem solid var(--_primary);
 }
 
-.outlined .control:not(:disabled):focus + .label::after,
-.outlined-rounded .control:not(:disabled):focus + .label::after {
+.outlined .control:not(:disabled):focus+.label::after,
+.outlined-rounded .control:not(:disabled):focus+.label::after {
   border-block-start-width: 0.125rem;
 }
 
-.control:disabled + .label::after,
-.control:disabled:not(:placeholder-shown) + .label::after {
+.control:disabled+.label::after,
+.control:disabled:not(:placeholder-shown)+.label::after {
   border-block-start: 0.0625rem solid color-mix(in srgb, var(--_outline) 50%, transparent);
 }
 
@@ -372,19 +381,19 @@
   border-color: var(--_error);
 }
 
-.invalid.outlined .control:focus + .label::after,
-.invalid.outlined .control:not(:placeholder-shown) + .label::after,
-.invalid.outlined-rounded .control:focus + .label::after,
-.invalid.outlined-rounded .control:not(:placeholder-shown) + .label::after {
-  border-block-start: 0.125rem solid var(--_error);
+.invalid.outlined .control:focus+.label::after,
+.invalid.outlined .control:not(:placeholder-shown)+.label::after,
+.invalid.outlined-rounded .control:focus+.label::after,
+.invalid.outlined-rounded .control:not(:placeholder-shown)+.label::after {
+  border-block-start: 0.0625rem solid var(--_error);
 }
 
 .invalid .label {
   color: var(--_error);
 }
 
-.invalid .control:focus + .label,
-.invalid .control:not(:placeholder-shown) + .label {
+.invalid .control:focus+.label,
+.invalid .control:not(:placeholder-shown)+.label {
   color: var(--_error);
 }
 
@@ -398,20 +407,18 @@
 }
 
 /* Clip-path notch only when label exists */
-.outlined:has(.label) > .control:focus,
-.outlined:has(.label) > .control:not(:placeholder-shown),
-.outlined-rounded:has(.label) > .control:focus,
-.outlined-rounded:has(.label) > .control:not(:placeholder-shown) {
-  clip-path: polygon(
-    -2% -2%,
-    0.75rem -2%,
-    0.75rem 0.5rem,
-    calc(100% - 1rem) 0.5rem,
-    calc(100% - 1.75rem) -2%,
-    102% -2%,
-    102% 102%,
-    -2% 102%
-  );
+.outlined:has(.label)>.control:focus,
+.outlined:has(.label)>.control:not(:placeholder-shown),
+.outlined-rounded:has(.label)>.control:focus,
+.outlined-rounded:has(.label)>.control:not(:placeholder-shown) {
+  clip-path: polygon(-2% -2%,
+      0.75rem -2%,
+      0.75rem 0.5rem,
+      calc(100% - 1rem) 0.5rem,
+      calc(100% - 1.75rem) -2%,
+      102% -2%,
+      102% 102%,
+      -2% 102%);
 }
 
 /* helper / error */
