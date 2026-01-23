@@ -3,9 +3,7 @@ import type { ComponentProps, JSX } from 'solid-js'
 
 import { mergeProps, Show, splitProps } from 'solid-js'
 
-import Themes from '@/themes'
 import { block } from '@/utils/bem'
-import { StyleProvider } from '@/style-provider'
 
 const b = block('button')
 
@@ -78,24 +76,22 @@ export function Button(props: ButtonProps) {
   ])
 
   return (
-    <StyleProvider theme={() => Themes.md3Light}>
-      <button
-        type="button"
-        disabled={local.loading || rest.disabled}
-        class={b(
-          {
-            [local.size]: true,
-            [local.variant]: true,
-            disabled: rest.disabled,
-          },
-          local.class,
-        )}
-        {...rest}
-      >
-        <Show when={local.loading} fallback={local.children}>
-          <div>Loading...</div>
-        </Show>
-      </button>
-    </StyleProvider>
+    <button
+      type="button"
+      disabled={local.loading || rest.disabled}
+      class={b(
+        {
+          [local.size]: true,
+          [local.variant]: true,
+          disabled: rest.disabled,
+        },
+        local.class,
+      )}
+      {...rest}
+    >
+      <Show when={local.loading} fallback={local.children}>
+        <div>Loading...</div>
+      </Show>
+    </button>
   )
 }
