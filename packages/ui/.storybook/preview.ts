@@ -4,11 +4,6 @@ import { definePreview } from 'storybook-solidjs-vite'
 
 import './preview.css'
 
-if (typeof document !== 'undefined') {
-  // Default theme for Storybook; tokens live in css/light.css
-  document.documentElement.classList.add('light')
-}
-
 export default definePreview({
   addons: [addonDocs(), addonA11y()],
   parameters: {

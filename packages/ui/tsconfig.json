@@ -7,13 +7,11 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "#.storybook/*": [
-        "./.storybook/*"
-      ]
+      "@/*": ["./src/*"],
+      "@styles/*": ["./src/styles/*"],
+      "#.storybook/*": ["./.storybook/*"]
     },
-    "types": [
-      "vite/client"
-    ],
+    "types": ["vite/client"],
     "strict": true,
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
@@ -22,9 +20,5 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src",
-    ".storybook",
-    "styled-system"
-  ]
+  "include": ["src", ".storybook", "styled-system"]
 }

@@ -1,154 +1,101 @@
+import './button.styles.scss'
 import type { ComponentProps, JSX } from 'solid-js'
 
-import { createContext, createMemo, mergeProps, Show, splitProps, useContext } from 'solid-js'
+import { mergeProps, Show, splitProps } from 'solid-js'
 
-import { cn } from '../utils'
-import { Loader } from '../loader'
-import styles from './button.module.css'
+import Themes from '@/themes'
+import { block } from '@/utils/bem'
+import { StyleProvider } from '@/style-provider'
 
-export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'
-export type ButtonSize = 'sm' | 'md' | 'lg'
+const b = block('button')
 
 interface ButtonLoadingProps {
-  /** Show a loader and block interactions. */
-  loading?: boolean
-  /** Text displayed while loading; falls back to regular children. */
-  loadingText?: JSX.Element
-  /** Custom spinner element. */
-  spinner?: JSX.Element
-  /** Controls where the spinner is rendered. */
-  spinnerPlacement?: 'start' | 'end'
+  /**
+   * The visual style of the button.
+   * @default "default"
+   */
+  variant?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'danger'
+  /**
+   * The size of the button.
+   * @default "normal"
+   */
+  size?: 'normal' | 'mini' | 'small' | 'large'
+  /**
+   * If `true`, the button will have a ripple effect on click.
+   * @default true
+   */
+  ripple?: boolean
+  /**
+   * The elevation level of the button.
+   * @default false
+   */
+  elevation?: boolean | number | string
+  /**
+   * If `true`, the button will show a loading spinner.
+   * @default false
+   */
+  loading?: boolean | undefined
+  /**
+   * The text to show while loading.
+   */
+  loadingText?: JSX.Element | undefined
+  /**
+   * The spinner to show while loading.
+   */
+  spinner?: JSX.Element | undefined
+  /**
+   * The placement of the spinner
+   * @default "start"
+   */
+  spinnerPlacement?: 'start' | 'end' | undefined
 }
 
-interface ButtonContentProps {
-  /** Optional leading icon. */
-  leadingIcon?: JSX.Element
-  /** Optional trailing icon. */
-  trailingIcon?: JSX.Element
-  /** Expand button to the container width. */
-  fullWidth?: boolean
-}
+type BaseButtonProps = ComponentProps<'button'>
 
-type ButtonVariantProps = Pick<ButtonProps, 'variant' | 'size' | 'fullWidth'>
+export interface ButtonProps extends BaseButtonProps, ButtonLoadingProps { }
 
-const ButtonVariantContext = createContext<() => ButtonVariantProps | undefined>()
-
-const useButtonVariantProps = () => useContext(ButtonVariantContext)
-
-export interface ButtonProps
-  extends ComponentProps<'button'>,
-  ButtonLoadingProps,
-  ButtonContentProps {
-  variant?: ButtonVariant
-  size?: ButtonSize
-}
-
-export function Button(allProps: ButtonProps) {
-  const contextProps = useButtonVariantProps()
-  const mergedProps = mergeProps(
-    { variant: 'filled', size: 'md', type: 'button' as const },
-    contextProps?.() ?? {},
-    allProps,
+export function Button(props: ButtonProps) {
+  const merged = mergeProps(
+    {
+      variant: 'default',
+      size: 'normal',
+      ripple: true,
+    },
+    props,
   )
 
-  const [local, rest] = splitProps(mergedProps, [
+  const [local, rest] = splitProps(merged, [
     'variant',
     'size',
-    'class',
-    'children',
-    'leadingIcon',
-    'trailingIcon',
+    'ripple',
+    'elevation',
     'loading',
     'loadingText',
+    'children',
     'spinner',
     'spinnerPlacement',
-    'fullWidth',
-    'disabled',
-    'type',
-  ])
-
-  const isLoading = createMemo(() => Boolean(local.loading))
-  const placement = createMemo(() => local.spinnerPlacement ?? 'start')
-
-  return (
-    <button
-      {...rest}
-      type={local.type}
-      data-variant={local.variant}
-      data-size={local.size}
-      data-full-width={local.fullWidth ? '' : undefined}
-      data-loading={isLoading() ? '' : undefined}
-      class={cn(styles.button, local.fullWidth && styles.fullWidth, local.class)}
-      disabled={local.disabled || isLoading()}
-      aria-busy={isLoading() ? 'true' : undefined}
-    >
-      <Show when={isLoading()} fallback={<ButtonContent {...local} />}>
-        <Loader
-          spinner={local.spinner ?? <SpinnerIcon />}
-          text={local.loadingText ?? local.children}
-          spinnerPlacement={placement()}
-          class={cn(styles.content, styles.loadingContent)}
-        />
-      </Show>
-    </button>
-  )
-}
-
-function ButtonContent(props: Pick<ButtonProps, 'leadingIcon' | 'trailingIcon' | 'children'>) {
-  return (
-    <span class={styles.content}>
-      <Show when={props.leadingIcon}>
-        <span class={styles.icon} aria-hidden="true">
-          {props.leadingIcon}
-        </span>
-      </Show>
-      <span class={styles.label}>{props.children}</span>
-      <Show when={props.trailingIcon}>
-        <span class={styles.icon} aria-hidden="true">
-          {props.trailingIcon}
-        </span>
-      </Show>
-    </span>
-  )
-}
-
-function SpinnerIcon() {
-  return (
-    <span
-      class={styles.spinner}
-      aria-hidden="true"
-    />
-  )
-}
-
-export interface ButtonGroupProps extends ComponentProps<'div'>, ButtonVariantProps {
-  orientation?: 'horizontal' | 'vertical'
-}
-
-export function ButtonGroup(props: ButtonGroupProps) {
-  const [local, rest] = splitProps(props, [
-    'variant',
-    'size',
-    'fullWidth',
-    'orientation',
     'class',
-    'children',
   ])
-  const contextValue = createMemo(() => ({
-    variant: local.variant,
-    size: local.size,
-    fullWidth: local.fullWidth,
-  }))
 
   return (
-    <ButtonVariantContext.Provider value={contextValue}>
-      <div
+    <StyleProvider theme={() => Themes.md3Light}>
+      <button
+        type="button"
+        disabled={local.loading || rest.disabled}
+        class={b(
+          {
+            [local.size]: true,
+            [local.variant]: true,
+            disabled: rest.disabled,
+          },
+          local.class,
+        )}
         {...rest}
-        data-orientation={local.orientation ?? 'horizontal'}
-        class={cn(styles.group, local.class)}
       >
-        {local.children}
-      </div>
-    </ButtonVariantContext.Provider>
+        <Show when={local.loading} fallback={local.children}>
+          <div>Loading...</div>
+        </Show>
+      </button>
+    </StyleProvider>
   )
 }

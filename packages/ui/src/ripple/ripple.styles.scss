@@ -1,0 +1,8 @@
+@use '@styles/variables';
+$block: '.#{variables.$ns}ripple';
+
+:root {
+}
+
+#{$block} {
+}
