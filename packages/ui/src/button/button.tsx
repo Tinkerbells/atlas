@@ -3,6 +3,7 @@ import type { ComponentProps, JSX } from 'solid-js'
 
 import { mergeProps, Show, splitProps } from 'solid-js'
 
+import { Ripple } from '@/ripple'
 import { block } from '@/utils/bem'
 
 const b = block('button')
@@ -92,6 +93,7 @@ export function Button(props: ButtonProps) {
       <Show when={local.loading} fallback={local.children}>
         <div>Loading...</div>
       </Show>
+      <Ripple />
     </button>
   )
 }
