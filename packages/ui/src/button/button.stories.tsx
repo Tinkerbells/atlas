@@ -10,9 +10,19 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
   },
   argTypes: {
+    outline: {
+      control: 'boolean',
+    },
+    text: {
+      control: 'boolean',
+    },
+    elevation: {
+      control: 'select',
+      options: [1, 2, 3, 4, 5, 15],
+    },
     variant: {
       control: 'select',
-      options: ['default', 'primary', 'info', 'success', 'warning', 'danger'],
+      options: ['default', 'primary', 'info', 'success', 'warning', 'danger', 'ghost'],
     },
     size: {
       control: 'select',
