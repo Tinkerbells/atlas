@@ -7,9 +7,9 @@
 import './ripple.styles.scss'
 import type { ComponentProps } from 'solid-js'
 
-import { createEffect, createSignal, onCleanup, onMount, splitProps } from 'solid-js'
+import { batch, createEffect, createSignal, onCleanup, onMount, splitProps, untrack } from 'solid-js'
 
-import { block } from '@/utils/bem'
+import { block } from '@/utils'
 
 const b = block('ripple')
 const PRESS_GROW_MS = 450
@@ -21,12 +21,12 @@ const SOFT_EDGE_CONTAINER_RATIO = 0.35
 const PRESS_PSEUDO = '::after'
 const ANIMATION_FILL = 'forwards'
 const TOUCH_DELAY_MS = 150
-enum State {
-  INACTIVE,
-  TOUCH_DELAY,
-  HOLDING,
-  WAITING_FOR_CLICK,
-}
+const State = {
+  INACTIVE: 0,
+  TOUCH_DELAY: 1,
+  HOLDING: 2,
+  WAITING_FOR_CLICK: 3,
+} as const
 const EVENTS = [
   'click',
   'contextmenu',
@@ -43,31 +43,37 @@ export function Ripple(props: RippleProps) {
   const [local, rest] = splitProps(props, ['disabled', 'class'])
   const [hovered, setHovered] = createSignal(false)
   const [pressed, setPressed] = createSignal(false)
-  const [state, setState] = createSignal(State.INACTIVE)
-  let mdRoot: HTMLDivElement | undefined
+  const [state, setState] = createSignal<typeof State[keyof typeof State]>(State.INACTIVE)
+  let root: HTMLDivElement | undefined
   let growAnimation: Animation | undefined
   let rippleStartEvent: PointerEvent | undefined
   let rippleSize = ''
   let rippleScale = ''
   let initialSize = 0
-  const FORCED_COLORS = typeof window !== 'undefined' ? window.matchMedia('(forced-colors: active)') : null
+  let rectCache: DOMRect | null = null
+  const timeouts: number[] = []
+
   function getNormalizedPointerEventCoords(pointerEvent: PointerEvent): { x: number, y: number } {
     const { scrollX, scrollY } = window
-    const { left, top } = mdRoot!.getBoundingClientRect()
+    const rect = root!.getBoundingClientRect()
+    const { left, top } = rect
     const documentX = scrollX + left
     const documentY = scrollY + top
     const { pageX, pageY } = pointerEvent
-    const zoom = (mdRoot! as any).currentCSSZoom ?? 1
+    const zoom = (root! as any).currentCSSZoom ?? 1
     return {
       x: (pageX - documentX) / zoom,
       y: (pageY - documentY) / zoom,
     }
   }
+
   function determineRippleSize() {
-    const { height, width } = mdRoot!.getBoundingClientRect()
+    const rect = root!.getBoundingClientRect()
+    rectCache = rect
+    const { height, width } = rect
     const maxDim = Math.max(height, width)
     const softEdgeSize = Math.max(SOFT_EDGE_CONTAINER_RATIO * maxDim, SOFT_EDGE_MINIMUM_SIZE)
-    const zoom = (mdRoot! as any).currentCSSZoom ?? 1
+    const zoom = (root! as any).currentCSSZoom ?? 1
     initialSize = Math.floor((maxDim * INITIAL_ORIGIN_SCALE) / zoom)
     const hypotenuse = Math.sqrt(width ** 2 + height ** 2)
     const maxRadius = hypotenuse + PADDING
@@ -75,9 +81,11 @@ export function Ripple(props: RippleProps) {
     rippleScale = `${maybeZoomedScale / zoom}`
     rippleSize = `${initialSize}px`
   }
+
   function getTranslationCoordinates(positionEvent?: Event) {
-    const { height, width } = mdRoot!.getBoundingClientRect()
-    const zoom = (mdRoot! as any).currentCSSZoom ?? 1
+    const rect = rectCache || root!.getBoundingClientRect()
+    const { height, width } = rect
+    const zoom = (root! as any).currentCSSZoom ?? 1
     const endPoint = {
       x: (width / zoom - initialSize) / 2,
       y: (height / zoom - initialSize) / 2,
@@ -98,8 +106,9 @@ export function Ripple(props: RippleProps) {
     }
     return { startPoint, endPoint }
   }
+
   function startPressAnimation(positionEvent?: Event) {
-    if (!mdRoot)
+    if (!root)
       return
     setPressed(true)
     growAnimation?.cancel()
@@ -107,7 +116,7 @@ export function Ripple(props: RippleProps) {
     const { startPoint, endPoint } = getTranslationCoordinates(positionEvent)
     const translateStart = `${startPoint.x}px, ${startPoint.y}px`
     const translateEnd = `${endPoint.x}px, ${endPoint.y}px`
-    growAnimation = mdRoot.animate(
+    growAnimation = root.animate(
       {
         top: [0, 0],
         left: [0, 0],
@@ -126,6 +135,7 @@ export function Ripple(props: RippleProps) {
       },
     )
   }
+
   async function endPressAnimation() {
     rippleStartEvent = undefined
     setState(State.INACTIVE)
@@ -141,17 +151,22 @@ export function Ripple(props: RippleProps) {
       setPressed(false)
       return
     }
-    await new Promise((resolve) => {
-      setTimeout(resolve, MINIMUM_PRESS_MS - pressAnimationPlayState)
-    })
-    if (growAnimation !== animation) {
-      return
-    }
-    setPressed(false)
+    const timeoutId = window.setTimeout(() => {
+      const idx = timeouts.indexOf(timeoutId as unknown as number)
+      if (idx > -1) {
+        timeouts.splice(idx, 1)
+      }
+      if (growAnimation === animation) {
+        setPressed(false)
+      }
+    }, MINIMUM_PRESS_MS - pressAnimationPlayState)
+    timeouts.push(timeoutId as unknown as number)
   }
+
   function isTouch({ pointerType }: PointerEvent) {
     return pointerType === 'touch'
   }
+
   function shouldReactToEvent(event: PointerEvent) {
     if (local.disabled || !event.isPrimary) {
       return false
@@ -165,11 +180,13 @@ export function Ripple(props: RippleProps) {
     const isPrimaryButton = event.buttons === 1
     return isTouch(event) || isPrimaryButton
   }
+
   function handlePointerenter(event: PointerEvent) {
     if (!shouldReactToEvent(event))
       return
     setHovered(true)
   }
+
   function handlePointerleave(event: PointerEvent) {
     if (!shouldReactToEvent(event))
       return
@@ -178,6 +195,7 @@ export function Ripple(props: RippleProps) {
       endPressAnimation()
     }
   }
+
   function handlePointerup(event: PointerEvent) {
     if (!shouldReactToEvent(event))
       return
@@ -190,6 +208,7 @@ export function Ripple(props: RippleProps) {
       startPressAnimation(rippleStartEvent)
     }
   }
+
   async function handlePointerdown(event: PointerEvent) {
     if (!shouldReactToEvent(event))
       return
@@ -200,15 +219,19 @@ export function Ripple(props: RippleProps) {
       return
     }
     setState(State.TOUCH_DELAY)
-    await new Promise((resolve) => {
-      setTimeout(resolve, TOUCH_DELAY_MS)
-    })
-    if (state() !== State.TOUCH_DELAY) {
-      return
-    }
-    setState(State.HOLDING)
-    startPressAnimation(event)
+    const timeoutId = window.setTimeout(() => {
+      const idx = timeouts.indexOf(timeoutId as unknown as number)
+      if (idx > -1) {
+        timeouts.splice(idx, 1)
+      }
+      if (untrack(() => state()) === State.TOUCH_DELAY) {
+        setState(State.HOLDING)
+        startPressAnimation(event)
+      }
+    }, TOUCH_DELAY_MS)
+    timeouts.push(timeoutId as unknown as number)
   }
+
   function handleClick() {
     if (local.disabled)
       return
@@ -221,18 +244,21 @@ export function Ripple(props: RippleProps) {
       endPressAnimation()
     }
   }
+
   function handlePointercancel(event: PointerEvent) {
     if (!shouldReactToEvent(event))
       return
     endPressAnimation()
   }
+
   function handleContextmenu() {
     if (local.disabled)
       return
     endPressAnimation()
   }
+
   function handleEvent(event: Event) {
-    if (FORCED_COLORS?.matches) {
+    if (window.matchMedia?.('(forced-colors: active)')?.matches) {
       return
     }
     switch (event.type) {
@@ -261,16 +287,23 @@ export function Ripple(props: RippleProps) {
         break
     }
   }
+
   let parentElement: HTMLElement | null = null
+
   onMount(() => {
-    parentElement = mdRoot?.parentElement || null
+    parentElement = root?.parentElement || null
     if (parentElement) {
       for (const event of EVENTS) {
         parentElement.addEventListener(event, handleEvent as EventListener)
       }
     }
   })
+
   onCleanup(() => {
+    for (const timeoutId of timeouts) {
+      window.clearTimeout(timeoutId)
+    }
+    timeouts.length = 0
     if (parentElement) {
       for (const event of EVENTS) {
         parentElement.removeEventListener(event, handleEvent as EventListener)
@@ -278,15 +311,19 @@ export function Ripple(props: RippleProps) {
     }
     growAnimation?.cancel()
   })
+
   createEffect(() => {
     if (local.disabled) {
-      setHovered(false)
-      setPressed(false)
+      batch(() => {
+        setHovered(false)
+        setPressed(false)
+      })
     }
   })
+
   return (
     <div
-      ref={mdRoot}
+      ref={root}
       class={b(
         {
           hovered: hovered(),
