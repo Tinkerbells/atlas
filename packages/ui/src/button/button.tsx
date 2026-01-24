@@ -1,5 +1,4 @@
 import './button.styles.scss'
-import '@styles/elevation.scss'
 import type { ComponentProps, JSX } from 'solid-js'
 
 import { mergeProps, Show, splitProps } from 'solid-js'
@@ -29,7 +28,7 @@ interface ButtonLoadingProps {
   ripple?: boolean
   /**
    * The elevation level of the button.
-   * @default false
+   * @default 2
    */
   elevation?: boolean | number | string
   /**
@@ -61,6 +60,7 @@ export function Button(props: ButtonProps) {
     {
       variant: 'default',
       size: 'normal',
+      elevation: 2,
       ripple: true,
     },
     props,
@@ -85,13 +85,13 @@ export function Button(props: ButtonProps) {
     <button
       type="button"
       disabled={local.loading || rest.disabled}
+      data-elevation={local.elevation === true ? 2 : local.elevation}
       class={b(
         {
           [local.size]: true,
           [local.variant]: true,
           outline: local.outline,
           text: local.text,
-          elevation: !local.text && local.elevation,
           disabled: rest.disabled,
         },
         local.class,

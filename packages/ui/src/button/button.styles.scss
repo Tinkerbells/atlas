@@ -1,4 +1,5 @@
 @use '@styles/variables';
+@use '@styles/elevation';
 
 $block: '.#{variables.$ns}button';
 
@@ -56,18 +57,21 @@ $block: '.#{variables.$ns}button';
   cursor: pointer;
   font-family: inherit;
   transition:
-    box-shadow 0.2s,
     background-color 0.25s,
     border-radius 0.2s;
-  will-change: box-shadow;
   -webkit-tap-highlight-color: transparent;
   white-space: nowrap;
 
-  &:active {
-    box-shadow:
-      0 3px 5px -1px var(--shadow-key-umbra-opacity),
-      0 5px 8px 0 var(--shadow-key-penumbra-opacity),
-      0 1px 14px 0 var(--shadow-key-ambient-opacity);
+  @include elevation.data-elevation;
+
+  &:active:not(&--disabled):not(&--text) {
+    @include elevation.elevation(5);
+  }
+
+  &--text {
+    &:active {
+      box-shadow: none;
+    }
   }
 
   &__content {
@@ -94,9 +98,11 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(closest-side,
-            var(--color-on-surface-variant) max(calc(100% - 70px), 65%),
-            transparent 100%);
+        background: radial-gradient(
+          closest-side,
+          var(--color-on-surface-variant) max(calc(100% - 70px), 65%),
+          transparent 100%
+        );
       }
     }
   }
@@ -111,9 +117,11 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(closest-side,
-            var(--color-on-primary) max(calc(100% - 70px), 65%),
-            transparent 100%);
+        background: radial-gradient(
+          closest-side,
+          var(--color-on-primary) max(calc(100% - 70px), 65%),
+          transparent 100%
+        );
       }
     }
   }
@@ -143,9 +151,11 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(closest-side,
-            var(--color-on-success) max(calc(100% - 70px), 65%),
-            transparent 100%);
+        background: radial-gradient(
+          closest-side,
+          var(--color-on-success) max(calc(100% - 70px), 65%),
+          transparent 100%
+        );
       }
     }
   }
@@ -160,9 +170,11 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(closest-side,
-            var(--color-on-warning) max(calc(100% - 70px), 65%),
-            transparent 100%);
+        background: radial-gradient(
+          closest-side,
+          var(--color-on-warning) max(calc(100% - 70px), 65%),
+          transparent 100%
+        );
       }
     }
   }
