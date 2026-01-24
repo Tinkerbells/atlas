@@ -63,12 +63,12 @@ $block: '.#{variables.$ns}button';
   -webkit-tap-highlight-color: transparent;
   white-space: nowrap;
 
-  // &:active {
-  //   box-shadow:
-  //     0 3px 5px -1px var(--shadow-key-umbra-opacity),
-  //     0 5px 8px 0 var(--shadow-key-penumbra-opacity),
-  //     0 1px 14px 0 var(--shadow-key-ambient-opacity);
-  // }
+  &:active {
+    box-shadow:
+      0 3px 5px -1px var(--shadow-key-umbra-opacity),
+      0 5px 8px 0 var(--shadow-key-penumbra-opacity),
+      0 1px 14px 0 var(--shadow-key-ambient-opacity);
+  }
 
   &__content {
     display: flex;
@@ -94,11 +94,9 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(
-          closest-side,
-          var(--color-on-surface-variant) max(calc(100% - 70px), 65%),
-          transparent 100%
-        );
+        background: radial-gradient(closest-side,
+            var(--color-on-surface-variant) max(calc(100% - 70px), 65%),
+            transparent 100%);
       }
     }
   }
@@ -113,11 +111,9 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(
-          closest-side,
-          var(--color-on-primary) max(calc(100% - 70px), 65%),
-          transparent 100%
-        );
+        background: radial-gradient(closest-side,
+            var(--color-on-primary) max(calc(100% - 70px), 65%),
+            transparent 100%);
       }
     }
   }
@@ -147,11 +143,9 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(
-          closest-side,
-          var(--color-on-success) max(calc(100% - 70px), 65%),
-          transparent 100%
-        );
+        background: radial-gradient(closest-side,
+            var(--color-on-success) max(calc(100% - 70px), 65%),
+            transparent 100%);
       }
     }
   }
@@ -166,11 +160,9 @@ $block: '.#{variables.$ns}button';
       }
 
       &::after {
-        background: radial-gradient(
-          closest-side,
-          var(--color-on-warning) max(calc(100% - 70px), 65%),
-          transparent 100%
-        );
+        background: radial-gradient(closest-side,
+            var(--color-on-warning) max(calc(100% - 70px), 65%),
+            transparent 100%);
       }
     }
   }
@@ -274,12 +266,6 @@ $block: '.#{variables.$ns}button';
     height: var(--button-mini-height);
     padding: var(--button-mini-padding);
     font-size: var(--button-mini-font-size);
-  }
-
-  &--round {
-    padding: var(--button-round-padding);
-    border-radius: 50%;
-    height: auto;
   }
 
   &--outline {
