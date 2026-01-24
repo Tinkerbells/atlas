@@ -18,7 +18,7 @@ const meta: Meta<typeof Button> = {
     },
     elevation: {
       control: 'select',
-      options: [1, 2, 3, 4, 5, 15],
+      options: [false, true, 0, 1, 2, 3, 4, 5, 6, 8, 12, 16, 24],
     },
     variant: {
       control: 'select',
@@ -141,6 +141,34 @@ export const Ripple: Story = {
       <Button ripple variant="success">
         Success
       </Button>
+    </div>
+  ),
+}
+
+/**
+ * Buttons with different elevation levels
+ */
+export const Elevation: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gap: '16px', width: 'fit-content' }}>
+      <div style={{ 'display': 'flex', 'gap': '16px', 'align-items': 'center' }}>
+        <Button elevation={0}>Level 0</Button>
+        <Button elevation={1}>Level 1</Button>
+        <Button elevation={2}>Level 2</Button>
+        <Button elevation={3}>Level 3</Button>
+        <Button elevation={4}>Level 4</Button>
+      </div>
+      <div style={{ 'display': 'flex', 'gap': '16px', 'align-items': 'center' }}>
+        <Button elevation={6}>Level 6</Button>
+        <Button elevation={8}>Level 8</Button>
+        <Button elevation={12}>Level 12</Button>
+        <Button elevation={16}>Level 16</Button>
+        <Button elevation={24}>Level 24</Button>
+      </div>
+      <div style={{ 'display': 'flex', 'gap': '16px', 'align-items': 'center' }}>
+        <Button elevation={true}>True (default)</Button>
+        <Button elevation={false}>False (none)</Button>
+      </div>
     </div>
   ),
 }
