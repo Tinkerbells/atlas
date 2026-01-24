@@ -1,8 +1,55 @@
 @use '@styles/variables';
 $block: '.#{variables.$ns}ripple';
 
-:root {
-}
-
 #{$block} {
+  display: flex;
+  margin: auto;
+  pointer-events: none;
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+  }
+
+  &::before {
+    background-color: var(--ripple-hover-color);
+    inset: 0;
+    transition:
+      opacity 15ms linear,
+      background-color 15ms linear;
+  }
+
+  &::after {
+    background: radial-gradient(
+      closest-side,
+      var(--ripple-pressed-color) max(calc(100% - 70px), 65%),
+      transparent 100%
+    );
+    transform-origin: center center;
+    transition: opacity 375ms linear;
+  }
+
+  &#{$block}--hovered::before {
+    background-color: var(--ripple-hover-color);
+    opacity: var(--ripple-hover-opacity);
+  }
+
+  &#{$block}--pressed::after {
+    opacity: var(--ripple-pressed-opacity);
+    transition-duration: 105ms;
+  }
+
+  &#{$block}--disabled {
+    display: none;
+  }
+
+  @media (forced-colors: active) {
+    display: none;
+  }
 }
