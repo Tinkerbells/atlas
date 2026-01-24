@@ -1,4 +1,5 @@
 import './button.styles.scss'
+import '@styles/elevation.scss'
 import type { ComponentProps, JSX } from 'solid-js'
 
 import { mergeProps, Show, splitProps } from 'solid-js'
@@ -9,6 +10,8 @@ import { block } from '@/utils/bem'
 const b = block('button')
 
 interface ButtonLoadingProps {
+  outline?: boolean
+  text?: boolean
   /**
    * The visual style of the button.
    * @default "default"
@@ -64,6 +67,8 @@ export function Button(props: ButtonProps) {
   )
 
   const [local, rest] = splitProps(merged, [
+    'outline',
+    'text',
     'variant',
     'size',
     'ripple',
@@ -84,6 +89,9 @@ export function Button(props: ButtonProps) {
         {
           [local.size]: true,
           [local.variant]: true,
+          outline: local.outline,
+          text: local.text,
+          elevation: !local.text && local.elevation,
           disabled: rest.disabled,
         },
         local.class,
@@ -93,7 +101,9 @@ export function Button(props: ButtonProps) {
       <Show when={local.loading} fallback={local.children}>
         <div>Loading...</div>
       </Show>
-      <Ripple />
+      <Show when={local.ripple}>
+        <Ripple />
+      </Show>
     </button>
   )
 }
