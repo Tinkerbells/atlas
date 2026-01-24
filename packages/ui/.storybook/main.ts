@@ -11,7 +11,6 @@ export default defineMain({
     options: {},
   },
   addons: [
-    '@storybook/addon-onboarding',
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
     '@storybook/addon-links',
