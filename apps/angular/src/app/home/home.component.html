@@ -1,8 +1,119 @@
-<div class="container">
-  <h1 class="title">
-    {{ 'PAGES.HOME.TITLE' | translate }}
-  </h1>
-
-  <mat-slide-toggle>Toggle me!</mat-slide-toggle>
-  <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a>
+<div>
+  <mat-sidenav-container class="sidebar-container">
+    <mat-sidenav-content class="sidebar-content">
+      <div ngAccordionGroup class="material-accordion" [multiExpandable]="true">
+        <h3>
+          <span
+            class="uppercase"
+            ngAccordionTrigger
+            panelId="q1"
+            #trigger1="ngAccordionTrigger"
+            [expanded]="true"
+          >
+            Navigation
+            <mat-icon
+              aria-hidden="true"
+              class="material-symbols-outlined expand-icon"
+              [class.expand-icon__expanded]="trigger1.expanded()"
+              fontSet="material-symbols-outlined"
+            >
+              keyboard_arrow_up
+            </mat-icon>
+          </span>
+        </h3>
+        <div ngAccordionPanel panelId="q1">
+          <ng-template ngAccordionContent>
+            <div class="listbox">
+              <div ngListbox>
+                @for (option of options; track option) {
+                  <div ngOption [value]="option">
+                    <span class="example-option-text">{{ option }}</span>
+                    <mat-icon
+                      class="example-option-check material-symbols-outlined"
+                      fontSet="material-symbols-outlined"
+                      >check</mat-icon
+                    >
+                  </div>
+                }
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <h3>
+          <span
+            class="uppercase"
+            ngAccordionTrigger
+            panelId="q2"
+            #trigger2="ngAccordionTrigger"
+            [expanded]="true"
+          >
+            Favorites
+            <mat-icon
+              aria-hidden="true"
+              class="material-symbols-outlined expand-icon"
+              [class.expand-icon__expanded]="trigger2.expanded()"
+              fontSet="material-symbols-outlined"
+            >
+              keyboard_arrow_up
+            </mat-icon>
+          </span>
+        </h3>
+        <div ngAccordionPanel panelId="q2">
+          <ng-template ngAccordionContent>
+            <div class="listbox">
+              <div ngListbox>
+                @for (option of options; track option) {
+                  <div ngOption [value]="option">
+                    <span class="example-option-text">{{ option }}</span>
+                    <mat-icon
+                      class="example-option-check material-symbols-outlined"
+                      fontSet="material-symbols-outlined"
+                      >check</mat-icon
+                    >
+                  </div>
+                }
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <h3>
+          <span
+            class="uppercase"
+            ngAccordionTrigger
+            panelId="q3"
+            #trigger3="ngAccordionTrigger"
+            [expanded]="true"
+          >
+            Recent
+            <mat-icon
+              aria-hidden="true"
+              class="material-symbols-outlined expand-icon"
+              [class.expand-icon__expanded]="trigger3.expanded()"
+              fontSet="material-symbols-outlined"
+            >
+              keyboard_arrow_up
+            </mat-icon>
+          </span>
+        </h3>
+        <div ngAccordionPanel panelId="q3">
+          <ng-template ngAccordionContent>
+            <div class="listbox">
+              <div ngListbox>
+                @for (option of options; track option) {
+                  <div ngOption [value]="option">
+                    <span class="example-option-text">{{ option }}</span>
+                    <mat-icon
+                      class="example-option-check material-symbols-outlined"
+                      fontSet="material-symbols-outlined"
+                      >check</mat-icon
+                    >
+                  </div>
+                }
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>

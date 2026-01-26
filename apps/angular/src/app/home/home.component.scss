@@ -1,3 +1,124 @@
 :host {
-  
+  --bard-sidenav-open-width: 328px;
+}
+[ngAccordionGroup] {
+  width: 300px;
+}
+h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--secondary-contrast);
+  box-sizing: border-box;
+  border-block-start: 1px solid var(--quinary-contrast);
+  border-inline: 1px solid var(--quinary-contrast);
+}
+h3:focus-within,
+h3:hover {
+  background-color: var(--septenary-contrast);
+}
+h3:first-of-type {
+  border-radius: 1rem 1rem 0 0;
+}
+h3:last-of-type {
+  border-block-end: 1px solid var(--quinary-contrast);
+  border-radius: 0 0 1rem 1rem;
+}
+h3:last-of-type:has([aria-expanded="true"]) {
+  border-block-end: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+p {
+  margin: 0;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  color: var(--tertiary-contrast);
+  font-size: 0.875rem;
+  border-inline: 1px solid var(--quinary-contrast);
+  border-radius: 0 0 1rem 1rem;
+  border-block-end: 1px solid var(--quinary-contrast);
+  margin-block-end: 1rem;
+}
+[ngAccordionTrigger] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  outline: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+[ngAccordionTrigger][aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+.expand-icon {
+  font-size: 1.5rem;
+  color: var(--quaternary-contrast);
+  transition: transform 0.3s ease-out;
+}
+.expand-icon__expanded {
+  transform: rotate(180deg);
+}
+.listbox {
+  height: 500px;
+  padding: 0.5rem;
+  border-radius: 2rem;
+  background-color: var(--septenary-contrast);
+  font-size: 0.9rem;
+}
+[ngListbox] {
+  gap: 2px;
+  padding: 2px;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+}
+[ngOption] {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  padding: 0 1rem;
+  min-height: 3rem;
+  border-radius: 3rem;
+}
+
+[ngOption]:hover,
+[ngOption][data-active="true"] {
+  background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
+}
+
+[ngOption][data-active="true"] {
+  outline-offset: -2px;
+  outline: 2px solid var(--primary);
+}
+
+[ngOption][aria-selected="true"] {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+[ngOption]:not([aria-selected="true"]) .example-option-check {
+  display: none;
+}
+.example-option-check {
+  font-size: 0.9rem;
+}
+.example-option-text {
+  flex: 1;
+}
+
+.sidebar-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.sidebar-content {
+  background-color: var(--bard-color-sidenav-background-desktop);
+  width: var(--bard-sidenav-open-width);
+  height: 100%;
+  overflow: auto;
+  padding: 1rem;
 }
