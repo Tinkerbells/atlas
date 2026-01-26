@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { Logger } from '~/logger';
 
 @Component({
     selector: 'app-page-not-found',
@@ -7,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
     standalone: true
 })
 export class PageNotFoundComponent implements OnInit {
-  constructor() {}
+  private readonly logger: Logger = inject(Logger);
 
   ngOnInit(): void {
-    console.log('PageNotFoundComponent INIT');
+    this.logger.info('PageNotFoundComponent INIT', { scope: 'PageNotFoundComponent' });
   }
 }

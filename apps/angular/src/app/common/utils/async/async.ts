@@ -1,6 +1,6 @@
-import type { IDisposable } from '../../core/disposable'
+import type { IDisposable } from '~/common/core/disposable'
 
-import { toDisposable } from '../../core/disposable'
+import { toDisposable } from '~/common/core/disposable'
 
 export class IntervalTimer implements IDisposable {
   private disposable: IDisposable | undefined = undefined
