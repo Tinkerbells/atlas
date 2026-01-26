@@ -41,7 +41,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/uno.css"
             ],
             "scripts": [],
             "browser": "src/main.ts"
@@ -118,7 +119,12 @@
               "lcovonly"
             ],
             "reporters": [
-              ["default", { "summary": true }],
+              [
+                "default",
+                {
+                  "summary": true
+                }
+              ],
               [
                 "html",
                 {
