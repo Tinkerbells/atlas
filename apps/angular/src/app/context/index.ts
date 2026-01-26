@@ -1,2 +1,2 @@
-export * from './context.service'
-export * from './parser'
+export * from './context.service';
+export * from './parser';

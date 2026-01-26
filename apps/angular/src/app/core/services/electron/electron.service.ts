@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import { Logger } from '~/logger';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ElectronService {
+  private readonly logger: Logger = inject(Logger);
   ipcRenderer!: typeof ipcRenderer;
   webFrame!: typeof webFrame;
   childProcess!: typeof childProcess;
@@ -26,14 +28,16 @@ export class ElectronService {
       this.childProcess = (window as any).require('child_process');
       this.childProcess.exec('node -v', (error, stdout, stderr) => {
         if (error) {
-          console.error(`error: ${error.message}`);
+          this.logger.error(`error: ${error.message}`, {
+            scope: 'ElectronService',
+          });
           return;
         }
         if (stderr) {
-          console.error(`stderr: ${stderr}`);
+          this.logger.error(`stderr: ${stderr}`, { scope: 'ElectronService' });
           return;
         }
-        console.log(`stdout:\n${stdout}`);
+        this.logger.info(`stdout:\n${stdout}`, { scope: 'ElectronService' });
       });
 
       // Notes :

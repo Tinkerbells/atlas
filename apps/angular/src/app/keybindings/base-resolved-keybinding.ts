@@ -1,6 +1,6 @@
 import type { Chord } from './keybindings'
 import type { ResolvedChord } from './resolved-keybinding'
-import type { OperatingSystem } from '../shared/core/platform'
+import type { OperatingSystem } from '~/common/core/platform'
 
 import { ResolvedKeybinding } from './resolved-keybinding'
 

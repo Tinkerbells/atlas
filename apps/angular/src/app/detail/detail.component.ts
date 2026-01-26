@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { Logger } from '~/logger';
 
 @Component({
     selector: 'app-detail',
@@ -10,11 +11,10 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [RouterLink, TranslateModule]
 })
 export class DetailComponent implements OnInit {
-
-  constructor() { }
+  private readonly logger: Logger = inject(Logger);
 
   ngOnInit(): void {
-    console.log('DetailComponent INIT');
+    this.logger.info('DetailComponent INIT', { scope: 'DetailComponent' });
    }
 
 }

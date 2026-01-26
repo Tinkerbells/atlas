@@ -1,4 +1,4 @@
-import type { OperatingSystem } from '../shared/core/platform'
+import type { OperatingSystem } from '~/common/core/platform'
 import type { Keybinding, KeyCodeChord } from './keybindings'
 
 import { KeyCode } from './key-codes'

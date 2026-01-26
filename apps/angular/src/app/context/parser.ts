@@ -1,21 +1,19 @@
-import { IContext } from "./context.service"
+import { IContext } from './context.service';
 
 export class ContextKeyExpression {
-  constructor() { }
+  constructor() {}
 
-  static parse(raw: string) {
-    return null
+  static parse(_raw: string) {
+    return null;
   }
 
   evaluate(_context: IContext): boolean {
-    return true
+    return true;
   }
 
-  evalNode(node: any, ctx: IContext) {
+  evalNode(_node: any, _ctx: IContext) {}
 
-  }
-
-  private resolveMemberPath(node: any, ctx: IContext): string {
-    return ''
+  private resolveMemberPath(_node: any, _ctx: IContext): string {
+    return '';
   }
 }

@@ -1,5 +1,6 @@
 import { inject, Injectable, InjectionToken } from '@angular/core'
-import type { IDisposable } from '../shared/core/disposable'
+import type { IDisposable } from '~/common/core/disposable'
+import { Logger } from '~/logger/logger'
 
 export type CommandHandler = (...args: any[]) => void
 
@@ -18,10 +19,11 @@ export interface ICommandRegistry {
 })
 export class CommandRegistry implements ICommandRegistry {
   private _commands = new Map<string, ICommand>()
+  private readonly logger: Logger = inject(Logger)
 
   registerCommand(id: ICommand['id'], handler: ICommand['handler']): IDisposable {
     if (this._commands.has(id)) {
-      console.warn(`Command ${id} is already registered!`)
+      this.logger.warning(`Command ${id} is already registered!`, { scope: 'CommandRegistry' })
       return {
         dispose: () => { },
       }

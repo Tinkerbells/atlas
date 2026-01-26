@@ -1,21 +1,22 @@
 import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { AppComponent } from './app/app.component';
 import { APP_CONFIG } from './environments/environment';
 import { CoreModule } from './app/core/core.module';
-import { SharedModule } from './app/shared/shared.module';
-import { KeybindingsModule } from './app/keybindings/keybindings.module';
-import { CommandsModule } from './app/commands/commands.module';
-import { ContextModule } from './app/context/context.module';
+import { SharedModule } from './app/common/common.module';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { PageNotFoundComponent } from './app/shared/components';
+import { PageNotFoundComponent } from './app/common/components';
 import { HomeComponent } from './app/home/home.component';
 import { DetailComponent } from './app/detail/detail.component';
+import { provideLogger } from './app/logger';
 
 if (APP_CONFIG.production) {
   enableProdMode();
@@ -23,40 +24,36 @@ if (APP_CONFIG.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(), provideHttpClient(withInterceptorsFromDi()),
+    provideLogger(),
+    provideZoneChangeDetection(),
+    provideHttpClient(withInterceptorsFromDi()),
     provideTranslateService({
       loader: provideTranslateHttpLoader({
         prefix: './assets/i18n/',
-        suffix: '.json'
+        suffix: '.json',
       }),
       fallbackLang: 'en',
-      lang: 'en'
+      lang: 'en',
     }),
     provideRouter([
       {
         path: '',
         redirectTo: 'home',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'home',
-        component: HomeComponent
+        component: HomeComponent,
       },
       {
         path: 'detail',
-        component: DetailComponent
+        component: DetailComponent,
       },
       {
         path: '**',
-        component: PageNotFoundComponent
-      }
+        component: PageNotFoundComponent,
+      },
     ]),
-    importProvidersFrom(
-      CoreModule,
-      SharedModule,
-      ContextModule,
-      CommandsModule,
-      KeybindingsModule
-    )
-  ]
-}).catch(err => console.error(err));
+    importProvidersFrom(CoreModule, SharedModule),
+  ],
+}).catch((err) => console.error(err));

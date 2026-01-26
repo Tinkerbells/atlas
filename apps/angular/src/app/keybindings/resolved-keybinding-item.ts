@@ -1,4 +1,4 @@
-import type { ContextKeyExpression } from '../context/parser'
+import type { ContextKeyExpression } from '~/context/parser'
 import type { ResolvedKeybinding } from './resolved-keybinding'
 
 export class ResolvedKeybindingItem {

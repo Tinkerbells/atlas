@@ -3,7 +3,7 @@ import { inject, Injectable, InjectionToken } from '@angular/core'
 import type { IKeyboardMapper } from './keyboard-mapper'
 
 import { KeyboardMapper } from './keyboard-mapper'
-import { OperatingSystem } from '../shared/core/platform'
+import { OperatingSystem } from '~/common/core/platform'
 
 export interface IWindowsKeyMapping {
   vkey: string
