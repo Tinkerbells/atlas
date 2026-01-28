@@ -72,7 +72,7 @@ export class KeyboardMapper implements IKeyboardMapper {
       e.metaKey,
       scanCodeFromStr(e.code),
     );
-    const [result] = this.resolveKeybinding(new Keybinding([chord]));
+    const result = this.resolveKeybinding(new Keybinding([chord]))[0];
     return result;
   }
 
