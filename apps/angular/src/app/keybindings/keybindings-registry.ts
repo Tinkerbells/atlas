@@ -67,7 +67,14 @@ export class KeybindingsRegistryImpl
   protected _logger: Logger;
 
   constructor(logger?: Logger) {
-    this._logger = logger || (inject(Logger, { optional: true }) as Logger);
+    this._logger = logger || {
+      critical: () => {},
+      debug: () => {},
+      error: () => {},
+      info: () => {},
+      trace: () => {},
+      warning: () => {},
+    };
     this._coreKeybindings = [];
     this._cachedKeybindings = null;
   }
@@ -117,10 +124,7 @@ export class KeybindingsRegistryImpl
 
     if (actualKb.secondary) {
       for (let i = 0; i < actualKb.secondary.length; i++) {
-        const kb = decodeKeybinding(
-          actualKb.secondary[i],
-          OS,
-        );
+        const kb = decodeKeybinding(actualKb.secondary[i], OS);
         if (kb) {
           this._checkForReservedKeybinding(kb, OS, rule.id);
           result.add(
@@ -144,7 +148,10 @@ export class KeybindingsRegistryImpl
     os: OperatingSystem,
     commandId: string,
   ): void {
-    const resolvedKeybindings = USLayoutResolvedKeybinding.resolveKeybinding(keybinding, os);
+    const resolvedKeybindings = USLayoutResolvedKeybinding.resolveKeybinding(
+      keybinding,
+      os,
+    );
     if (resolvedKeybindings.length > 0) {
       const dispatchStr = resolvedKeybindings[0].getDispatchChords()[0];
       if (dispatchStr && isReservedBrowserKeybinding(dispatchStr)) {

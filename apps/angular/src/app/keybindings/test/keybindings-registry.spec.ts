@@ -4,35 +4,12 @@ import type { Logger } from '~/logger/logger';
 import { KeybindingsRegistryImpl } from '../keybindings-registry';
 import { ContextKeyExpression } from '~/context/parser';
 import { OperatingSystem, OS } from '~/common/core/platform';
+import { ScanCode, ScanCodeMod } from '~/codes';
 
 // ============================================
-// Test helpers (для тестов)
+// Creates simple context expression
 // ============================================
 
-/**
- * Test modifiers
- */
-const KeyMod = {
-  CtrlCmd: 2048,
-  Shift: 1024,
-  Alt: 512,
-  WinCtrl: 256,
-};
-
-/**
- * Test scan codes
- */
-const KeyCode = {
-  KeyA: 20,
-  KeyB: 21,
-  KeyC: 22,
-  KeyF: 25,
-  KeyZ: 35,
-};
-
-/**
- * Creates simple context expression
- */
 function createContextRule(expression: (ctx: any) => boolean): ContextKeyExpression {
   class CustomContextExpression extends ContextKeyExpression {
     constructor(private readonly _expression: (ctx: any) => boolean) {
@@ -47,9 +24,10 @@ function createContextRule(expression: (ctx: any) => boolean): ContextKeyExpress
   return new CustomContextExpression(expression);
 }
 
-/**
- * Mock Logger for tests
- */
+// ============================================
+// Mock Logger for tests
+// ============================================
+
 const mockLogger: Logger = {
   critical: () => {},
   debug: () => {},
@@ -84,7 +62,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result1 = registry.getDefaultKeybindings();
@@ -99,7 +77,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyB,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyB,
       });
 
       const result2 = registry.getDefaultKeybindings();
@@ -115,7 +93,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result1 = registry.getDefaultKeybindings();
@@ -134,7 +112,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyF,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyF,
       });
 
       const result = registry.getDefaultKeybindings();
@@ -150,10 +128,10 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
         secondary: [
-          KeyMod.CtrlCmd | KeyCode.KeyF,
-          KeyMod.CtrlCmd | KeyCode.KeyZ,
+          ScanCodeMod.CtrlCmd | ScanCode.KeyF,
+          ScanCodeMod.CtrlCmd | ScanCode.KeyZ,
         ],
       });
 
@@ -171,12 +149,12 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
         mac: {
-          primary: KeyMod.CtrlCmd | KeyCode.KeyF,
+          primary: ScanCodeMod.CtrlCmd | ScanCode.KeyF,
         },
         win: {
-          primary: KeyMod.CtrlCmd | KeyCode.KeyZ,
+          primary: ScanCodeMod.CtrlCmd | ScanCode.KeyZ,
         },
       });
 
@@ -199,7 +177,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result1 = registry.getDefaultKeybindings();
@@ -218,7 +196,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result1 = registry.getDefaultKeybindings();
@@ -229,7 +207,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyB,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyB,
       });
 
       const result2 = registry.getDefaultKeybindings();
@@ -244,7 +222,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: contextRule,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result = registry.getDefaultKeybindings();
@@ -260,7 +238,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: args,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result = registry.getDefaultKeybindings();
@@ -278,7 +256,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       registry.registerKeybindingRule({
@@ -286,7 +264,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyB,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyB,
       });
 
       const result1 = registry.getDefaultKeybindings();
@@ -305,7 +283,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result1 = registry.getDefaultKeybindings();
@@ -318,7 +296,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyB,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyB,
       });
 
       const result2 = registry.getDefaultKeybindings();
@@ -334,7 +312,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const _disposable2 = registry.registerKeybindingRule({
@@ -342,7 +320,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 200, // higher weight
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | KeyCode.KeyA,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.KeyA,
       });
 
       const result = registry.getDefaultKeybindings();
@@ -372,7 +350,7 @@ describe('KeybindingsRegistryImpl', () => {
         weight: 100,
         when: undefined,
         args: undefined,
-        primary: KeyMod.CtrlCmd | 13, // KeyR - reserved
+        primary: ScanCodeMod.CtrlCmd | 37, // KeyR - reserved
       });
 
       const result = registry.getDefaultKeybindings();

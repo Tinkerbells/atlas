@@ -29,12 +29,24 @@ export class KeyboardMapper implements IKeyboardMapper {
     // Modifiers and navigation keys should not be dispatchable
     const nonDispatchableScanCodes = [
       ScanCode.None,
-      ScanCode.ControlLeft, ScanCode.ShiftLeft, ScanCode.AltLeft,
-      ScanCode.MetaLeft, ScanCode.ControlRight, ScanCode.ShiftRight, ScanCode.AltRight,
-      ScanCode.MetaRight, ScanCode.CapsLock, ScanCode.NumLock, ScanCode.ScrollLock
+      ScanCode.ControlLeft,
+      ScanCode.ShiftLeft,
+      ScanCode.AltLeft,
+      ScanCode.MetaLeft,
+      ScanCode.ControlRight,
+      ScanCode.ShiftRight,
+      ScanCode.AltRight,
+      ScanCode.MetaRight,
+      ScanCode.CapsLock,
+      ScanCode.NumLock,
+      ScanCode.ScrollLock,
     ];
 
-    for (let scanCode = ScanCode.None; scanCode < ScanCode.MAX_VALUE; scanCode++) {
+    for (
+      let scanCode = ScanCode.None;
+      scanCode < ScanCode.MAX_VALUE;
+      scanCode++
+    ) {
       if (nonDispatchableScanCodes.includes(scanCode)) {
         continue;
       }

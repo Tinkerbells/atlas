@@ -106,6 +106,19 @@ export class Keybinding {
       return null;
     }
 
+    const firstChord = (keybinding & 0x0000FFFF) >>> 0;
+    const secondChord = (keybinding & 0xFFFF0000) >>> 16;
+
+    if (secondChord !== 0) {
+      return new Keybinding([
+        ScanCodeChord.fromNumber(firstChord, OS),
+        ScanCodeChord.fromNumber(secondChord, OS),
+      ]);
+    }
+
+    return new Keybinding([ScanCodeChord.fromNumber(firstChord, OS)]);
+  }
+
     const firstChord = (keybinding & 0x0000ffff) >>> 0;
     const secondChord = (keybinding & 0xffff0000) >>> 16;
 
