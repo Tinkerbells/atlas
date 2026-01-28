@@ -1,4 +1,20 @@
-import { KeyCode } from './key-codes';
+import { OperatingSystem } from '~/common';
+import { ScanCode } from './codes';
+
+export const enum ScanCodeMod {
+  CtrlCmd = (1 << 11) >>> 0, // 2048 (совпадает с маской)
+  Shift = (1 << 10) >>> 0, // 1024
+  Alt = (1 << 9) >>> 0, // 512
+  WinCtrl = (1 << 8) >>> 0, // 256
+}
+
+export const enum BinaryScanCodeMask {
+  CtrlCmd = (1 << 11) >>> 0, // 2048 (bit 11)
+  Shift = (1 << 10) >>> 0, // 1024 (bit 10)
+  Alt = (1 << 9) >>> 0, // 512 (bit 9)
+  WinCtrl = (1 << 8) >>> 0, // 256 (bit 8)
+  ScanCode = 0x000000ff, // 255 (биты 0-7)
+}
 
 export interface Modifiers {
   readonly ctrlKey: boolean;
@@ -7,18 +23,60 @@ export interface Modifiers {
   readonly metaKey: boolean;
 }
 
-export class KeyCodeChord implements Modifiers {
+export class ScanCodeChord implements Modifiers {
   constructor(
     public readonly ctrlKey: boolean,
     public readonly shiftKey: boolean,
     public readonly altKey: boolean,
     public readonly metaKey: boolean,
-    public readonly code: KeyCode,
+    public readonly code: ScanCode,
   ) {}
 
-  public equals(other: KeyCodeChord): boolean {
+  /**
+   * Создает ScanCodeChord из 16-битного числа keybinding
+   *
+   * Пример: 2103 (Ctrl+K)
+   */
+  public static fromNumber(
+    keybinding: number,
+    OS: OperatingSystem,
+  ): ScanCodeChord {
+    const ctrlCmd = (keybinding & BinaryScanCodeMask.CtrlCmd) !== 0;
+    const shiftKey = (keybinding & BinaryScanCodeMask.Shift) !== 0;
+    const altKey = (keybinding & BinaryScanCodeMask.Alt) !== 0;
+    const winCtrl = (keybinding & BinaryScanCodeMask.WinCtrl) !== 0;
+
+    // Mac: Ctrl=Cbit, Meta=Wbit | Win: Ctrl=Wbit, Meta=Cbit
+    const ctrlKey = OS === OperatingSystem.Macintosh ? winCtrl : ctrlCmd;
+    const metaKey = OS === OperatingSystem.Macintosh ? ctrlCmd : winCtrl;
+
+    const scanCode = (keybinding & BinaryScanCodeMask.ScanCode) as ScanCode;
+
+    return new ScanCodeChord(ctrlKey, shiftKey, altKey, metaKey, scanCode);
+  }
+
+  public toNumber(OS: OperatingSystem): number {
+    const ctrlCmd = this.ctrlKey;
+    const winCtrl = this.metaKey;
+
+    const ctrlCmdFlag = OS === OperatingSystem.Macintosh ? winCtrl : ctrlCmd;
+    const winCtrlFlag = OS === OperatingSystem.Macintosh ? ctrlCmd : winCtrl;
+
+    let result = this.code;
+
+    if (ctrlCmdFlag) result |= BinaryScanCodeMask.CtrlCmd;
+    if (this.shiftKey) result |= BinaryScanCodeMask.Shift;
+    if (this.altKey) result |= BinaryScanCodeMask.Alt;
+    if (winCtrlFlag) result |= BinaryScanCodeMask.WinCtrl;
+
+    return result >>> 0;
+  }
+
+  /**
+   * Равенство двух chord'ов
+   */
+  public equals(other: ScanCodeChord): boolean {
     return (
-      other instanceof KeyCodeChord &&
       this.ctrlKey === other.ctrlKey &&
       this.shiftKey === other.shiftKey &&
       this.altKey === other.altKey &&
@@ -26,49 +84,9 @@ export class KeyCodeChord implements Modifiers {
       this.code === other.code
     );
   }
-
-  public getHashCode(): string {
-    const ctrl = this.ctrlKey ? 'C' : '';
-    const shift = this.shiftKey ? 'S' : '';
-    const alt = this.altKey ? 'A' : '';
-    const meta = this.metaKey ? 'M' : '';
-    return `${ctrl}${shift}${alt}${meta}-${this.code}`;
-  }
-
-  public isModifierKey(): boolean {
-    return (
-      this.code === KeyCode.ControlLeft ||
-      this.code === KeyCode.ControlRight ||
-      this.code === KeyCode.ShiftLeft ||
-      this.code === KeyCode.ShiftRight ||
-      this.code === KeyCode.AltLeft ||
-      this.code === KeyCode.AltRight ||
-      this.code === KeyCode.MetaLeft ||
-      this.code === KeyCode.MetaRight
-    );
-  }
-
-  public toKeybinding(): Keybinding {
-    return new Keybinding([this]);
-  }
-
-  public isDuplicateModifierCase(): boolean {
-    return (
-      (this.ctrlKey &&
-        (this.code === KeyCode.ControlLeft ||
-          this.code === KeyCode.ControlRight)) ||
-      (this.shiftKey &&
-        (this.code === KeyCode.ShiftLeft ||
-          this.code === KeyCode.ShiftRight)) ||
-      (this.altKey &&
-        (this.code === KeyCode.AltLeft || this.code === KeyCode.AltRight)) ||
-      (this.metaKey &&
-        (this.code === KeyCode.MetaLeft || this.code === KeyCode.MetaRight))
-    );
-  }
 }
 
-export type Chord = KeyCodeChord;
+export type Chord = ScanCodeChord;
 
 export class Keybinding {
   public readonly chords: Chord[];
@@ -78,6 +96,70 @@ export class Keybinding {
       throw new Error('Keybinding must contain at least one chord.');
     }
     this.chords = chords;
+  }
+  public static fromNumber(
+    keybinding: number,
+    OS: OperatingSystem,
+  ): Keybinding | null {
+    if (keybinding === 0) {
+      return null;
+    }
+
+    // BUG FIX: Correctly encode multi-chord keybindings - tests fail
+    // First chord: bits 0-15 (scan code), bits 16-31 (modifiers)
+    // Second chord: bits 16-31 (scan code), bits 16-31 (modifiers)
+    const firstChord = (keybinding & 0x0000FFFF) >>> 0;
+    const secondChord = (keybinding & 0xFFFF0000) >>> 16;
+
+    if (secondChord !== 0) {
+      return new Keybinding([
+        ScanCodeChord.fromNumber(firstChord & 0xFF, OS),
+        ScanCodeChord.fromNumber(secondChord & 0xFF, OS),
+      ]);
+    }
+
+    return new Keybinding([ScanCodeChord.fromNumber(firstChord & 0xFF, OS)]);
+  }
+
+  public toNumber(OS: OperatingSystem): number {
+    let result = 0;
+
+    if (this.chords.length > 0) {
+      result = this.chords[0].toNumber(OS);
+    };
+
+    if (this.chords.length > 1) {
+      return new Keybinding([
+        ScanCodeChord.fromNumber(firstChord & 0xFF, OS),
+        ScanCodeChord.fromNumber(this.chords[1].toNumber(OS) & 0xFF, OS),
+      ]);
+    }
+
+    return result;
+  }
+
+    if (this.chords.length > 1) {
+      const secondChordValue = this.chords[1].toNumber(OS);
+      result = result | (secondChordValue << 16);
+    }
+
+    return result >>> 0;
+  }
+
+    if (this.chords.length > 1) {
+      result = result | (this.chords[1].toNumber(OS) & 0xFF << 16);
+    }
+
+    return result >>> 0;
+  }
+
+    // BUG FIX: 16-bit to 32-bit combination is incorrect - tests fail
+    if (this.chords.length > 1) {
+      const secondPart = this.chords[1].toNumber(OS);
+      result |= (secondPart << 16) >>> 0;
+    }
+
+    return result >>> 0;
   }
 
   hasMultipleChords(): boolean {
@@ -95,55 +177,20 @@ export class Keybinding {
   }
 }
 
-export function toKeyCode(code: string): KeyCode {
-  return KeyCode[code as keyof typeof KeyCode] ?? KeyCode.Unknown;
-}
-
-function parseChord(str: string): KeyCodeChord {
-  const parts = str
-    .split('+')
-    .map((p) => p.trim())
-    .filter(Boolean);
-  const mods = new Set<string>();
-  let keyPart: string | null = null;
-  for (const p of parts) {
-    const low = p.toLowerCase();
-    if (low === 'ctrl' || low === 'control') mods.add('ctrl');
-    else if (low === 'shift') mods.add('shift');
-    else if (low === 'alt' || low === 'option') mods.add('alt');
-    else if (
-      low === 'meta' ||
-      low === 'cmd' ||
-      low === 'win' ||
-      low === 'super'
-    )
-      mods.add('meta');
-    else keyPart = p;
-  }
-  const code = keyPart
-    ? (KeyCode[keyPart as keyof typeof KeyCode] ?? KeyCode.Unknown)
-    : KeyCode.Unknown;
-  return new KeyCodeChord(
-    mods.has('ctrl'),
-    mods.has('shift'),
-    mods.has('alt'),
-    mods.has('meta'),
-    code,
-  );
-}
-
+/**
+ * Главна функция декодирования (как VS Code)
+ *
+ * @param keybinding - число или массив чисел
+ * @param OS - операционная система
+ */
 export function decodeKeybinding(
-  input: string | string[] | undefined | null,
+  keybinding: number | number[],
+  OS: OperatingSystem,
 ): Keybinding | null {
-  if (!input) return null;
-  if (Array.isArray(input)) {
-    const chords = input.map(parseChord);
+  if (typeof keybinding === 'number') {
+    return Keybinding.fromNumber(keybinding, OS);
+  } else {
+    const chords = keybinding.map((kb) => ScanCodeChord.fromNumber(kb, OS));
     return new Keybinding(chords);
   }
-  const chords = input
-    .split(' ')
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map(parseChord);
-  return chords.length ? new Keybinding(chords) : null;
 }
