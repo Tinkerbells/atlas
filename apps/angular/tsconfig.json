@@ -1,5 +1,4 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
     "outDir": "./dist/out-tsc",
@@ -9,7 +8,6 @@
     "declaration": false,
     "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "allowJs": true,
     "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
