@@ -25,7 +25,7 @@ export class KeyboardMapper implements IKeyboardMapper {
       this._scanCodeToDispatch[scanCode] = null;
     }
 
-    // BUG FIX: Populate _scanCodeToDispatch for common keys
+    // Populate _scanCodeToDispatch for common keys
     // Modifiers and navigation keys should not be dispatchable
     const nonDispatchableScanCodes = [
       ScanCode.None,

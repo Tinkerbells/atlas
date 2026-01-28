@@ -196,7 +196,7 @@ export class KeybindingsRegistryImpl
   }
 }
 
-// BUG: Sorting/deduplication logic doesn't work correctly for duplicate keybindings
+// Sorting/deduplication logic doesn't work correctly for duplicate keybindings
 function sorter(a: IKeybindingItem, b: IKeybindingItem): number {
   if (a.weight1 !== b.weight1) {
     return a.weight1 - b.weight1;

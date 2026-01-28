@@ -98,11 +98,6 @@ export class Keybinding {
     this.chords = chords;
   }
 
-  /**
-   * BUG FIX: Correctly encode multi-chord keybindings - tests fail
-   * First chord: bits 0-15 (scan code), bits 16-31 (modifiers)
-   * Second chord: bits 16-31 (scan code), bits 16-31 (modifiers)
-   */
   public static fromNumber(
     keybinding: number,
     OS: OperatingSystem,
