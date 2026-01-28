@@ -19,7 +19,7 @@ export type ResolutionResult =
     };
 
 export const NoMatchingKb: ResolutionResult = { kind: ResultKind.NoMatchingKb };
-const MoreChordsNeeded: ResolutionResult = {
+export const MoreChordsNeeded: ResolutionResult = {
   kind: ResultKind.MoreChordsNeeded,
 };
 function KbFound(
@@ -68,8 +68,9 @@ export class KeybindingResolver {
     currentChords: string[],
     keypress: string,
   ): ResolutionResult {
-    const pressedChords = [...currentChords, keypress];
-    const kbCandidates = this._map.get(pressedChords[0]);
+    const chordCount = currentChords.length;
+    const firstChord = chordCount === 0 ? keypress : currentChords[0];
+    const kbCandidates = this._map.get(firstChord);
 
     if (kbCandidates === undefined) {
       return NoMatchingKb;
@@ -77,20 +78,20 @@ export class KeybindingResolver {
 
     let lookupMap: ResolvedKeybindingItem[] | null = null;
 
-    if (pressedChords.length < 2) {
+    if (chordCount < 1) {
       lookupMap = kbCandidates;
     } else {
       lookupMap = [];
       for (let i = 0, len = kbCandidates.length; i < len; i++) {
         const candidate = kbCandidates[i];
 
-        if (pressedChords.length > candidate.chords.length) {
+        if (chordCount + 1 > candidate.chords.length) {
           continue;
         }
 
         let prefixMatches = true;
-        for (let i = 1; i < pressedChords.length; i++) {
-          if (candidate.chords[i] !== pressedChords[i]) {
+        for (let j = 1; j <= chordCount; j++) {
+          if (candidate.chords[j] !== currentChords[j]) {
             prefixMatches = false;
             break;
           }
@@ -106,7 +107,7 @@ export class KeybindingResolver {
       return NoMatchingKb;
     }
 
-    if (pressedChords.length < result.chords.length) {
+    if (chordCount < result.chords.length) {
       return MoreChordsNeeded;
     }
 
