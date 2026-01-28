@@ -97,6 +97,12 @@ export class Keybinding {
     }
     this.chords = chords;
   }
+
+  /**
+   * BUG FIX: Correctly encode multi-chord keybindings - tests fail
+   * First chord: bits 0-15 (scan code), bits 16-31 (modifiers)
+   * Second chord: bits 16-31 (scan code), bits 16-31 (modifiers)
+   */
   public static fromNumber(
     keybinding: number,
     OS: OperatingSystem,
@@ -105,20 +111,17 @@ export class Keybinding {
       return null;
     }
 
-    // BUG FIX: Correctly encode multi-chord keybindings - tests fail
-    // First chord: bits 0-15 (scan code), bits 16-31 (modifiers)
-    // Second chord: bits 16-31 (scan code), bits 16-31 (modifiers)
-    const firstChord = (keybinding & 0x0000FFFF) >>> 0;
-    const secondChord = (keybinding & 0xFFFF0000) >>> 16;
+    const firstChord = (keybinding & 0x0000ffff) >>> 0;
+    const secondChord = (keybinding & 0xffff0000) >>> 16;
 
     if (secondChord !== 0) {
       return new Keybinding([
-        ScanCodeChord.fromNumber(firstChord & 0xFF, OS),
-        ScanCodeChord.fromNumber(secondChord & 0xFF, OS),
+        ScanCodeChord.fromNumber(firstChord & 0xff, OS),
+        ScanCodeChord.fromNumber(secondChord & 0xff, OS),
       ]);
     }
 
-    return new Keybinding([ScanCodeChord.fromNumber(firstChord & 0xFF, OS)]);
+    return new Keybinding([ScanCodeChord.fromNumber(firstChord & 0xff, OS)]);
   }
 
   public toNumber(OS: OperatingSystem): number {
@@ -126,37 +129,10 @@ export class Keybinding {
 
     if (this.chords.length > 0) {
       result = this.chords[0].toNumber(OS);
-    };
-
-    if (this.chords.length > 1) {
-      return new Keybinding([
-        ScanCodeChord.fromNumber(firstChord & 0xFF, OS),
-        ScanCodeChord.fromNumber(this.chords[1].toNumber(OS) & 0xFF, OS),
-      ]);
     }
 
-    return result;
-  }
-
     if (this.chords.length > 1) {
-      const secondChordValue = this.chords[1].toNumber(OS);
-      result = result | (secondChordValue << 16);
-    }
-
-    return result >>> 0;
-  }
-
-    if (this.chords.length > 1) {
-      result = result | (this.chords[1].toNumber(OS) & 0xFF << 16);
-    }
-
-    return result >>> 0;
-  }
-
-    // BUG FIX: 16-bit to 32-bit combination is incorrect - tests fail
-    if (this.chords.length > 1) {
-      const secondPart = this.chords[1].toNumber(OS);
-      result |= (secondPart << 16) >>> 0;
+      result = result | (this.chords[1].toNumber(OS) << 16);
     }
 
     return result >>> 0;
@@ -178,7 +154,7 @@ export class Keybinding {
 }
 
 /**
- * Главна функция декодирования (как VS Code)
+ * Главная функция декодирования (как VS Code)
  *
  * @param keybinding - число или массив чисел
  * @param OS - операционная система

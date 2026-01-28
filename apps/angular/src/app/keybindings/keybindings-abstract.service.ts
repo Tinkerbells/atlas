@@ -21,6 +21,7 @@ interface CurrentChord {
 
 export abstract class AbstractKeybindingService extends Disposable {
   private _currentChords: CurrentChord[];
+  private _currentChordModeTimestamp: number = 0;
 
   protected _currentlyDispatchingCommandId: string | null;
 
@@ -64,24 +65,34 @@ export abstract class AbstractKeybindingService extends Disposable {
   }
 
   private _scheduleLeaveChordMode(): void {
-    const chordLastInteractedTime = Date.now();
+    this._currentChordModeTimestamp = Date.now();
     this._currentChordChecker.cancelAndSet(() => {
       if (!this._documentHasFocus()) {
         this._leaveChordMode();
         return;
       }
 
-      if (Date.now() - chordLastInteractedTime > 5000) {
+      if (Date.now() - this._currentChordModeTimestamp > 5000) {
         this._leaveChordMode();
       }
     }, 500);
   }
 
-  public dispatchEvent(e: KeyboardEvent, target: any): boolean {
+  public dispatchEvent(
+    e: KeyboardEvent,
+    target: IContextKeyServiceTarget,
+  ): boolean {
     return this._dispatch(e, target);
   }
 
-  protected _dispatch(e: KeyboardEvent, target: any): boolean {
+  protected _dispatch(
+    e: KeyboardEvent,
+    target: IContextKeyServiceTarget,
+  ): boolean {
+    if (!this._documentHasFocus()) {
+      return false;
+    }
+
     const resolved = this.resolveKeyboardEvent(e);
     this._logger.debug('[AbstractKeybindingService] Resolved keybinding', {
       scope: 'AbstractKeybindingService',
@@ -180,6 +191,7 @@ export abstract class AbstractKeybindingService extends Disposable {
 
   private _leaveChordMode(): void {
     this._currentChords = [];
+    this._currentChordModeTimestamp = 0;
     this._currentChordChecker.cancel();
   }
 }

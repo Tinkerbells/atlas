@@ -1,49 +1,73 @@
-import type { Chord } from './keybindings'
-import type { ResolvedChord } from './resolved-keybinding'
-import type { OperatingSystem } from '~/common/core/platform'
+import type { Chord } from './keybindings';
+import type { ResolvedChord } from './resolved-keybinding';
+import type { OperatingSystem } from '~/common/core/platform';
 
-import { ResolvedKeybinding } from './resolved-keybinding'
+import { ResolvedKeybinding } from './resolved-keybinding';
+import { scanCodeToString } from './codes';
 
-export class BaseResolvedKeybinding<T extends Chord = Chord> extends ResolvedKeybinding {
-  protected readonly _os: OperatingSystem
-  protected readonly _chords: readonly T[]
+export class BaseResolvedKeybinding<
+  T extends Chord = Chord,
+> extends ResolvedKeybinding {
+  protected readonly _os: OperatingSystem;
+  protected readonly _chords: readonly T[];
 
   constructor(os: OperatingSystem, chords: readonly T[]) {
-    super()
-    this._os = os
-    this._chords = chords
+    super();
+    this._os = os;
+    this._chords = chords;
   }
 
   public getLabel(): string | null {
-    return null
+    return null;
   }
 
   public getAriaLabel(): string | null {
-    return this.getLabel()
+    return this.getLabel();
   }
 
   public getElectronAccelerator(): string | null {
-    return this.getLabel()
+    return this.getLabel();
   }
 
   public getUserSettingsLabel(): string | null {
-    const chords = this.getDispatchChords().filter((chord): chord is string => Boolean(chord))
-    return chords.length ? chords.join(' ') : null
+    const chords = this.getDispatchChords().filter((chord): chord is string =>
+      Boolean(chord),
+    );
+    return chords.length ? chords.join(' ') : null;
   }
 
   public hasMultipleChords(): boolean {
-    return this._chords.length > 1
+    return this._chords.length > 1;
   }
 
   public getChords(): ResolvedChord[] {
-    return []
+    return [];
   }
 
   protected _getChordDispatch(chord: T): string | null {
-    return String(chord)
+    if (!chord.code) {
+      return null;
+    }
+    let result = '';
+
+    if (chord.ctrlKey) {
+      result += 'ctrl+';
+    }
+    if (chord.shiftKey) {
+      result += 'shift+';
+    }
+    if (chord.altKey) {
+      result += 'alt+';
+    }
+    if (chord.metaKey) {
+      result += 'meta+';
+    }
+    result += scanCodeToString(chord.code);
+
+    return result;
   }
 
   public getDispatchChords(): (string | null)[] {
-    return this._chords.map(chord => this._getChordDispatch(chord))
+    return this._chords.map((chord) => this._getChordDispatch(chord));
   }
 }

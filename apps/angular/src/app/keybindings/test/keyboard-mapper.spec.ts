@@ -33,7 +33,7 @@ function createMockKeyboardEvent(
 }
 
 /**
- * Тестовые ScanCodes
+ * Тестовые ScanCodes (must match ScanCode enum positions)
  */
 const TEST_CODES = {
   KeyA: 20,

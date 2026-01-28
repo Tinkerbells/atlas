@@ -1,10 +1,10 @@
-export { KeyCode } from './key-codes';
-export type { Modifiers as KeyCodeModifiers } from './key-codes';
+export { ScanCode } from './codes';
+export type { Modifiers as KeyCodeModifiers } from './codes';
 export * from './keybindings-registry';
 export * from './keybindings.service';
 export {
   Keybinding,
-  KeyCodeChord,
+  ScanCodeChord as KeyCodeChord,
   decodeKeybinding,
   type Chord,
 } from './keybindings';

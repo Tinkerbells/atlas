@@ -13,6 +13,7 @@ import { ResolvedKeybindingItem } from './resolved-keybinding-item';
 import { AbstractKeybindingService } from './keybindings-abstract.service';
 import { IKeyboardLayoutService } from './browser-keyboard-layout.service';
 import { Logger } from '~/logger/logger';
+import { isEditableElement } from '~/common/utils/dom/dom';
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +49,10 @@ export class KeybindingService
 
   private _registerDOMListeners(): void {
     const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLElement && isEditableElement(e.target)) {
+        return;
+      }
+
       this._logger.debug('[KeybindingService] Key pressed', {
         scope: 'KeybindingService',
         payload: {
@@ -60,7 +65,12 @@ export class KeybindingService
           target: e.target,
         },
       });
-      this._dispatch(e, e.target);
+      if (e.target instanceof HTMLElement) {
+        const shouldPrevent = this._dispatch(e, e.target);
+        if (shouldPrevent) {
+          e.preventDefault();
+        }
+      }
     };
 
     if (typeof window !== 'undefined') {
