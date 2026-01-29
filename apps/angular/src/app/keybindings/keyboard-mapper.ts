@@ -3,7 +3,7 @@ import type { ResolvedKeybinding } from './resolved-keybinding';
 
 import { Keybinding, ScanCodeChord } from './keybindings';
 import { USLayoutResolvedKeybinding } from './us-layout-resolved-keybinding';
-import { ScanCode, scanCodeFromStr, scanCodeToString } from './codes';
+import { ScanCode, ScanCodeUtils } from './scan-code';
 
 export interface IKeyboardMapper {
   dumpDebugInfo: () => string;
@@ -13,7 +13,10 @@ export interface IKeyboardMapper {
 
 export class KeyboardMapper implements IKeyboardMapper {
   private readonly _scanCodeToDispatch: Array<string | null> = [];
-  constructor(private readonly _OS: OperatingSystem) {
+  constructor(
+    private readonly _OS: OperatingSystem,
+    private readonly _mapAltGrToCtrlAlt: boolean,
+  ) {
     // Initialize `_scanCodeToDispatch` with basic US layout mapping
     // This is a simplified version of VS Code's keyboard mapper
     // For full keyboard layout support, would need external mapping files
@@ -51,7 +54,7 @@ export class KeyboardMapper implements IKeyboardMapper {
         continue;
       }
       // Simple dispatch string using ScanCode enum name
-      const scanCodeName = scanCodeToString(scanCode);
+      const scanCodeName = ScanCodeUtils.toString(scanCode);
       if (scanCodeName && typeof scanCodeName === 'string') {
         this._scanCodeToDispatch[scanCode] = scanCodeName;
       }
@@ -63,14 +66,15 @@ export class KeyboardMapper implements IKeyboardMapper {
   }
 
   public resolveKeyboardEvent(e: KeyboardEvent): ResolvedKeybinding {
-    const ctrlKey = e.ctrlKey;
-    const altKey = e.altKey;
+    const ctrlKey = e.ctrlKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
+    const altKey = e.altKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
+
     const chord = new ScanCodeChord(
       ctrlKey,
       e.shiftKey,
       altKey,
       e.metaKey,
-      scanCodeFromStr(e.code),
+      ScanCodeUtils.fromString(e.code),
     );
     const result = this.resolveKeybinding(new Keybinding([chord]))[0];
     return result;

@@ -3,7 +3,7 @@ import type { Keybinding, ScanCodeChord } from './keybindings';
 
 import { BaseResolvedKeybinding } from './base-resolved-keybinding';
 import { toEmptyArrayIfContainsNull } from './resolved-keybinding-item';
-import { scanCodeToString } from './codes';
+import { ScanCodeUtils } from './scan-code';
 
 export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<ScanCodeChord> {
   constructor(chords: ScanCodeChord[], os: OperatingSystem) {
@@ -15,6 +15,9 @@ export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<ScanCodeC
   }
 
   protected _getChordDispatch(chord: ScanCodeChord): string | null {
+    if (chord.isModifierKey()) {
+      return null;
+    }
     return USLayoutResolvedKeybinding.getDispatchStr(chord);
   }
 
@@ -36,7 +39,7 @@ export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<ScanCodeC
     if (chord.metaKey) {
       result += 'meta+';
     }
-    result += scanCodeToString(chord.code);
+    result += ScanCodeUtils.toString(chord.code);
 
     return result;
   }

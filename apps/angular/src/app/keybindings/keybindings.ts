@@ -1,5 +1,5 @@
 import { OperatingSystem } from '~/common';
-import { ScanCode } from './codes';
+import { ScanCode } from './scan-code';
 
 export const enum ScanCodeMod {
   CtrlCmd = (1 << 11) >>> 0, // 2048 (совпадает с маской)
@@ -84,6 +84,19 @@ export class ScanCodeChord implements Modifiers {
       this.code === other.code
     );
   }
+
+  public isModifierKey(): boolean {
+    return (
+      this.code === ScanCode.ControlLeft ||
+      this.code === ScanCode.ControlRight ||
+      this.code === ScanCode.ShiftLeft ||
+      this.code === ScanCode.ShiftRight ||
+      this.code === ScanCode.AltLeft ||
+      this.code === ScanCode.AltRight ||
+      this.code === ScanCode.MetaLeft ||
+      this.code === ScanCode.MetaRight
+    );
+  }
 }
 
 export type Chord = ScanCodeChord;
@@ -106,8 +119,8 @@ export class Keybinding {
       return null;
     }
 
-    const firstChord = (keybinding & 0x0000FFFF) >>> 0;
-    const secondChord = (keybinding & 0xFFFF0000) >>> 16;
+    const firstChord = (keybinding & 0x0000ffff) >>> 0;
+    const secondChord = (keybinding & 0xffff0000) >>> 16;
 
     if (secondChord !== 0) {
       return new Keybinding([
@@ -119,19 +132,6 @@ export class Keybinding {
     return new Keybinding([ScanCodeChord.fromNumber(firstChord, OS)]);
   }
 
-    const firstChord = (keybinding & 0x0000ffff) >>> 0;
-    const secondChord = (keybinding & 0xffff0000) >>> 16;
-
-    if (secondChord !== 0) {
-      return new Keybinding([
-        ScanCodeChord.fromNumber(firstChord & 0xff, OS),
-        ScanCodeChord.fromNumber(secondChord & 0xff, OS),
-      ]);
-    }
-
-    return new Keybinding([ScanCodeChord.fromNumber(firstChord & 0xff, OS)]);
-  }
-
   public toNumber(OS: OperatingSystem): number {
     let result = 0;
 
@@ -140,7 +140,7 @@ export class Keybinding {
     }
 
     if (this.chords.length > 1) {
-      result = result | (this.chords[1].toNumber(OS) << 16);
+      result = result | ((this.chords[1].toNumber(OS) & 0xffff) << 16);
     }
 
     return result >>> 0;

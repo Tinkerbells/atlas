@@ -87,7 +87,7 @@ export class BrowserKeyboardLayoutService implements IKeyboardLayoutService {
   constructor() { }
 
   getKeyboardMapper(): IKeyboardMapper {
-    return new KeyboardMapper(OperatingSystem.Macintosh)
+    return new KeyboardMapper(OperatingSystem.Macintosh, false)
   }
 
   public validateCurrentKeyboardMapping() {

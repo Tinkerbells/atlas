@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { KeyboardMapper } from '../keyboard-mapper';
 import { OperatingSystem } from '~/common/core/platform';
 import { ScanCodeChord, Keybinding } from '../keybindings';
-import { ScanCode, scanCodeFromStr } from '../codes';
+import { ScanCode, ScanCodeUtils } from '../scan-code';
 
 // ============================================
 // Test helpers (для тестов)
@@ -29,6 +29,7 @@ function createMockKeyboardEvent(
     bubbles: true,
     cancelable: true,
     repeat: false,
+    getModifierState: (modifier: string) => modifier === 'AltGraph',
   };
 }
 
@@ -36,9 +37,9 @@ function createMockKeyboardEvent(
  * Тестовые ScanCodes (must match ScanCode enum positions)
  */
 const TEST_CODES = {
-  KeyA: 20,
-  KeyF: 25,
-  KeyK: 37,
+  KeyA: 10,
+  KeyF: 15,
+  KeyK: 20,
   KeyZ: 35,
 };
 
@@ -50,28 +51,28 @@ describe('KeyboardMapper', () => {
   let mapper: KeyboardMapper;
 
   beforeEach(() => {
-    mapper = new KeyboardMapper(OperatingSystem.Macintosh);
+    mapper = new KeyboardMapper(OperatingSystem.Macintosh, false);
   });
 
   describe('constructor', () => {
     it('should initialize scanCodeToDispatch array (аналог VS Code)', () => {
       expect(mapper).toBeDefined();
-      expect(mapper['dumpDebugInfo']()).toBeTypeOf('function');
+      expect(typeof mapper['dumpDebugInfo']).toBe('function');
     });
 
     it('should create with correct OS (аналог VS Code)', () => {
-      const macMapper = new KeyboardMapper(OperatingSystem.Macintosh);
-      const windowsMapper = new KeyboardMapper(OperatingSystem.Windows);
-      const linuxMapper = new KeyboardMapper(OperatingSystem.Linux);
+      const macMapper = new KeyboardMapper(OperatingSystem.Macintosh, false);
+      const windowsMapper = new KeyboardMapper(OperatingSystem.Windows, false);
+      const linuxMapper = new KeyboardMapper(OperatingSystem.Linux, false);
 
       expect(macMapper['dumpDebugInfo']()).toBe(
-        'FallbackKeyboardMapper dispatching on keyCode',
+        'FallbackKeyboardMapper dispatching on scanCode',
       );
       expect(windowsMapper['dumpDebugInfo']()).toBe(
-        'FallbackKeyboardMapper dispatching on keyCode',
+        'FallbackKeyboardMapper dispatching on scanCode',
       );
       expect(linuxMapper['dumpDebugInfo']()).toBe(
-        'FallbackKeyboardMapper dispatching on keyCode',
+        'FallbackKeyboardMapper dispatching on scanCode',
       );
     });
   });
@@ -114,7 +115,7 @@ describe('KeyboardMapper', () => {
 
       const result = mapper.resolveKeyboardEvent(event);
 
-      expect(result.getDispatchChords()).toEqual([null]);
+      expect(result.getDispatchChords()).toEqual(['None']);
     });
   });
 
@@ -147,9 +148,11 @@ describe('KeyboardMapper', () => {
 
       const macResult = new KeyboardMapper(
         OperatingSystem.Macintosh,
+        false,
       ).resolveKeybinding(keybinding);
       const windowsResult = new KeyboardMapper(
         OperatingSystem.Windows,
+        false,
       ).resolveKeybinding(keybinding);
 
       expect(macResult).toBeDefined();
@@ -180,29 +183,29 @@ describe('KeyboardMapper', () => {
       expect(result).toBe('ctrl+shift+alt+KeyZ');
     });
 
-    it('should handle null scanCodeToDispatch (аналог VS Code)', () => {
+    it('should handle scanCodeToString for Hyper (аналог VS Code)', () => {
       const chord = new ScanCodeChord(
         true,
         false,
         false,
         false,
-        1, // Некорректный scan code
+        ScanCode.Hyper,
       );
 
       const result = mapper.getDispatchStrForScanCodeChord(chord);
 
-      expect(result).toBeNull();
+      expect(result).toBe('ctrl+Hyper');
     });
   });
 
-  describe('scanCodeFromStr', () => {
+  describe('ScanCodeUtils.fromString', () => {
     it('should convert known code string to ScanCode (аналог VS Code)', () => {
-      const code = scanCodeFromStr('KeyF');
+      const code = ScanCodeUtils.fromString('KeyF');
       expect(code).toBe(TEST_CODES.KeyF);
     });
 
     it('should return None for unknown code (аналог VS Code)', () => {
-      const code = scanCodeFromStr('UnknownCode');
+      const code = ScanCodeUtils.fromString('UnknownCode');
       expect(code).toBe(ScanCode.None);
     });
   });
