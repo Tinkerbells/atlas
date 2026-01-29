@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import type { IContext } from '~/context/context.service';
-import type { Logger } from '~/logger/logger';
+import { Logger } from '~/logger/logger';
 import { KeybindingsRegistryImpl } from '../keybindings-registry';
 import { ContextKeyExpression } from '~/context/parser';
-import { OperatingSystem, OS } from '~/common/core/platform';
+import { OperatingSystem, OS } from '~/platform';
 import { ScanCode } from '../scan-code';
 import { ScanCodeMod } from '../keybindings';
 
@@ -11,7 +12,9 @@ import { ScanCodeMod } from '../keybindings';
 // Creates simple context expression
 // ============================================
 
-function createContextRule(expression: (ctx: any) => boolean): ContextKeyExpression {
+function createContextRule(
+  expression: (ctx: any) => boolean,
+): ContextKeyExpression {
   class CustomContextExpression extends ContextKeyExpression {
     constructor(private readonly _expression: (ctx: any) => boolean) {
       super();
@@ -25,28 +28,27 @@ function createContextRule(expression: (ctx: any) => boolean): ContextKeyExpress
   return new CustomContextExpression(expression);
 }
 
-// ============================================
-// Mock Logger for tests
-// ============================================
-
-const mockLogger: Logger = {
-  critical: () => {},
-  debug: () => {},
-  error: () => {},
-  info: () => {},
-  trace: () => {},
-  warning: () => {},
-};
-
-// ============================================
-// Tests for KeybindingsRegistryImpl (аналог VS Code)
-// ============================================
-
 describe('KeybindingsRegistryImpl', () => {
   let registry: KeybindingsRegistryImpl;
 
   beforeEach(() => {
-    registry = new KeybindingsRegistryImpl(mockLogger);
+    const loggerMock: Logger = {
+      critical: () => {},
+      debug: () => {},
+      error: () => {},
+      info: () => {},
+      trace: () => {},
+      warning: () => {},
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        KeybindingsRegistryImpl,
+        { provide: Logger, useValue: loggerMock },
+      ],
+    });
+
+    registry = TestBed.inject(KeybindingsRegistryImpl);
   });
 
   describe('getDefaultKeybindings', () => {
@@ -217,7 +219,9 @@ describe('KeybindingsRegistryImpl', () => {
     });
 
     it('should handle context rules (аналог VS Code)', () => {
-      const contextRule = createContextRule((ctx: any) => ctx.getValue('editorFocus') === true);
+      const contextRule = createContextRule(
+        (ctx: any) => ctx.getValue('editorFocus') === true,
+      );
 
       const _disposable = registry.registerKeybindingRule({
         id: 'test.command',

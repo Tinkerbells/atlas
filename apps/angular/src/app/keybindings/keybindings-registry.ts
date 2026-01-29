@@ -4,7 +4,7 @@ import type { ContextKeyExpression } from '~/context/parser';
 
 import { decodeKeybinding } from './keybindings';
 import { DisposableStore } from '~/common/core/disposable';
-import { OperatingSystem, OS } from '~/common/core/platform';
+import { OperatingSystem, OS } from '~/platform';
 import { inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
 import { Logger } from '~/logger/logger';
 import { USLayoutResolvedKeybinding } from './us-layout-resolved-keybinding';
@@ -52,7 +52,7 @@ export const IKeybindingsRegistry = new InjectionToken<IKeybindingsRegistry>(
   'IKeybindingsRegistry ',
   {
     providedIn: 'root',
-    // eslint-disable-next-line @angular-eslint/prefer-inject
+
     factory: () => inject(KeybindingsRegistryImpl),
   },
 );
@@ -65,17 +65,9 @@ export class KeybindingsRegistryImpl
 {
   private _coreKeybindings: IKeybindingItem[];
   private _cachedKeybindings: IKeybindingItem[] | null;
-  protected _logger: Logger;
+  protected _logger: Logger = inject(Logger);
 
-  constructor(logger?: Logger) {
-    this._logger = logger || {
-      critical: () => {},
-      debug: () => {},
-      error: () => {},
-      info: () => {},
-      trace: () => {},
-      warning: () => {},
-    };
+  constructor() {
     this._coreKeybindings = [];
     this._cachedKeybindings = null;
   }
@@ -92,10 +84,6 @@ export class KeybindingsRegistryImpl
 
   public getDefaultKeybindings() {
     if (!this._cachedKeybindings) {
-      // BUG FIX: Sort and cache keybindings correctly - tests expect last wins for duplicates
-      // Implementation follows VS Code approach: all keybindings are kept in the list,
-      // later registrations with same keybinding override earlier ones
-      // This is correct behavior - test expectations may be inaccurate
       this._cachedKeybindings = this._coreKeybindings.sort(sorter);
     }
     return this._cachedKeybindings.slice(0);

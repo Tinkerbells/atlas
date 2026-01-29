@@ -1,4 +1,4 @@
-import { OperatingSystem } from '~/common';
+import { OperatingSystem } from '~/platform';
 import { ScanCode } from './scan-code';
 
 export const enum ScanCodeMod {

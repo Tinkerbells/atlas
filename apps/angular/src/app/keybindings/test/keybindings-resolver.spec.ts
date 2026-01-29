@@ -9,7 +9,7 @@ import { ResolvedKeybindingItem } from '../resolved-keybinding-item';
 import { USLayoutResolvedKeybinding } from '../us-layout-resolved-keybinding';
 import { ContextKeyExpression } from '~/context/parser';
 import { ScanCodeChord, Keybinding } from '../keybindings';
-import { OperatingSystem } from '~/common/core/platform';
+import { OperatingSystem } from '~/platform';
 
 // ============================================
 // Test helpers (аналог VS Code)

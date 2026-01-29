@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ScanCodeChord, Keybinding, decodeKeybinding, Chord } from '../keybindings';
-import { OperatingSystem } from '~/common/core/platform';
+import { OperatingSystem } from '~/platform';
 
 // ============================================
 // Test helpers (для тестов)

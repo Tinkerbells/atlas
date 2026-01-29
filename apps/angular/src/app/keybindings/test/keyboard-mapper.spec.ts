@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { KeyboardMapper } from '../keyboard-mapper';
-import { OperatingSystem } from '~/common/core/platform';
+import { OperatingSystem } from '~/platform';
 import { ScanCodeChord, Keybinding } from '../keybindings';
 import { ScanCode, ScanCodeUtils } from '../scan-code';
 

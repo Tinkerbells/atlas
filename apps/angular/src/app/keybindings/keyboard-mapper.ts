@@ -1,4 +1,4 @@
-import type { OperatingSystem } from '~/common/core/platform';
+import type { OperatingSystem } from '~/platform';
 import type { ResolvedKeybinding } from './resolved-keybinding';
 
 import { Keybinding, ScanCodeChord } from './keybindings';
