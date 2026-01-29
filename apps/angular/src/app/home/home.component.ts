@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -14,9 +15,10 @@ import {
   AccordionPanel,
   AccordionContent,
 } from '@angular/aria/accordion';
-import { IKeybindingsRegistry } from '~/keybindings';
+import { IKeybindingsRegistry, ScanCode } from '~/keybindings';
 import { ICommandRegistry } from '~/commands';
 import { Logger } from '~/logger';
+import { ScanCodeMod } from '~/keybindings/keybindings';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +26,7 @@ import { Logger } from '~/logger';
   styleUrls: ['./home.component.scss'],
   standalone: true,
   imports: [
+    RouterLink,
     TranslateModule,
     MatIconModule,
     MatSlideToggleModule,
@@ -46,15 +49,15 @@ export class HomeComponent implements OnInit {
   public options = ['Option 1', 'Option 2', 'Option 3'];
   ngOnInit(): void {
     this.commandsRegistry.registerCommand('demo.sayHello1', () =>
-      this.logger.info('Hello World!', { scope: 'HomeComponent' }),
+      console.log('Hello World!'),
     );
     this.keybindingsRegistry.registerKeybindingRule({
       id: 'demo.sayHello1',
       weight: 100,
       when: undefined,
-      primary: 'ctrl+KeyC',
+      primary: ScanCodeMod.CtrlCmd | ScanCode.KeyF,
       mac: {
-        primary: 'meta+KeyC',
+        primary: ScanCodeMod.WinCtrl | ScanCode.KeyF,
       },
     });
     this.logger.info('HomeComponent INIT', { scope: 'HomeComponent' });

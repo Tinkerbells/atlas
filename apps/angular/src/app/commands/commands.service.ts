@@ -44,7 +44,7 @@ export class CommandService
       const result = command.handler(...args);
       return Promise.resolve(result);
     } catch (err) {
-      return Promise.reject(err);
+      return Promise.reject(err instanceof Error ? err : new Error(String(err)));
     }
   }
 

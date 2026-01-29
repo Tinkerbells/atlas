@@ -130,6 +130,8 @@ export abstract class AbstractKeybindingService extends Disposable {
       userPressedChord,
     );
 
+    console.log(resolveResult);
+
     switch (resolveResult.kind) {
       case ResultKind.NoMatchingKb: {
         if (this.inChordMode) {

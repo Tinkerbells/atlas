@@ -1,0 +1,95 @@
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--atlas-spacing-xl);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: var(--atlas-spacing-m);
+  margin-bottom: var(--atlas-spacing-xl);
+
+  h1 {
+    margin: 0;
+    color: var(--atlas-text-primary);
+  }
+
+  button {
+    color: var(--atlas-text-primary);
+  }
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atlas-spacing-xl);
+}
+
+mat-card {
+  background-color: var(--atlas-surface-secondary);
+  border: 1px solid var(--atlas-border-primary);
+  border-radius: var(--atlas-radius-md);
+}
+
+mat-card-title {
+  color: var(--atlas-text-primary);
+}
+
+.theme-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atlas-spacing-l);
+
+  h3 {
+    margin: 0 0 var(--atlas-spacing-s) 0;
+    color: var(--atlas-text-primary);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  p {
+    margin: var(--atlas-spacing-xs) 0;
+    color: var(--atlas-text-secondary);
+  }
+
+  .theme-type {
+    font-style: italic;
+    text-transform: lowercase;
+  }
+
+  .current-theme {
+    padding: var(--atlas-spacing-m);
+    background-color: var(--atlas-bg-secondary);
+    border-radius: var(--atlas-radius-sm);
+  }
+
+  .available-themes {
+    mat-list {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    mat-list-item {
+      cursor: pointer;
+      padding: var(--atlas-spacing-m);
+      border-radius: var(--atlas-radius-sm);
+      color: var(--atlas-text-primary);
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: var(--atlas-bg-secondary);
+      }
+
+      &.selected {
+        background-color: var(--atlas-primary);
+        color: var(--atlas-bg-primary);
+      }
+    }
+  }
+
+  .theme-actions {
+    display: flex;
+    gap: var(--atlas-spacing-m);
+  }
+}

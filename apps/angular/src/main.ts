@@ -16,6 +16,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { PageNotFoundComponent } from './app/common/components';
 import { HomeComponent } from './app/home/home.component';
 import { DetailComponent } from './app/detail/detail.component';
+import { SettingsComponent } from './app/settings';
 import { provideLogger } from './app/logger';
 
 if (APP_CONFIG.production) {
@@ -48,6 +49,10 @@ bootstrapApplication(AppComponent, {
       {
         path: 'detail',
         component: DetailComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
       },
       {
         path: '**',

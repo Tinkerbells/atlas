@@ -61,17 +61,19 @@ const KeyMod = {
 };
 
 /**
- * Test scan codes
+ * Test scan codes (matching codes.ts)
  */
 const KeyCode = {
-  KeyA: 20,
-  KeyB: 21,
-  KeyC: 22,
-  KeyK: 37,
+  KeyA: 10,
+  KeyB: 11,
+  KeyC: 12,
+  KeyK: 20,
   KeyZ: 35,
-  KeyF: 25,
-  KeyV: 47,
-  Equal: 13,
+  KeyF: 15,
+  KeyV: 31,
+  Equal: 52,
+  Digit1: 36,
+  Digit2: 37,
 };
 
 // ============================================
@@ -225,11 +227,17 @@ describe('KeybindingResolver', () => {
 
   describe('resolve multi-chord keybindings', () => {
     it('should return MoreChordsNeeded after first chord (аналог VS Code)', () => {
-      const kb = KeyMod.CtrlCmd | KeyCode.KeyK;
-      const chord1 = kb | ((KeyMod.CtrlCmd | KeyCode.KeyK) << 16);
+      const chord1 = ScanCodeChord.fromNumber(
+        KeyMod.CtrlCmd | KeyCode.KeyK,
+        OperatingSystem.Macintosh,
+      );
+      const chord2 = ScanCodeChord.fromNumber(
+        KeyMod.CtrlCmd | KeyCode.KeyK,
+        OperatingSystem.Macintosh,
+      );
       const item = new ResolvedKeybindingItem(
         USLayoutResolvedKeybinding.resolveKeybinding(
-          Keybinding.fromNumber(chord1, OperatingSystem.Macintosh)!,
+          new Keybinding([chord1, chord2]),
           OperatingSystem.Macintosh,
         )[0],
         'twoChordCommand',
@@ -242,19 +250,24 @@ describe('KeybindingResolver', () => {
       const r = resolver.resolve(
         createContext({}),
         [],
-        getDispatchStr(ScanCodeChord.fromNumber(kb, OperatingSystem.Macintosh)),
+        getDispatchStr(ScanCodeChord.fromNumber(KeyMod.CtrlCmd | KeyCode.KeyK, OperatingSystem.Macintosh)),
       );
 
       expect(r).toBe(MoreChordsNeeded);
     });
 
     it('should resolve complete two-chord keybinding (аналог VS Code)', () => {
-      const kb1 = KeyMod.CtrlCmd | KeyCode.KeyK;
-      const kb2 = KeyMod.CtrlCmd | KeyCode.KeyF;
-      const twoChordKeybinding = kb1 | (kb2 << 16);
+      const chord1 = ScanCodeChord.fromNumber(
+        KeyMod.CtrlCmd | KeyCode.KeyK,
+        OperatingSystem.Macintosh,
+      );
+      const chord2 = ScanCodeChord.fromNumber(
+        KeyMod.CtrlCmd | KeyCode.KeyF,
+        OperatingSystem.Macintosh,
+      );
       const item = new ResolvedKeybindingItem(
         USLayoutResolvedKeybinding.resolveKeybinding(
-          Keybinding.fromNumber(twoChordKeybinding, OperatingSystem.Macintosh)!,
+          new Keybinding([chord1, chord2]),
           OperatingSystem.Macintosh,
         )[0],
         'twoChordCommand',
@@ -264,7 +277,11 @@ describe('KeybindingResolver', () => {
       );
       const resolver = new KeybindingResolver([item], []);
 
-      const r = resolver.resolve(createContext({}), ['ctrl+KeyK'], 'ctrl+KeyF');
+      const r = resolver.resolve(
+        createContext({}),
+        [getDispatchStr(chord1)],
+        getDispatchStr(chord2),
+      );
 
       expect(r.kind).toBe(ResultKind.KbFound);
       if (r.kind === ResultKind.KbFound) {
@@ -273,12 +290,17 @@ describe('KeybindingResolver', () => {
     });
 
     it('should return NoMatchingKb for wrong second chord (аналог VS Code)', () => {
-      const kb1 = KeyMod.CtrlCmd | KeyCode.KeyK;
-      const kb2 = KeyMod.CtrlCmd | KeyCode.KeyF;
-      const twoChordKeybinding = kb1 | (kb2 << 16);
+      const chord1 = ScanCodeChord.fromNumber(
+        KeyMod.CtrlCmd | KeyCode.KeyK,
+        OperatingSystem.Macintosh,
+      );
+      const chord2 = ScanCodeChord.fromNumber(
+        KeyMod.CtrlCmd | KeyCode.KeyF,
+        OperatingSystem.Macintosh,
+      );
       const item = new ResolvedKeybindingItem(
         USLayoutResolvedKeybinding.resolveKeybinding(
-          Keybinding.fromNumber(twoChordKeybinding, OperatingSystem.Macintosh)!,
+          new Keybinding([chord1, chord2]),
           OperatingSystem.Macintosh,
         )[0],
         'twoChordCommand',
@@ -288,7 +310,11 @@ describe('KeybindingResolver', () => {
       );
       const resolver = new KeybindingResolver([item], []);
 
-      const r = resolver.resolve(createContext({}), ['ctrl+KeyK'], 'ctrl+KeyZ');
+      const r = resolver.resolve(
+        createContext({}),
+        [getDispatchStr(chord1)],
+        getDispatchStr(ScanCodeChord.fromNumber(KeyMod.CtrlCmd | KeyCode.KeyZ, OperatingSystem.Macintosh)),
+      );
 
       expect(r.kind).toBe(ResultKind.NoMatchingKb);
     });

@@ -68,30 +68,31 @@ export class KeybindingResolver {
     currentChords: string[],
     keypress: string,
   ): ResolutionResult {
-    const chordCount = currentChords.length;
-    const firstChord = chordCount === 0 ? keypress : currentChords[0];
-    const kbCandidates = this._map.get(firstChord);
+    const pressedChords = [...currentChords, keypress];
 
+    console.log('pressedChords:', pressedChords);
+
+    const kbCandidates = this._map.get(pressedChords[0]);
     if (kbCandidates === undefined) {
       return NoMatchingKb;
     }
 
     let lookupMap: ResolvedKeybindingItem[] | null = null;
 
-    if (chordCount < 1) {
+    if (pressedChords.length < 2) {
       lookupMap = kbCandidates;
     } else {
       lookupMap = [];
       for (let i = 0, len = kbCandidates.length; i < len; i++) {
         const candidate = kbCandidates[i];
 
-        if (chordCount + 1 > candidate.chords.length) {
+        if (pressedChords.length > candidate.chords.length) {
           continue;
         }
 
         let prefixMatches = true;
-        for (let j = 1; j <= chordCount; j++) {
-          if (candidate.chords[j] !== currentChords[j]) {
+        for (let j = 1; j < pressedChords.length; j++) {
+          if (candidate.chords[j] !== pressedChords[j]) {
             prefixMatches = false;
             break;
           }
@@ -107,7 +108,19 @@ export class KeybindingResolver {
       return NoMatchingKb;
     }
 
-    if (chordCount < result.chords.length) {
+    console.log('resolve result:', {
+      pressedChordsLength: pressedChords.length,
+      resultChordsLength: result.chords.length,
+      resultChords: result.chords,
+      command: result.command,
+    });
+
+    if (pressedChords.length < result.chords.length) {
+      console.log(
+        'MoreChordsNeeded',
+        pressedChords.length,
+        result.chords.length,
+      );
       return MoreChordsNeeded;
     }
 

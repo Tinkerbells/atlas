@@ -122,3 +122,33 @@ p {
   overflow: auto;
   padding: 1rem;
 }
+
+.settings-link {
+  display: flex;
+  align-items: center;
+  gap: var(--atlas-spacing-s);
+  padding: var(--atlas-spacing-m);
+  margin-bottom: var(--atlas-spacing-m);
+  text-decoration: none;
+  color: var(--atlas-text-primary);
+  border-radius: var(--atlas-radius-md);
+  background-color: var(--atlas-bg-secondary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--atlas-primary);
+    color: var(--atlas-bg-primary);
+  }
+
+  mat-icon {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

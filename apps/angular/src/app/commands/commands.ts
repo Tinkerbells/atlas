@@ -1,54 +1,64 @@
-import { inject, Injectable, InjectionToken } from '@angular/core'
-import type { IDisposable } from '~/common/core/disposable'
-import { Logger } from '~/logger/logger'
+import { inject, Injectable, InjectionToken } from '@angular/core';
+import type { IDisposable } from '~/common/core/disposable';
+import { Logger } from '~/logger';
 
-export type CommandHandler = (...args: any[]) => void
+export type CommandHandler = (...args: any[]) => void;
 
 interface ICommand {
-  id: string
-  handler: CommandHandler
+  id: string;
+  handler: CommandHandler;
 }
 
 export interface ICommandRegistry {
-  registerCommand: ((id: ICommand['id'], handler: ICommand['handler']) => IDisposable)
-  getCommand: (id: string) => ICommand | undefined
+  registerCommand: (
+    id: ICommand['id'],
+    handler: ICommand['handler'],
+  ) => IDisposable;
+  getCommand: (id: string) => ICommand | undefined;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommandRegistry implements ICommandRegistry {
-  private _commands = new Map<string, ICommand>()
-  private readonly logger: Logger = inject(Logger)
+  private _commands = new Map<string, ICommand>();
+  private readonly logger: Logger = inject(Logger);
 
-  registerCommand(id: ICommand['id'], handler: ICommand['handler']): IDisposable {
+  registerCommand(
+    id: ICommand['id'],
+    handler: ICommand['handler'],
+  ): IDisposable {
     if (this._commands.has(id)) {
-      this.logger.warning(`Command ${id} is already registered!`, { scope: 'CommandRegistry' })
+      this.logger.warning(`Command ${id} is already registered!`, {
+        scope: 'CommandRegistry',
+      });
       return {
-        dispose: () => { },
-      }
+        dispose: () => {},
+      };
     }
 
-    this._commands.set(id, { id, handler })
+    this._commands.set(id, { id, handler });
 
     return {
       dispose: () => {
-        this._commands.delete(id)
+        this._commands.delete(id);
       },
-    }
+    };
   }
 
   getCommand(id: string) {
-    const list = this._commands.get(id)
+    const list = this._commands.get(id);
     if (!list) {
-      return undefined
+      return undefined;
     }
-    return list
+    return list;
   }
 }
 
-
-export const ICommandRegistry = new InjectionToken<ICommandRegistry>("ICommandRegistry", {
-  providedIn: "root",
-  factory: () => inject(CommandRegistry)
-})
+export const ICommandRegistry = new InjectionToken<ICommandRegistry>(
+  'ICommandRegistry',
+  {
+    providedIn: 'root',
+    factory: () => inject(CommandRegistry),
+  },
+);

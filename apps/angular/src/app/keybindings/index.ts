@@ -1,4 +1,4 @@
-export { ScanCode } from './codes';
+export { ScanCode } from './scan-code';
 
 export * from './keybindings-registry';
 export * from './keybindings.service';

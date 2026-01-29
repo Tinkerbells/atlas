@@ -52,6 +52,7 @@ export const IKeybindingsRegistry = new InjectionToken<IKeybindingsRegistry>(
   'IKeybindingsRegistry ',
   {
     providedIn: 'root',
+    // eslint-disable-next-line @angular-eslint/prefer-inject
     factory: () => inject(KeybindingsRegistryImpl),
   },
 );

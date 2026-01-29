@@ -23,11 +23,11 @@ function createTestScanCodeChord(
  * Тестовые данные для скан-кодов
  */
 const TEST_SCAN_CODES = {
-  KeyA: 20,
-  KeyF: 25,
-  KeyK: 37,
+  KeyA: 10,
+  KeyF: 15,
+  KeyK: 20,
   KeyZ: 35,
-  Digit1: 46,
+  Digit1: 36,
 };
 
 /**
@@ -468,19 +468,26 @@ describe('Keybinding', () => {
     });
 
     it('should correctly split 32-bit number into two 16-bit chords', () => {
-      const chord1Value = 12345;
-      const chord2Value = 67890;
-      const number = chord1Value | (chord2Value << 16);
+      const chord1 = ScanCodeChord.fromNumber(
+        TEST_MODIFIERS.CtrlCmd | TEST_SCAN_CODES.KeyK,
+        OperatingSystem.Windows,
+      );
+      const chord2 = ScanCodeChord.fromNumber(
+        TEST_MODIFIERS.CtrlCmd | TEST_SCAN_CODES.KeyF,
+        OperatingSystem.Windows,
+      );
+      const number = chord1.toNumber(OperatingSystem.Windows) |
+        (chord2.toNumber(OperatingSystem.Windows) << 16);
 
       const keybinding = Keybinding.fromNumber(number, OperatingSystem.Windows);
 
       expect(keybinding).not.toBeNull();
       expect(keybinding!.chords).toHaveLength(2);
       expect(keybinding!.chords[0].toNumber(OperatingSystem.Windows)).toBe(
-        chord1Value,
+        chord1.toNumber(OperatingSystem.Windows),
       );
       expect(keybinding!.chords[1].toNumber(OperatingSystem.Windows)).toBe(
-        chord2Value,
+        chord2.toNumber(OperatingSystem.Windows),
       );
     });
   });
@@ -523,20 +530,19 @@ describe('Keybinding', () => {
     });
 
     it('should correctly combine two 16-bit chords into 32-bit number', () => {
-      const chord1Value = 12345;
-      const chord2Value = 67890;
       const chord1 = ScanCodeChord.fromNumber(
-        chord1Value,
+        TEST_MODIFIERS.CtrlCmd | TEST_SCAN_CODES.KeyK,
         OperatingSystem.Windows,
       );
       const chord2 = ScanCodeChord.fromNumber(
-        chord2Value,
+        TEST_MODIFIERS.CtrlCmd | TEST_SCAN_CODES.KeyF,
         OperatingSystem.Windows,
       );
       const keybinding = new Keybinding([chord1, chord2]);
 
       const number = keybinding.toNumber(OperatingSystem.Windows);
-      const expected = chord1Value | (chord2Value << 16);
+      const expected = chord1.toNumber(OperatingSystem.Windows) |
+        ((chord2.toNumber(OperatingSystem.Windows) & 0xFFFF) << 16);
 
       expect(number).toBe(expected);
     });

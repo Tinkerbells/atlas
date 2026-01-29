@@ -4,7 +4,6 @@
     "esModuleInterop": true,
     "outDir": "../out-tsc/spec",
     "types": [
-      "vitest/globals",
       "node"
     ]
   },

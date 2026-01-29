@@ -8,6 +8,7 @@
     ]
   },
   "include": [
-    "**.spec.ts"
+    "**.spec.ts",
+    "**.ts"
   ],
 }

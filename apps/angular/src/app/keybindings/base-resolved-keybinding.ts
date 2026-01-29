@@ -3,7 +3,7 @@ import type { ResolvedChord } from './resolved-keybinding';
 import type { OperatingSystem } from '~/common/core/platform';
 
 import { ResolvedKeybinding } from './resolved-keybinding';
-import { scanCodeToString } from './codes';
+import { ScanCodeUtils } from './scan-code';
 
 export class BaseResolvedKeybinding<
   T extends Chord = Chord,
@@ -62,7 +62,7 @@ export class BaseResolvedKeybinding<
     if (chord.metaKey) {
       result += 'meta+';
     }
-    result += scanCodeToString(chord.code);
+    result += ScanCodeUtils.toString(chord.code);
 
     return result;
   }

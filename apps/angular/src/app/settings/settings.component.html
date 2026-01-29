@@ -1,0 +1,57 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Settings</h1>
+  </div>
+
+  <div class="settings-content">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Theme</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="theme-section">
+          <div class="current-theme">
+            <h3>Current Theme</h3>
+            <p>{{ currentTheme?.name || 'Default' }}</p>
+            <p class="theme-type">{{ currentTheme?.type || 'dark' }}</p>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="available-themes">
+            <h3>Available Themes</h3>
+            <mat-list role="list">
+              @for (theme of availableThemes; track theme) {
+                <mat-list-item
+                  (click)="selectTheme('/Users/user/projects/atlas/apps/angular/src/assets/themes/' + theme)"
+                  [class.selected]="selectedThemePath === '/Users/user/projects/atlas/apps/angular/src/assets/themes/' + theme"
+                >
+                  {{ theme.replace('.json', '') }}
+                </mat-list-item>
+              }
+            </mat-list>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="theme-actions">
+            <button mat-button (click)="resetToDefault()">Reset to Default</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>About</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Atlas File Manager</p>
+        <p>Version: 1.0.0</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
