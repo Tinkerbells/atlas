@@ -62,9 +62,9 @@ importers:
       '@jsep-plugin/ternary':
         specifier: ^1.1.4
         version: 1.1.4(jsep@1.4.0)
-      '@ngworker/lumberjack':
-        specifier: 21.0.1
-        version: 21.0.1(@angular/common@21.0.3(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)
+      consola:
+        specifier: 3.4.2
+        version: 3.4.2
       jsep:
         specifier: ^1.4.0
         version: 1.4.0
@@ -2155,18 +2155,6 @@ packages:
 
   '@neoconfetti/react@1.0.0':
     resolution: {integrity: sha512-klcSooChXXOzIm+SE5IISIAn3bYzYfPjbX7D7HoqZL84oAfgREeSg5vSIaSFH+DaGzzvImTyWe1OyrJ67vik4A==}
-
-  '@ngworker/lumberjack@21.0.1':
-    resolution: {integrity: sha512-SIBzSZ2WMrBvXePOv7n6gOL1bWdnz6yWbDJ1jtKOqtjn2aU1yTfBQ0CPHTgjr5ExDlIezOVKg3cVVnwaEUWWrQ==}
-    peerDependencies:
-      '@angular/common': ^21.0.0
-      '@angular/core': ^21.0.0
-      rxjs: '>= 7.8.1 < 8.0.0'
-    peerDependenciesMeta:
-      '@angular/common':
-        optional: true
-      rxjs:
-        optional: true
 
   '@ngx-translate/core@17.0.0':
     resolution: {integrity: sha512-Rft2D5ns2pq4orLZjEtx1uhNuEBerUdpFUG1IcqtGuipj6SavgB8SkxtNQALNDA+EVlvsNCCjC2ewZVtUeN6rg==}
@@ -10201,14 +10189,6 @@ snapshots:
     optional: true
 
   '@neoconfetti/react@1.0.0': {}
-
-  '@ngworker/lumberjack@21.0.1(@angular/common@21.0.3(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)':
-    dependencies:
-      '@angular/core': 21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0)
-      tslib: 2.8.1
-    optionalDependencies:
-      '@angular/common': 21.0.3(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)
-      rxjs: 7.8.2
 
   '@ngx-translate/core@17.0.0(@angular/common@21.0.3(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.0.3(@angular/compiler@21.0.3)(rxjs@7.8.2)(zone.js@0.16.0))':
     dependencies:
