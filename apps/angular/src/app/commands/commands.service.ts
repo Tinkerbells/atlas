@@ -2,6 +2,7 @@ import { inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
 
 import { Disposable } from '~/common/core/disposable';
 import { ICommandRegistry } from './commands';
+import { Logger } from '~/logger';
 
 export interface ICommandService {
   executeCommand: <R = unknown>(
@@ -26,12 +27,30 @@ export class CommandService
   implements ICommandService, OnDestroy
 {
   private readonly commandRegistry: ICommandRegistry = inject(ICommandRegistry);
+  private _logger: Logger = inject(Logger);
+  protected _logging: boolean;
 
   constructor() {
     super();
+    this._logging = false;
+  }
+
+  public toggleLogging(): boolean {
+    this._logging = !this._logging;
+    return this._logging;
+  }
+
+  protected _log(str: string, payload?: Record<string, unknown>): void {
+    if (this._logging) {
+      this._logger.info(`[CommandService]: ${str}`, {
+        scope: 'CommandService',
+        payload: payload,
+      });
+    }
   }
 
   async executeCommand<T>(id: string, ...args: unknown[]): Promise<T> {
+    this._log(`Command with ${id} executing...`, { args });
     return this._tryExecuteCommand(id, args);
   }
 
@@ -44,7 +63,9 @@ export class CommandService
       const result = command.handler(...args);
       return Promise.resolve(result);
     } catch (err) {
-      return Promise.reject(err instanceof Error ? err : new Error(String(err)));
+      return Promise.reject(
+        err instanceof Error ? err : new Error(String(err)),
+      );
     }
   }
 

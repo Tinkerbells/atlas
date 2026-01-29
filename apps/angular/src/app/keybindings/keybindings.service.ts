@@ -25,7 +25,6 @@ export class KeybindingService
   private _keyboardMapper: IKeyboardMapper;
   private _cachedResolver: KeybindingResolver | null;
   private _dynamicKeybindings: IKeybindingItem[];
-  protected _logger: Logger;
   private readonly _keyboardLayoutService: IKeyboardLayoutService = inject(
     IKeyboardLayoutService,
   );
@@ -35,10 +34,8 @@ export class KeybindingService
   constructor() {
     const logger = inject(Logger);
     super(inject(IContextKeyService), inject(ICommandService), logger);
-    this._logger = logger;
-    this._logger.info('[KeybindingService] Constructor called, window:', {
-      scope: 'KeybindingService',
-      payload: { windowExists: typeof window !== 'undefined' },
+    this._log('Constructor called, window:', {
+      windowExists: typeof window !== 'undefined',
     });
 
     this._keyboardMapper = this._keyboardLayoutService.getKeyboardMapper();
@@ -53,17 +50,14 @@ export class KeybindingService
         return;
       }
 
-      this._logger.debug('[KeybindingService] Key pressed', {
-        scope: 'KeybindingService',
-        payload: {
-          key: e.key,
-          code: e.code,
-          ctrlKey: e.ctrlKey,
-          metaKey: e.metaKey,
-          shiftKey: e.shiftKey,
-          altKey: e.altKey,
-          target: e.target,
-        },
+      this._log('Key pressed', {
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        shiftKey: e.shiftKey,
+        altKey: e.altKey,
+        target: e.target,
       });
       if (e.target instanceof HTMLElement) {
         const shouldPrevent = this._dispatch(e, e.target);

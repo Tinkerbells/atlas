@@ -66,8 +66,11 @@ export class KeyboardMapper implements IKeyboardMapper {
   }
 
   public resolveKeyboardEvent(e: KeyboardEvent): ResolvedKeybinding {
-    const ctrlKey = e.ctrlKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
-    const altKey = e.altKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
+    const ctrlKey =
+      e.ctrlKey ||
+      (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
+    const altKey =
+      e.altKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
 
     const chord = new ScanCodeChord(
       ctrlKey,

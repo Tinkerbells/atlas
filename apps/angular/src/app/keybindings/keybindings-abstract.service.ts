@@ -2,12 +2,9 @@ import type { Keybinding } from './keybindings';
 import type { IKeybindingItem } from './keybindings-registry';
 import type { ResolvedKeybinding } from './resolved-keybinding';
 import type { KeybindingResolver } from './keybindings-resolver';
-import type { ICommandService } from '~/commands/commands.service';
+import type { ICommandService } from '~/commands';
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item';
-import type {
-  IContextKeyService,
-  IContextKeyServiceTarget,
-} from '~/context/context.service';
+import type { IContextKeyService, IContextKeyServiceTarget } from '~/context';
 import { Logger } from '~/logger/logger';
 
 import { IntervalTimer } from '~/common/utils/async/async';
@@ -25,6 +22,8 @@ export abstract class AbstractKeybindingService extends Disposable {
 
   protected _currentlyDispatchingCommandId: string | null;
 
+  protected _logging: boolean;
+
   private _currentChordChecker: IntervalTimer;
 
   public get inChordMode(): boolean {
@@ -37,10 +36,24 @@ export abstract class AbstractKeybindingService extends Disposable {
     protected _logger: Logger,
   ) {
     super();
-
+    this._logging = true;
     this._currentChords = [];
     this._currentlyDispatchingCommandId = null;
     this._currentChordChecker = new IntervalTimer();
+  }
+
+  public toggleLogging(): boolean {
+    this._logging = !this._logging;
+    return this._logging;
+  }
+
+  protected _log(str: string, payload?: Record<string, unknown>): void {
+    if (this._logging) {
+      this._logger.info(str, {
+        scope: 'KeybindingService',
+        payload: payload,
+      });
+    }
   }
 
   public override dispose(): void {
@@ -94,9 +107,9 @@ export abstract class AbstractKeybindingService extends Disposable {
     }
 
     const resolved = this.resolveKeyboardEvent(e);
-    this._logger.debug('[AbstractKeybindingService] Resolved keybinding', {
-      scope: 'AbstractKeybindingService',
-      payload: { resolved: JSON.stringify(resolved), event: e },
+    this._log('Resolved keybinding', {
+      resolved: JSON.stringify(resolved),
+      event: e,
     });
     return this._doDispatch(resolved, target);
   }
@@ -121,16 +134,12 @@ export abstract class AbstractKeybindingService extends Disposable {
     }
     const contextValue = this._contextKeyService.getContext(target);
     const readableChords = [...currentChords, userPressedChord].join(' → ');
-    this._logger.debug(`[keybinding] pressed: ${readableChords || '(none)'}`, {
-      scope: 'AbstractKeybindingService',
-    });
+    this._log(`pressed: ${readableChords || '(none)'}`);
     const resolveResult = this._getResolver().resolve(
       contextValue,
       currentChords,
       userPressedChord,
     );
-
-    console.log(resolveResult);
 
     switch (resolveResult.kind) {
       case ResultKind.NoMatchingKb: {
