@@ -1,6 +1,11 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import type { Keybinding } from './keybindings';
 import type { IDisposable } from '~/common/core/disposable';
-import type { ContextKeyExpression } from '~/context/parser';
+import type { ContextKeyExpression } from '~/context';
 
 import { decodeKeybinding } from './keybindings';
 import { DisposableStore } from '~/common/core/disposable';

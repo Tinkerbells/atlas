@@ -1,12 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { describe, it, expect, beforeEach } from 'vitest';
 import { KeyboardMapper } from '../keyboard-mapper';
 import { OperatingSystem } from '~/platform';
 import { ScanCodeChord, Keybinding } from '../keybindings';
 import { ScanCode, ScanCodeUtils } from '../scan-code';
-
-// ============================================
-// Test helpers (для тестов)
-// ============================================
 
 /**
  * Создает mock KeyboardEvent

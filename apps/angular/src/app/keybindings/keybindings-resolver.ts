@@ -1,5 +1,10 @@
-import type { IContext } from '~/context/context.service';
-import type { ContextKeyExpression } from '~/context/parser';
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import type { IContext } from '~/context';
+import type { ContextKeyExpression } from '~/context';
 import type { ResolvedKeybindingItem } from './resolved-keybinding-item';
 
 export enum ResultKind {

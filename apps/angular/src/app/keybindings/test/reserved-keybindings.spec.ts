@@ -1,5 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { describe, it, expect } from 'vitest';
-import { isReservedBrowserKeybinding, RESERVED_BROWSER_KEYBINDINGS } from '../reserved-keybindings';
+import {
+  isReservedBrowserKeybinding,
+  RESERVED_BROWSER_KEYBINDINGS,
+} from '../reserved-keybindings';
 
 // ============================================
 // Test helpers for tests (аналог VS Code)

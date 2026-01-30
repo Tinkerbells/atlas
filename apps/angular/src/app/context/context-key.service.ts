@@ -1,68 +1,25 @@
-import { inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
-import type { IDisposable } from '~/common/core/disposable';
-import type { ContextKeyExpression } from './parser';
+import { Injectable, OnDestroy } from '@angular/core';
 
 import { isEditableElement } from '~/common/utils/dom/dom';
 import { Disposable } from '~/common/core/disposable';
 
 import { equals } from '~/common/utils/helpers/equals';
+import {
+  ContextKeyExpression,
+  ContextKeyValue,
+  IContextKey,
+  IContextKeyService,
+  IContextKeyServiceTarget,
+  IContext,
+  IScopedContextKeyService,
+} from './contex-key';
 
 const KEYBINDING_CONTEXT_ATTR = 'data-ctx-id';
-
-export interface IContextKeyServiceTarget {
-  parentElement: IContextKeyServiceTarget | null;
-  setAttribute: (attr: string, value: string) => void;
-  removeAttribute: (attr: string) => void;
-  hasAttribute: (attr: string) => boolean;
-  getAttribute: (attr: string) => string | null;
-}
-
-export type ContextKeyValue =
-  | null
-  | undefined
-  | boolean
-  | number
-  | string
-  | Array<null | undefined | boolean | number | string>
-  | Record<string, null | undefined | boolean | number | string>;
-
-export interface IContextKey<T extends ContextKeyValue = ContextKeyValue> {
-  set: (value: T) => void;
-  reset: () => void;
-  get: () => T | undefined;
-}
-
-export interface IContextKeyService {
-  readonly _serviceBrand: undefined;
-
-  createKey: <T extends ContextKeyValue>(
-    key: string,
-    defaultValue: T | undefined,
-  ) => IContextKey<T>;
-  contextMatchesRules: (rules: ContextKeyExpression | undefined) => boolean;
-  getContextKeyValue: <T>(key: string) => T | undefined;
-
-  createScoped: (target: IContextKeyServiceTarget) => IScopedContextKeyService;
-  createOverlay: (overlay: Iterable<[string, any]>) => IContextKeyService;
-  getContext: (target: IContextKeyServiceTarget | null) => IContext;
-}
-
-export const IContextKeyService = new InjectionToken<IContextKeyService>(
-  'IContextKeyService',
-  {
-    providedIn: 'root',
-    factory: () => inject(ContextKeyService),
-  },
-);
-
-export type IScopedContextKeyService = IContextKeyService & IDisposable;
-
-export interface IContext {
-  getValue: <T extends ContextKeyValue = ContextKeyValue>(
-    key: string,
-  ) => T | undefined;
-}
 
 export class Context implements IContext {
   protected _parent: Context | null;

@@ -1,18 +1,23 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { inject, Injectable, OnDestroy } from '@angular/core';
 
 import type { Keybinding } from './keybindings';
 import type { IKeyboardMapper } from './keyboard-mapper';
-import { IContextKeyService } from '~/context/context.service';
+import { IContextKeyService } from '~/context';
 import type { IKeybindingItem } from './keybindings-registry';
 import type { ResolvedKeybinding } from './resolved-keybinding';
-import { ICommandService } from '~/commands/commands.service';
+import { ICommandService } from '~/commands';
 
 import { KeybindingResolver } from './keybindings-resolver';
 import { IKeybindingsRegistry } from './keybindings-registry';
 import { ResolvedKeybindingItem } from './resolved-keybinding-item';
 import { AbstractKeybindingService } from './keybindings-abstract.service';
 import { IKeyboardLayoutService } from './browser-keyboard-layout.service';
-import { Logger } from '~/logger/logger';
+import { Logger } from '~/logger';
 import { isEditableElement } from '~/common/utils/dom/dom';
 
 @Injectable({

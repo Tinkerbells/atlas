@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import type { Keybinding } from './keybindings';
 import type { IKeybindingItem } from './keybindings-registry';
 import type { ResolvedKeybinding } from './resolved-keybinding';

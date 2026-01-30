@@ -1,5 +1,15 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { describe, it, expect } from 'vitest';
-import { ScanCodeChord, Keybinding, decodeKeybinding, Chord } from '../keybindings';
+import {
+  ScanCodeChord,
+  Keybinding,
+  decodeKeybinding,
+  Chord,
+} from '../keybindings';
 import { OperatingSystem } from '~/platform';
 
 // ============================================
@@ -476,7 +486,8 @@ describe('Keybinding', () => {
         TEST_MODIFIERS.CtrlCmd | TEST_SCAN_CODES.KeyF,
         OperatingSystem.Windows,
       );
-      const number = chord1.toNumber(OperatingSystem.Windows) |
+      const number =
+        chord1.toNumber(OperatingSystem.Windows) |
         (chord2.toNumber(OperatingSystem.Windows) << 16);
 
       const keybinding = Keybinding.fromNumber(number, OperatingSystem.Windows);
@@ -541,8 +552,9 @@ describe('Keybinding', () => {
       const keybinding = new Keybinding([chord1, chord2]);
 
       const number = keybinding.toNumber(OperatingSystem.Windows);
-      const expected = chord1.toNumber(OperatingSystem.Windows) |
-        ((chord2.toNumber(OperatingSystem.Windows) & 0xFFFF) << 16);
+      const expected =
+        chord1.toNumber(OperatingSystem.Windows) |
+        ((chord2.toNumber(OperatingSystem.Windows) & 0xffff) << 16);
 
       expect(number).toBe(expected);
     });
