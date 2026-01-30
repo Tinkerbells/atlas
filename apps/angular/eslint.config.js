@@ -36,6 +36,8 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-return": "off",
       "@angular-eslint/directive-selector": "off",
+      "@typescript-eslint/no-unsafe-enum-comparison": "off",
+      "no-useless-escape": "off",
       "@angular-eslint/component-selector": [
         "error",
         {
