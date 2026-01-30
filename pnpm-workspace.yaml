@@ -1,6 +1,9 @@
-onlyBuiltDependencies:
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
   - electron
   - esbuild
-packages:
-  - 'apps/*'
-  - 'packages/*'
+  - lmdb
+  - msgpackr-extract
+
+onlyBuiltDependencies:
+  - electron-winstaller

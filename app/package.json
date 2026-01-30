@@ -1,0 +1,11 @@
+{
+  "name": "atlas",
+  "description": "Atlas - Cross-platform file manager",
+  "author": {
+    "name": "Atlas Team"
+  },
+  "version": "1.0.0",
+  "main": "main.js",
+  "private": true,
+  "dependencies": {}
+}
