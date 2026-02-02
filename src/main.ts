@@ -18,6 +18,8 @@ import { HomeComponent } from './app/home/home.component';
 import { DetailComponent } from './app/detail/detail.component';
 import { SettingsComponent } from './app/settings';
 import { provideLogger } from './app/logger';
+import { providePrimeNG } from 'primeng/config';
+import Material from '@primeuix/themes/material';
 
 if (APP_CONFIG.production) {
   enableProdMode();
@@ -28,6 +30,11 @@ bootstrapApplication(AppComponent, {
     provideLogger(),
     provideZoneChangeDetection(),
     provideHttpClient(withInterceptorsFromDi()),
+    providePrimeNG({
+      theme: {
+        preset: Material,
+      },
+    }),
     provideTranslateService({
       loader: provideTranslateHttpLoader({
         prefix: './assets/i18n/',
