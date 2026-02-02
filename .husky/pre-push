@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running pre-push checks..."
+
+echo "Running all checks before push..."
+
+# Run linting
+echo "Running lint..."
+pnpm run desktop:lint
+
+# Run typecheck
+echo "Running typecheck..."
+pnpm run desktop:typecheck
+
+# Run unit tests
+echo "Running unit tests..."
+pnpm run desktop:test
+
+# Run e2e tests
+echo "Running e2e tests..."
+pnpm run e2e
+
+echo "Pre-push checks passed! Safe to push."
