@@ -1,1 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running pre-commit checks..."
+
+# Check if there are any TypeScript files staged
+if git diff --cached --name-only | grep -q '\.tsx\?$'; then
+  echo "TypeScript files detected. Running full typecheck..."
+  pnpm run desktop:typecheck
+fi
+
+# Run lint-staged for linting
+echo "Running lint-staged..."
 pnpm exec lint-staged
+
+# Run unit tests
+echo "Running unit tests..."
+pnpm run desktop:test -- --watch=false
+
+echo "Pre-commit checks passed!"

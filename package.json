@@ -18,6 +18,7 @@
     "desktop:test": "pnpm --filter atlas test",
     "desktop:test:watch": "pnpm --filter atlas test:watch",
     "desktop:lint": "pnpm --filter atlas lint",
+    "desktop:typecheck": "pnpm --filter atlas typecheck",
     "e2e": "pnpm --filter atlas-e2e test",
     "e2e:show-trace": "pnpm --filter atlas-e2e show-trace"
   },
