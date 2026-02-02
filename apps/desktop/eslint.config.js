@@ -4,10 +4,10 @@ import angularEslint from "angular-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["app/**/*", "dist/**/*", "release/**/*"],
+    ignores: ["dist/**/*", "release/**/*", "out-tsc/**/*", "app/**/*"],
   },
   {
-    files: ["**/*.ts"],
+    files: ["src/**/*.ts"],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -20,7 +20,6 @@ export default tseslint.config(
           "./tsconfig.serve.json",
           "./src/tsconfig.app.json",
           "./src/tsconfig.spec.json",
-          "./e2e/tsconfig.e2e.json",
         ],
         tsconfigRootDir: import.meta.dirname,
         createDefaultProgram: true,
@@ -58,7 +57,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["**/*.html"],
+    files: ["src/**/*.html"],
     extends: [...angularEslint.configs.templateRecommended],
     rules: {},
   },

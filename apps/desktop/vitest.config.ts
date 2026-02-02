@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
-      '~': '/Users/user/projects/atlas/apps/angular/src/app',
+      '~': './src/app',
     },
   },
   test: {

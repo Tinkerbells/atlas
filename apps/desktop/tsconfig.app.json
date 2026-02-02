@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app"
+  },
+  "include": ["*.ts", "src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "app",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/vitest.d.ts",
+    "**/vitest.config.*",
+    "**/test-setup.ts"
+  ]
+}

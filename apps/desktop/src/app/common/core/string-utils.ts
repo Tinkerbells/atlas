@@ -74,7 +74,6 @@ export function escape(html: string): string {
 }
 
 export function escapeRegExpCharacters(value: string): string {
-  // eslint-disable-next-line no-useless-escape
   return value.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
 }
 

@@ -1,0 +1,13 @@
+# Compiled output
+/out-tsc
+
+# Dependencies
+node_modules
+
+# Playwright
+screenshots
+tracing
+
+# System Files
+.DS_Store
+Thumbs.db

@@ -7,17 +7,17 @@ import {
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { AppComponent } from './app/app.component';
-import { APP_CONFIG } from './environments/environment';
-import { CoreModule } from './app/core/core.module';
-import { SharedModule } from './app/common/common.module';
+import { AppComponent } from './src/app/app.component';
+import { APP_CONFIG } from './src/environments/environment';
+import { CoreModule } from './src/app/core/core.module';
+import { SharedModule } from './src/app/common/common.module';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { PageNotFoundComponent } from './app/common/components';
-import { HomeComponent } from './app/home/home.component';
-import { DetailComponent } from './app/detail/detail.component';
-import { SettingsComponent } from './app/settings';
-import { provideLogger } from './app/logger';
+import { PageNotFoundComponent } from './src/app/common/components';
+import { HomeComponent } from './src/app/home/home.component';
+import { DetailComponent } from './src/app/detail/detail.component';
+import { SettingsComponent } from './src/app/settings';
+import { provideLogger } from './src/app/logger';
 import { providePrimeNG } from 'primeng/config';
 import Material from '@primeuix/themes/material';
 
@@ -37,7 +37,7 @@ bootstrapApplication(AppComponent, {
     }),
     provideTranslateService({
       loader: provideTranslateHttpLoader({
-        prefix: './assets/i18n/',
+        prefix: './src/assets/i18n/',
         suffix: '.json',
       }),
       fallbackLang: 'en',

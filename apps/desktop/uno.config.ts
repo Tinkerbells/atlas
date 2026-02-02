@@ -1,9 +1,7 @@
-import { defineConfig, presetWind4 } from 'unocss'
+import { defineConfig, presetWind4 } from 'unocss';
 
 export default defineConfig({
-  presets: [
-    presetWind4(),
-  ],
+  presets: [presetWind4()],
   cli: {
     entry: {
       /**
@@ -14,7 +12,7 @@ export default defineConfig({
       /**
        * The output filename for the generated UnoCSS file
        */
-      outFile: './src/uno.css',
+      outFile: './uno.css',
     },
   },
-})
+});

@@ -7,17 +7,20 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "bundler",
+    "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowJs": true,
+    "skipLibCheck": true,
     "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
+    "lib": ["ES2022", "DOM"],
     "useDefineForClassFields": false,
     "baseUrl": "./src",
     "paths": {
       "~/*": ["app/*"]
     }
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "dist", "app", "out-tsc"],
   "angularCompilerOptions": {
     "strictTemplates": true,
     "fullTemplateTypeCheck": true,

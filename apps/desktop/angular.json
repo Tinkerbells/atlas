@@ -12,7 +12,7 @@
   "projects": {
     "atlas": {
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": ".",
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -30,22 +30,22 @@
             "outputPath": {
               "base": "dist"
             },
-            "index": "src/index.html",
+            "index": "index.html",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "src/tsconfig.app.json",
+            "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
+              "favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "src/uno.css"
+              "styles.scss",
+              "uno.css"
             ],
             "scripts": [],
-            "browser": "src/main.ts"
+            "browser": "main.ts"
           },
           "configurations": {
             "dev": {
@@ -108,7 +108,7 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "runner": "vitest",
-            "tsConfig": "src/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "browsers": [
               "chromium"
             ],
@@ -145,20 +145,7 @@
         }
       }
     },
-    "atlas-e2e": {
-      "root": "e2e",
-      "projectType": "application",
-      "architect": {
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "e2e/**/*.ts"
-            ]
-          }
-        }
-      }
-    }
+
   },
   "schematics": {
     "@angular-eslint/schematics:application": {

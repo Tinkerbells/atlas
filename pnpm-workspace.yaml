@@ -1,3 +1,9 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  # Exclude vscode from workspace
+  - '!vscode'
+
 ignoredBuiltDependencies:
   - '@parcel/watcher'
   - electron
