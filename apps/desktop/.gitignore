@@ -21,3 +21,5 @@ uno.css
 # System Files
 .DS_Store
 Thumbs.db
+test-results
+coverage
