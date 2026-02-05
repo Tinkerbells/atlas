@@ -41,8 +41,7 @@
               "src/assets"
             ],
             "styles": [
-              "styles.scss",
-              "uno.css"
+              "styles.scss"
             ],
             "scripts": [],
             "browser": "main.ts"
@@ -145,7 +144,6 @@
         }
       }
     },
-
   },
   "schematics": {
     "@angular-eslint/schematics:application": {
