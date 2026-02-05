@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { KeybindingService } from '~/keybindings/keybindings.service';
 import { Logger } from '~/logger';
-import { SettingsService } from '~/settings';
 import { ElectronService } from '~/core/services';
 
 @Component({
@@ -18,7 +17,6 @@ export class AppComponent {
   private translate = inject(TranslateService);
   private readonly logger: Logger = inject(Logger);
   private _keybindingService = inject(KeybindingService);
-  private settingsService = inject(SettingsService);
 
   constructor() {
     const electronService = this.electronService;
