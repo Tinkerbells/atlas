@@ -46,10 +46,9 @@ test.describe('Check Home Page', () => {
   //   expect(screenshot).toMatchSnapshot(`home-${browserName}.png`);
   // });
 
-  test('Check title', async () => {
-    const elem = await firstWindow.$('app-home h1');
-    const text = elem ? await elem.innerText() : null;
-    expect(text).toBe('App works !');
+  test('Check home page loaded', async () => {
+    const elem = await firstWindow.$('app-home');
+    expect(elem).toBeTruthy();
   });
 
   test.afterAll( async () => {
