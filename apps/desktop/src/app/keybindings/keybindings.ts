@@ -35,7 +35,7 @@ export class ScanCodeChord implements Modifiers {
     public readonly altKey: boolean,
     public readonly metaKey: boolean,
     public readonly code: ScanCode,
-  ) {}
+  ) { }
 
   /**
    * Создает ScanCodeChord из 16-битного числа keybinding

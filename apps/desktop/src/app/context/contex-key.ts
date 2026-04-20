@@ -112,26 +112,26 @@ or ::= and { '||' and }*
 and ::= term { '&&' term }*
 
 term ::=
-	| '!' (KEY | true | false | parenthesized)
-	| primary
+  | '!' (KEY | true | false | parenthesized)
+  | primary
 
 primary ::=
-	| 'true'
-	| 'false'
-	| parenthesized
-	| KEY '=~' REGEX
-	| KEY [ ('==' | '!=' | '<' | '<=' | '>' | '>=' | 'not' 'in' | 'in') value ]
+  | 'true'
+  | 'false'
+  | parenthesized
+  | KEY '=~' REGEX
+  | KEY [ ('==' | '!=' | '<' | '<=' | '>' | '>=' | 'not' 'in' | 'in') value ]
 
 parenthesized ::=
-	| '(' expression ')'
+  | '(' expression ')'
 
 value ::=
-	| 'true'
-	| 'false'
-	| 'in'      	// we support `in` as a value because there's an extension that uses it, ie "when": "languageId == in"
-	| VALUE 		// matched by the same regex as KEY; consider putting the value in single quotes if it's a string (e.g., with spaces)
-	| SINGLE_QUOTED_STR
-	| EMPTY_STR  	// this allows "when": "foo == " which's used by existing extensions
+  | 'true'
+  | 'false'
+  | 'in'      	// we support `in` as a value because there's an extension that uses it, ie "when": "languageId == in"
+  | VALUE 		// matched by the same regex as KEY; consider putting the value in single quotes if it's a string (e.g., with spaces)
+  | SINGLE_QUOTED_STR
+  | EMPTY_STR  	// this allows "when": "foo == " which's used by existing extensions
 
 ```
 */
@@ -244,7 +244,7 @@ export class Parser {
     return this._parsingErrors;
   }
 
-  constructor(private readonly _config: ParserConfig = defaultConfig) {}
+  constructor(private readonly _config: ParserConfig = defaultConfig) { }
 
   /**
    * Parse a context key expression.
@@ -386,8 +386,8 @@ export class Parser {
               closingSlashIndex === regexLexeme.length - 1
                 ? undefined
                 : this._removeFlagsGY(
-                    regexLexeme.substring(closingSlashIndex + 1),
-                  );
+                  regexLexeme.substring(closingSlashIndex + 1),
+                );
             let regexp: RegExp | null;
             try {
               regexp = new RegExp(
@@ -458,8 +458,8 @@ export class Parser {
                 closingSlashIndex === regexLexeme.length - 1
                   ? undefined
                   : this._removeFlagsGY(
-                      regexLexeme.substring(closingSlashIndex + 1),
-                    );
+                    regexLexeme.substring(closingSlashIndex + 1),
+                  );
               let regexp: RegExp | null;
               try {
                 regexp = new RegExp(
@@ -815,7 +815,7 @@ export class ContextKeyFalseExpr implements IContextKeyExpression {
 
   public readonly type = ContextKeyExprType.False;
 
-  protected constructor() {}
+  protected constructor() { }
 
   public cmp(other: ContextKeyExpression): number {
     return this.type - other.type;
@@ -855,7 +855,7 @@ export class ContextKeyTrueExpr implements IContextKeyExpression {
 
   public readonly type = ContextKeyExprType.True;
 
-  protected constructor() {}
+  protected constructor() { }
 
   public cmp(other: ContextKeyExpression): number {
     return this.type - other.type;
@@ -909,7 +909,7 @@ export class ContextKeyDefinedExpr implements IContextKeyExpression {
   protected constructor(
     readonly key: string,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -986,7 +986,7 @@ export class ContextKeyEqualsExpr implements IContextKeyExpression {
     private readonly key: string,
     private readonly value: any,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1050,7 +1050,7 @@ export class ContextKeyInExpr implements IContextKeyExpression {
   private constructor(
     private readonly key: string,
     private readonly valueKey: string,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1193,7 +1193,7 @@ export class ContextKeyNotEqualsExpr implements IContextKeyExpression {
     private readonly key: string,
     private readonly value: any,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1265,7 +1265,7 @@ export class ContextKeyNotExpr implements IContextKeyExpression {
   private constructor(
     private readonly key: string,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1349,7 +1349,7 @@ export class ContextKeyGreaterExpr implements IContextKeyExpression {
     private readonly key: string,
     private readonly value: number | string,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1419,7 +1419,7 @@ export class ContextKeyGreaterEqualsExpr implements IContextKeyExpression {
     private readonly key: string,
     private readonly value: number | string,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1485,7 +1485,7 @@ export class ContextKeySmallerExpr implements IContextKeyExpression {
     private readonly key: string,
     private readonly value: number | string,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1555,7 +1555,7 @@ export class ContextKeySmallerEqualsExpr implements IContextKeyExpression {
     private readonly key: string,
     private readonly value: number | string,
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1782,7 +1782,7 @@ export class ContextKeyAndExpr implements IContextKeyExpression {
   private constructor(
     public readonly expr: ContextKeyExpression[],
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
@@ -1996,7 +1996,7 @@ export class ContextKeyOrExpr implements IContextKeyExpression {
   private constructor(
     public readonly expr: ContextKeyExpression[],
     private negated: ContextKeyExpression | null,
-  ) {}
+  ) { }
 
   public cmp(other: ContextKeyExpression): number {
     if (other.type !== this.type) {
