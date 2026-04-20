@@ -1,53 +1,27 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterLink } from '@angular/router';
 
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSidenavModule } from '@angular/material/sidenav';
-
-import { Listbox, Option } from '@angular/aria/listbox';
-
-import { MatIconModule } from '@angular/material/icon';
-
-import {
-  AccordionGroup,
-  AccordionTrigger,
-  AccordionPanel,
-  AccordionContent,
-} from '@angular/aria/accordion';
-import { IKeybindingsRegistry, ScanCode } from '~/keybindings';
+import { IKeybindingsRegistry, ScanCode, ScanCodeMod } from '~/keybindings';
 import { ICommandRegistry } from '~/commands';
 import { Logger } from '~/logger';
-import { ScanCodeMod } from '~/keybindings/keybindings';
+import { SidebarComponent } from '~/common/ui/sidebar';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  template: `
+    <app-sidebar>
+      <div>hello</div>
+    </app-sidebar>
+  `,
   standalone: true,
-  imports: [
-    RouterLink,
-    TranslateModule,
-    MatIconModule,
-    MatSlideToggleModule,
-    MatSidenavModule,
-    AccordionGroup,
-    AccordionTrigger,
-    AccordionPanel,
-    AccordionContent,
-    Listbox,
-    Option,
-  ],
+  imports: [TranslateModule, SidebarComponent],
 })
 export class HomeComponent implements OnInit {
-  private readonly keybindingsRegistry: IKeybindingsRegistry =
-    inject(IKeybindingsRegistry);
-  private readonly commandsRegistry: ICommandRegistry =
-    inject(ICommandRegistry);
-  private readonly logger: Logger = inject(Logger);
+  private readonly keybindingsRegistry = inject(IKeybindingsRegistry);
+  private readonly commandsRegistry = inject(ICommandRegistry);
+  private readonly logger = inject(Logger);
   constructor() {}
-  public options = ['Option 1', 'Option 2', 'Option 3'];
-  ngOnInit(): void {
+  ngOnInit() {
     this.commandsRegistry.registerCommand('demo.sayHello1', () =>
       console.log('Hello World!'),
     );

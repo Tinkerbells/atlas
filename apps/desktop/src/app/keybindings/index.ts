@@ -10,6 +10,7 @@ export * from './keybindings.service';
 
 export {
   Keybinding,
+  ScanCodeMod,
   ScanCodeChord as KeyCodeChord,
   decodeKeybinding,
   type Chord,
