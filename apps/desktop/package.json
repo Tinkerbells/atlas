@@ -10,7 +10,8 @@
   "main": "app/main.js",
   "private": true,
   "scripts": {
-    "postinstall": "node ../../scripts/postinstall.cjs && electron-builder install-app-deps",
+    "postinstall": "node ../../scripts/postinstall.cjs",
+    "electron:rebuild": "electron-builder install-app-deps",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve dev:css ng:serve",
     "ng:serve": "ng serve -c dev -o",

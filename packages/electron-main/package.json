@@ -1,0 +1,27 @@
+{
+  "name": "@atlas/electron-main",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-mode.mjs",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "entry-point.mjs",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@atlas/electron-preload": "workspace:*",
+    "@atlas/vue-desktop": "workspace:*",
+    "electron-updater": "6.8.3"
+  },
+  "devDependencies": {
+    "@atlas/electron-versions": "workspace:*",
+    "electron-devtools-installer": "4.0.0",
+    "typescript": "6.0.2",
+    "vite": "8.0.3"
+  }
+}
