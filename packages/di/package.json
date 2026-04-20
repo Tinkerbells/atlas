@@ -1,0 +1,36 @@
+{
+  "name": "@atlas/di",
+  "version": "1.0.0",
+  "description": "Standalone Dependency Injection system extracted from VS Code",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "di",
+    "dependency-injection",
+    "injection",
+    "ioc"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@atlas/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}
