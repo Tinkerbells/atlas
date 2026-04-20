@@ -184,7 +184,7 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@types/node@22.19.1)(typescript@5.9.3)
       typescript:
-        specifier: 5.9.3
+        specifier: ~5.9.3
         version: 5.9.3
       typescript-eslint:
         specifier: 8.54.0
@@ -210,6 +210,21 @@ importers:
 
   apps/vue-desktop:
     dependencies:
+      '@atlas/di':
+        specifier: workspace:*
+        version: link:../../packages/di
+      '@atlas/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@jsep-plugin/ternary':
+        specifier: ^1.1.4
+        version: 1.1.4(jsep@1.4.0)
+      consola:
+        specifier: 3.4.2
+        version: 3.4.2
+      jsep:
+        specifier: ^1.4.0
+        version: 1.4.0
       vue:
         specifier: ^3.5.30
         version: 3.5.32(typescript@5.9.3)
@@ -233,6 +248,16 @@ importers:
         specifier: ^3.2.5
         version: 3.2.7(typescript@5.9.3)
 
+  packages/di:
+    dependencies:
+      '@atlas/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
   packages/electron-main:
     dependencies:
       '@atlas/electron-preload':
@@ -252,8 +277,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       typescript:
-        specifier: 6.0.2
-        version: 6.0.2
+        specifier: ~5.9.3
+        version: 5.9.3
       vite:
         specifier: 8.0.3
         version: 8.0.3(@types/node@24.12.2)(esbuild@0.27.2)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
@@ -267,13 +292,19 @@ importers:
         specifier: 1.8.2
         version: 1.8.2
       typescript:
-        specifier: 6.0.2
-        version: 6.0.2
+        specifier: ~5.9.3
+        version: 5.9.3
       vite:
         specifier: 8.0.3
         version: 8.0.3(@types/node@24.12.2)(esbuild@0.27.2)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/electron-versions: {}
+
+  packages/shared:
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
 
 packages:
 
