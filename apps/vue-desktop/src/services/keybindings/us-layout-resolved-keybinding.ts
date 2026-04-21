@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { OperatingSystem } from '@atlas/shared';
-import type { Keybinding, ScanCodeChord } from './keybindings';
+import type { OperatingSystem } from "@atlas/shared";
 
-import { BaseResolvedKeybinding } from './base-resolved-keybinding';
-import { toEmptyArrayIfContainsNull } from './resolved-keybinding-item';
-import { ScanCodeUtils } from './scan-code';
+import type { Keybinding, ScanCodeChord } from "./keybindings";
+
+import { ScanCodeUtils } from "./scan-code";
+import { BaseResolvedKeybinding } from "./base-resolved-keybinding";
+import { toEmptyArrayIfContainsNull } from "./resolved-keybinding-item";
 
 export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<ScanCodeChord> {
   constructor(chords: ScanCodeChord[], os: OperatingSystem) {
@@ -27,19 +28,19 @@ export class USLayoutResolvedKeybinding extends BaseResolvedKeybinding<ScanCodeC
   }
 
   public static getDispatchStr(chord: ScanCodeChord): string | null {
-    let result = '';
+    let result = "";
 
     if (chord.ctrlKey) {
-      result += 'ctrl+';
+      result += "ctrl+";
     }
     if (chord.shiftKey) {
-      result += 'shift+';
+      result += "shift+";
     }
     if (chord.altKey) {
-      result += 'alt+';
+      result += "alt+";
     }
     if (chord.metaKey) {
-      result += 'meta+';
+      result += "meta+";
     }
     result += ScanCodeUtils.toString(chord.code);
 

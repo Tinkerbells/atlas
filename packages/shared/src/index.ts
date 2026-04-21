@@ -1,32 +1,32 @@
+export { IntervalTimer } from "./async";
+export { CharCode } from "./char-code";
+
+export { isEditableElement, isHTMLElement } from "./dom";
+export { equals } from "./equals";
+export { illegalArgument, illegalState } from "./error-utils";
 export {
   Disposable,
   DisposableStore,
-  isDisposable,
   dispose,
+  isDisposable,
   toDisposable,
-} from './lifecycle'
-export type { IDisposable } from './lifecycle'
-
-export { OperatingSystem, OS, isWindows, isMacintosh, isLinux } from './platform'
-export { CharCode } from './char-code'
+} from "./lifecycle";
+export type { IDisposable } from "./lifecycle";
+export { isLinux, isMacintosh, isWindows, OperatingSystem, OS } from "./platform";
 export {
-  isFalsyOrWhitespace,
-  format,
-  format2,
+  compareIgnoreCase,
+  count,
+  endsWith,
+  equalsIgnoreCase,
   escape,
   escapeRegExpCharacters,
-  count,
-  startsWithIgnoreCase,
-  endsWith,
+  format,
+  format2,
   indexOfIgnoreCase,
-  compareIgnoreCase,
-  equalsIgnoreCase,
   isAsciiDigit,
+  isAsciiLetter,
+  isFalsyOrWhitespace,
   isLowerAsciiLetter,
   isUpperAsciiLetter,
-  isAsciiLetter,
-} from './string-utils'
-export { illegalArgument, illegalState } from './error-utils'
-export { isHTMLElement, isEditableElement } from './dom'
-export { equals } from './equals'
-export { IntervalTimer } from './async'
+  startsWithIgnoreCase,
+} from "./string-utils";

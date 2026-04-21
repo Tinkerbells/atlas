@@ -1,25 +1,25 @@
-import { CharCode } from './char-code';
+import { CharCode } from "./char-code";
 
 export function isFalsyOrWhitespace(str: string | undefined): boolean {
-  if (!str || typeof str !== 'string') {
+  if (!str || typeof str !== "string") {
     return true;
   }
   return str.trim().length === 0;
 }
 
-const _formatRegexp = /{(\d+)}/g;
+const _formatRegexp = /\{(\d+)\}/g;
 
 export function format(value: string, ...args: any[]): string {
   if (args.length === 0) {
     return value;
   }
-  return value.replace(_formatRegexp, function (match, group) {
-    const idx = parseInt(group, 10);
+  return value.replace(_formatRegexp, (match, group) => {
+    const idx = Number.parseInt(group, 10);
     return isNaN(idx) || idx < 0 || idx >= args.length ? match : args[idx];
   });
 }
 
-const _format2Regexp = /{([^}]+)}/g;
+const _format2Regexp = /\{([^}]+)\}/g;
 
 export function format2(
   template: string,
@@ -35,18 +35,18 @@ export function format2(
 }
 
 export function escape(html: string): string {
-  return html.replace(/[<>&]/g, function (match) {
+  return html.replace(/[<>&]/g, (match) => {
     switch (match) {
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '&': return '&amp;';
+      case "<": return "&lt;";
+      case ">": return "&gt;";
+      case "&": return "&amp;";
       default: return match;
     }
   });
 }
 
 export function escapeRegExpCharacters(value: string): string {
-  return value.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
+  return value.replace(/[\\{}*+?|^$.[\]()]/g, "\\$&");
 }
 
 export function count(value: string, substr: string): number {
@@ -67,14 +67,14 @@ export function startsWithIgnoreCase(str: string, candidate: string): boolean {
   return str.slice(0, candidateLength).toLowerCase() === candidate.toLowerCase();
 }
 
-export const endsWith = function (str: string, suffix: string): boolean {
+export function endsWith(str: string, suffix: string): boolean {
   const len = str.length;
   const i = suffix.length;
   if (i > len) {
     return false;
   }
   return str.slice(len - i) === suffix;
-};
+}
 
 export function indexOfIgnoreCase(
   str: string,
@@ -109,20 +109,23 @@ export function compareIgnoreCase(a: string, b: string): number {
     if (codeA === codeB) {
       if (codeA >= CharCode.A && codeA <= CharCode.Z) {
         const diff = (codeB | 32) - (codeA | 32);
-        if (diff !== 0) return diff;
+        if (diff !== 0)
+          return diff;
       }
       continue;
     }
 
     if (codeA >= CharCode.A && codeA <= CharCode.Z) {
       const codeBUpper = codeB & ~32;
-      if (codeBUpper === codeA) continue;
+      if (codeBUpper === codeA)
+        continue;
       return codeA - codeBUpper;
     }
 
     if (codeB >= CharCode.A && codeB <= CharCode.Z) {
       const codeAUpper = codeA & ~32;
-      if (codeAUpper === codeB) continue;
+      if (codeAUpper === codeB)
+        continue;
       return codeAUpper - codeB;
     }
 

@@ -1,19 +1,20 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { Keybinding } from './keybindings';
-import type { IDisposable } from '@atlas/shared';
-import type { ContextKeyExpression } from '../context/context-key';
+import type { IDisposable } from "@atlas/shared";
 
-import { decodeKeybinding } from './keybindings';
-import { DisposableStore } from '@atlas/shared';
-import { OperatingSystem, OS } from '@atlas/shared';
-import { createDecorator } from '@atlas/di';
-import { ILogger } from '../logger/logger';
-import { USLayoutResolvedKeybinding } from './us-layout-resolved-keybinding';
-import { isReservedBrowserKeybinding } from './reserved-keybindings';
+import { createDecorator } from "@atlas/di";
+import { DisposableStore, OperatingSystem, OS } from "@atlas/shared";
+
+import type { Keybinding } from "./keybindings";
+import type { ContextKeyExpression } from "../context/context-key";
+
+import { ILogger } from "../logger/logger";
+import { decodeKeybinding } from "./keybindings";
+import { isReservedBrowserKeybinding } from "./reserved-keybindings";
+import { USLayoutResolvedKeybinding } from "./us-layout-resolved-keybinding";
 
 export interface IKeybindings {
   primary?: number;
@@ -53,7 +54,7 @@ export interface IKeybindingsRegistry {
   registerKeybindingRule: (rule: IKeybindingRule) => IDisposable;
 }
 
-export const IKeybindingsRegistry = createDecorator<IKeybindingsRegistry>('keybindingsRegistry');
+export const IKeybindingsRegistry = createDecorator<IKeybindingsRegistry>("keybindingsRegistry");
 
 export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
   private _coreKeybindings: IKeybindingItem[];
@@ -68,9 +69,12 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
     primary?: number;
     secondary?: number[];
   } {
-    if (OS === OperatingSystem.Windows && kb.win) return kb.win;
-    if (OS === OperatingSystem.Macintosh && kb.mac) return kb.mac;
-    if (kb.linux) return kb.linux;
+    if (OS === OperatingSystem.Windows && kb.win)
+      return kb.win;
+    if (OS === OperatingSystem.Macintosh && kb.mac)
+      return kb.mac;
+    if (kb.linux)
+      return kb.linux;
     return kb;
   }
 
@@ -138,7 +142,7 @@ export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
       if (dispatchStr && isReservedBrowserKeybinding(dispatchStr)) {
         this._logger.warning(
           `Keybinding "${dispatchStr}" for command "${commandId}" may conflict with browser shortcuts`,
-          { scope: 'KeybindingsRegistry' },
+          { scope: "KeybindingsRegistry" },
         );
       }
     }

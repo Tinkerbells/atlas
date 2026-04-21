@@ -1,11 +1,10 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { IContext } from '../context/context-key';
-import type { ContextKeyExpression } from '../context/context-key';
-import type { ResolvedKeybindingItem } from './resolved-keybinding-item';
+import type { ResolvedKeybindingItem } from "./resolved-keybinding-item";
+import type { ContextKeyExpression, IContext } from "../context/context-key";
 
 export enum ResultKind {
   NoMatchingKb,
@@ -13,10 +12,10 @@ export enum ResultKind {
   KbFound,
 }
 
-export type ResolutionResult =
-  | { kind: ResultKind.NoMatchingKb }
-  | { kind: ResultKind.MoreChordsNeeded }
-  | {
+export type ResolutionResult
+  = | { kind: ResultKind.NoMatchingKb }
+    | { kind: ResultKind.MoreChordsNeeded }
+    | {
       kind: ResultKind.KbFound;
       commandId: string | null;
       commandArgs: any;
@@ -53,7 +52,7 @@ export class KeybindingResolver {
 
     for (const defaultKeybinding of defaultKeybindings) {
       const command = defaultKeybinding.command;
-      if (command && command.charAt(0) !== '-') {
+      if (command && command.charAt(0) !== "-") {
         this._defaultBoundCommands.set(command, true);
       }
     }
@@ -74,7 +73,8 @@ export class KeybindingResolver {
     const list = this._map.get(keypress);
     if (!list) {
       this._map.set(keypress, [item]);
-    } else {
+    }
+    else {
       list.push(item);
     }
     this._addToLookupMap(item);
@@ -86,10 +86,11 @@ export class KeybindingResolver {
     }
 
     let arr = this._lookupMap.get(item.command);
-    if (typeof arr === 'undefined') {
+    if (typeof arr === "undefined") {
       arr = [item];
       this._lookupMap.set(item.command, arr);
-    } else {
+    }
+    else {
       arr.push(item);
     }
   }
@@ -99,7 +100,7 @@ export class KeybindingResolver {
       return;
     }
     const arr = this._lookupMap.get(item.command);
-    if (typeof arr === 'undefined') {
+    if (typeof arr === "undefined") {
       return;
     }
     for (let i = 0, len = arr.length; i < len; i++) {
@@ -117,7 +118,7 @@ export class KeybindingResolver {
   ): ResolutionResult {
     const pressedChords = [...currentChords, keypress];
 
-    console.log('pressedChords:', pressedChords);
+    console.log("pressedChords:", pressedChords);
 
     const kbCandidates = this._map.get(pressedChords[0]);
     if (kbCandidates === undefined) {
@@ -128,7 +129,8 @@ export class KeybindingResolver {
 
     if (pressedChords.length < 2) {
       lookupMap = kbCandidates;
-    } else {
+    }
+    else {
       lookupMap = [];
       for (let i = 0, len = kbCandidates.length; i < len; i++) {
         const candidate = kbCandidates[i];
@@ -155,7 +157,7 @@ export class KeybindingResolver {
       return NoMatchingKb;
     }
 
-    console.log('resolve result:', {
+    console.log("resolve result:", {
       pressedChordsLength: pressedChords.length,
       resultChordsLength: result.chords.length,
       resultChords: result.chords,
@@ -164,7 +166,7 @@ export class KeybindingResolver {
 
     if (pressedChords.length < result.chords.length) {
       console.log(
-        'MoreChordsNeeded',
+        "MoreChordsNeeded",
         pressedChords.length,
         result.chords.length,
       );
@@ -216,7 +218,7 @@ export class KeybindingResolver {
 
   public lookupKeybindings(commandId: string): ResolvedKeybindingItem[] {
     const items = this._lookupMap.get(commandId);
-    if (typeof items === 'undefined' || items.length === 0) {
+    if (typeof items === "undefined" || items.length === 0) {
       return [];
     }
 

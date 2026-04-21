@@ -1,29 +1,31 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { Keybinding } from './keybindings';
-import type { IKeyboardMapper } from './keyboard-mapper';
-import type { IKeybindingItem } from './keybindings-registry';
-import type { ResolvedKeybinding } from './resolved-keybinding';
+import { createDecorator } from "@atlas/di";
+import { isEditableElement } from "@atlas/shared";
 
-import { createDecorator } from '@atlas/di';
-import { isEditableElement } from '@atlas/shared';
-import { IContextKeyService } from '../context/context-key';
-import { ICommandService } from '../commands/commands-service';
-import { KeybindingResolver } from './keybindings-resolver';
-import { IKeybindingsRegistry } from './keybindings-registry';
-import { ResolvedKeybindingItem } from './resolved-keybinding-item';
-import { AbstractKeybindingService } from './keybindings-abstract.service';
-import { IKeyboardLayoutService } from './browser-keyboard-layout.service';
-import { ILogger } from '../logger/logger';
+import type { Keybinding } from "./keybindings";
+import type { IKeyboardMapper } from "./keyboard-mapper";
+import type { IKeybindingItem } from "./keybindings-registry";
+import type { ResolvedKeybinding } from "./resolved-keybinding";
+
+import { ILogger } from "../logger/logger";
+import { IKeypressEventBus } from "./keypress-event-bus";
+import { IContextKeyService } from "../context/context-key";
+import { KeybindingResolver } from "./keybindings-resolver";
+import { IKeybindingsRegistry } from "./keybindings-registry";
+import { ICommandService } from "../commands/commands-service";
+import { ResolvedKeybindingItem } from "./resolved-keybinding-item";
+import { AbstractKeybindingService } from "./keybindings-abstract.service";
+import { IKeyboardLayoutService } from "./browser-keyboard-layout.service";
 
 export interface IKeybindingService extends AbstractKeybindingService {
-  addDynamicKeybinding(item: IKeybindingItem): void;
+  addDynamicKeybinding: (item: IKeybindingItem) => void;
 }
 
-export const IKeybindingService = createDecorator<IKeybindingService>('keybindingService');
+export const IKeybindingService = createDecorator<IKeybindingService>("keybindingService");
 
 export class KeybindingService extends AbstractKeybindingService {
   private _keyboardMapper: IKeyboardMapper;
@@ -38,8 +40,9 @@ export class KeybindingService extends AbstractKeybindingService {
     @ILogger _logger: ILogger,
     @IKeyboardLayoutService _keyboardLayoutService: IKeyboardLayoutService,
     @IKeybindingsRegistry _keybindingsRegistry: IKeybindingsRegistry,
+    @IKeypressEventBus _keypressBus: IKeypressEventBus,
   ) {
-    super(_contextKeyService, _commandService, _logger);
+    super(_contextKeyService, _commandService, _logger, _keypressBus);
 
     this._keyboardLayoutService = _keyboardLayoutService;
     this._keybindingsRegistry = _keybindingsRegistry;
@@ -55,7 +58,7 @@ export class KeybindingService extends AbstractKeybindingService {
         return;
       }
 
-      this._log('Key pressed', {
+      this._log("Key pressed", {
         key: e.key,
         code: e.code,
         ctrlKey: e.ctrlKey,
@@ -72,17 +75,17 @@ export class KeybindingService extends AbstractKeybindingService {
       }
     };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', handler);
+    if (typeof window !== "undefined") {
+      window.addEventListener("keydown", handler);
 
       this._register({
-        dispose: () => window.removeEventListener('keydown', handler),
+        dispose: () => window.removeEventListener("keydown", handler),
       });
     }
   }
 
   protected _documentHasFocus(): boolean {
-    return typeof document !== 'undefined' && document.hasFocus();
+    return typeof document !== "undefined" && document.hasFocus();
   }
 
   protected _getResolver(): KeybindingResolver {
@@ -116,7 +119,7 @@ export class KeybindingService extends AbstractKeybindingService {
         const lookupItems = this._getResolver().lookupKeybindings(chords[0]);
         for (const lookupItem of lookupItems) {
           result.push({
-            keybinding: keybinding,
+            keybinding,
             command: lookupItem.command,
             commandArgs: lookupItem.commandArgs,
             when: lookupItem.when,
@@ -156,9 +159,10 @@ export class KeybindingService extends AbstractKeybindingService {
           when,
           isDefault,
         );
-      } else {
-        const resolvedKeybindings =
-          this._keyboardMapper.resolveKeybinding(keybinding);
+      }
+      else {
+        const resolvedKeybindings
+          = this._keyboardMapper.resolveKeybinding(keybinding);
         for (let i = resolvedKeybindings.length - 1; i >= 0; i--) {
           const resolvedKeybinding = resolvedKeybindings[i];
           result[resultLen++] = new ResolvedKeybindingItem(

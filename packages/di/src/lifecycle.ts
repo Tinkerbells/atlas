@@ -1,2 +1,2 @@
-export { Disposable, DisposableStore, isDisposable, dispose, toDisposable } from '@atlas/shared';
-export type { IDisposable } from '@atlas/shared';
+export { Disposable, DisposableStore, dispose, isDisposable, toDisposable } from "@atlas/shared";
+export type { IDisposable } from "@atlas/shared";

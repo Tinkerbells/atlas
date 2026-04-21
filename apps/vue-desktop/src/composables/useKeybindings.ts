@@ -1,14 +1,18 @@
-import { inject } from 'vue';
-import { InstantiationServiceKey } from '@/injection-keys';
-import { IKeybindingService } from '@/services/keybindings/keybindings.service';
-import { IKeybindingsRegistry, type IKeybindingRule } from '@/services/keybindings/keybindings-registry';
-import type { IDisposable } from '@atlas/shared';
-import { DisposableStore } from '@atlas/shared';
+import type { IDisposable } from "@atlas/shared";
+
+import { inject } from "vue";
+import { DisposableStore } from "@atlas/shared";
+
+import type { IKeybindingRule } from "@/services/keybindings/keybindings-registry";
+
+import { InstantiationServiceKey } from "@/injection-keys";
+import { IKeybindingService } from "@/services/keybindings/keybindings.service";
+import { IKeybindingsRegistry } from "@/services/keybindings/keybindings-registry";
 
 export function useKeybindings() {
   const instantiationService = inject(InstantiationServiceKey);
   if (!instantiationService) {
-    throw new Error('InstantiationService not provided');
+    throw new Error("InstantiationService not provided");
   }
 
   const keybindingService = instantiationService.invokeFunction((accessor) => {

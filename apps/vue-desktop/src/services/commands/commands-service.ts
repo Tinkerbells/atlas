@@ -1,7 +1,8 @@
-import { createDecorator } from '@atlas/di';
-import { Disposable } from '@atlas/shared';
-import { ICommandRegistry } from './commands';
-import { ILogger } from '../logger/logger';
+import { Disposable } from "@atlas/shared";
+import { createDecorator } from "@atlas/di";
+
+import { ILogger } from "../logger/logger";
+import { ICommandRegistry } from "./commands";
 
 export interface ICommandService {
   executeCommand: <R = unknown>(
@@ -10,7 +11,7 @@ export interface ICommandService {
   ) => Promise<R | undefined>;
 }
 
-export const ICommandService = createDecorator<ICommandService>('commandService');
+export const ICommandService = createDecorator<ICommandService>("commandService");
 
 export class CommandService extends Disposable implements ICommandService {
   protected _logging: boolean;
@@ -31,8 +32,8 @@ export class CommandService extends Disposable implements ICommandService {
   protected _log(str: string, payload?: Record<string, unknown>): void {
     if (this._logging) {
       this._logger.info(`[CommandService]: ${str}`, {
-        scope: 'CommandService',
-        payload: payload,
+        scope: "CommandService",
+        payload,
       });
     }
   }
@@ -50,7 +51,8 @@ export class CommandService extends Disposable implements ICommandService {
     try {
       const result = command.handler(...args);
       return Promise.resolve(result);
-    } catch (err) {
+    }
+    catch (err) {
       return Promise.reject(
         err instanceof Error ? err : new Error(String(err)),
       );

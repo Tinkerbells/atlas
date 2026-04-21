@@ -5,17 +5,23 @@ export enum OperatingSystem {
 }
 
 export const OS: OperatingSystem = (() => {
-  if (typeof navigator !== 'undefined') {
+  if (typeof navigator !== "undefined") {
     const ua = navigator.userAgent.toLowerCase();
-    if (ua.includes('win')) return OperatingSystem.Windows;
-    if (ua.includes('mac')) return OperatingSystem.Macintosh;
-    if (ua.includes('linux')) return OperatingSystem.Linux;
+    if (ua.includes("win"))
+      return OperatingSystem.Windows;
+    if (ua.includes("mac"))
+      return OperatingSystem.Macintosh;
+    if (ua.includes("linux"))
+      return OperatingSystem.Linux;
   }
-  if (typeof process !== 'undefined' && process.platform) {
+  if (typeof process !== "undefined" && process.platform) {
     const platform = process.platform;
-    if (platform === 'win32') return OperatingSystem.Windows;
-    if (platform === 'darwin') return OperatingSystem.Macintosh;
-    if (platform === 'linux') return OperatingSystem.Linux;
+    if (platform === "win32")
+      return OperatingSystem.Windows;
+    if (platform === "darwin")
+      return OperatingSystem.Macintosh;
+    if (platform === "linux")
+      return OperatingSystem.Linux;
   }
   return OperatingSystem.Linux;
 })();

@@ -1,4 +1,4 @@
-import type { ILogger } from '../logger/logger';
+import type { ILogger } from "../logger/logger";
 
 export interface AppSettings {
   themePath?: string;
@@ -15,14 +15,15 @@ export class SettingsService {
   }
 
   private loadSettings(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const savedSettings = localStorage.getItem('atlas-settings');
+    if (typeof window !== "undefined" && window.localStorage) {
+      const savedSettings = localStorage.getItem("atlas-settings");
       if (savedSettings) {
         try {
           this.settings = JSON.parse(savedSettings);
-        } catch (error) {
-          this._logger.error('Failed to parse settings', {
-            scope: 'SettingsService',
+        }
+        catch (error) {
+          this._logger.error("Failed to parse settings", {
+            scope: "SettingsService",
             payload: { error },
           });
         }
@@ -31,8 +32,8 @@ export class SettingsService {
   }
 
   private saveSettings(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('atlas-settings', JSON.stringify(this.settings));
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("atlas-settings", JSON.stringify(this.settings));
     }
   }
 

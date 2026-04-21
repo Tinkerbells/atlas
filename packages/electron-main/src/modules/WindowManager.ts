@@ -1,29 +1,30 @@
-import type {AppModule} from '../AppModule.js';
-import {ModuleContext} from '../ModuleContext.js';
-import {BrowserWindow} from 'electron';
-import type {AppInitConfig} from '../AppInitConfig.js';
+import { BrowserWindow } from "electron";
+
+import type { AppModule } from "../AppModule.js";
+import type { AppInitConfig } from "../AppInitConfig.js";
+import type { ModuleContext } from "../ModuleContext.js";
 
 class WindowManager implements AppModule {
-  readonly #preload: {path: string};
-  readonly #renderer: {path: string} | URL;
+  readonly #preload: { path: string };
+  readonly #renderer: { path: string } | URL;
   readonly #openDevTools;
 
-  constructor({initConfig, openDevTools = false}: {initConfig: AppInitConfig, openDevTools?: boolean}) {
+  constructor({ initConfig, openDevTools = false }: { initConfig: AppInitConfig; openDevTools?: boolean }) {
     this.#preload = initConfig.preload;
     this.#renderer = initConfig.renderer;
     this.#openDevTools = openDevTools;
   }
 
-  async enable({app}: ModuleContext): Promise<void> {
+  async enable({ app }: ModuleContext): Promise<void> {
     await app.whenReady();
     await this.restoreOrCreateWindow(true);
-    app.on('second-instance', () => this.restoreOrCreateWindow(true));
-    app.on('activate', () => this.restoreOrCreateWindow(true));
+    app.on("second-instance", () => this.restoreOrCreateWindow(true));
+    app.on("activate", () => this.restoreOrCreateWindow(true));
   }
 
   async createWindow(): Promise<BrowserWindow> {
     const browserWindow = new BrowserWindow({
-      title: 'Atlas',
+      title: "Atlas",
       show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
       webPreferences: {
         nodeIntegration: false,
@@ -34,7 +35,7 @@ class WindowManager implements AppModule {
       },
     });
 
-    browserWindow.once('ready-to-show', () => {
+    browserWindow.once("ready-to-show", () => {
       browserWindow.show();
       if (this.#openDevTools) {
         browserWindow.webContents.openDevTools();
@@ -43,10 +44,12 @@ class WindowManager implements AppModule {
     });
 
     if (this.#renderer instanceof URL) {
-      await browserWindow.loadURL(this.#renderer.href).catch(e => {
-        if (!e.message.includes('ERR_ABORTED')) throw e;
+      await browserWindow.loadURL(this.#renderer.href).catch((e) => {
+        if (!e.message.includes("ERR_ABORTED"))
+          throw e;
       });
-    } else {
+    }
+    else {
       await browserWindow.loadFile(this.#renderer.path);
     }
 
@@ -68,7 +71,6 @@ class WindowManager implements AppModule {
 
     return window;
   }
-
 }
 
 export function createWindowManagerModule(...args: ConstructorParameters<typeof WindowManager>) {

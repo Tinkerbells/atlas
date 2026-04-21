@@ -1,12 +1,12 @@
 export function isHTMLElement(e: unknown): e is HTMLElement {
-  if (typeof e !== 'object' || e === null) {
+  if (typeof e !== "object" || e === null) {
     return false;
   }
 
   return (
-    'nodeType' in e
+    "nodeType" in e
     && (e as Node).nodeType === 1
-    && 'nodeName' in e
+    && "nodeName" in e
   );
 }
 
@@ -21,16 +21,16 @@ export function isEditableElement(element: Element): boolean {
 
   const tagName = element.tagName;
 
-  if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
+  if (tagName === "INPUT" || tagName === "TEXTAREA") {
     const input = element as HTMLInputElement | HTMLTextAreaElement;
 
     if (input.disabled || input.readOnly) {
       return false;
     }
 
-    if (tagName === 'INPUT') {
+    if (tagName === "INPUT") {
       const type = (input as HTMLInputElement).type;
-      const nonTextTypes = ['hidden', 'checkbox', 'radio', 'button', 'submit', 'image', 'reset'];
+      const nonTextTypes = ["hidden", "checkbox", "radio", "button", "submit", "image", "reset"];
       if (nonTextTypes.includes(type)) {
         return false;
       }
@@ -39,7 +39,7 @@ export function isEditableElement(element: Element): boolean {
     return true;
   }
 
-  if ('editContext' in element && (element as any).editContext) {
+  if ("editContext" in element && (element as any).editContext) {
     return true;
   }
 

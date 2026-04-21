@@ -1,12 +1,12 @@
-import { createDecorator } from '@atlas/di';
+import { createDecorator } from "@atlas/di";
 
 export enum LogLevel {
-  Critical = 'critical',
-  Debug = 'debug',
-  Error = 'error',
-  Info = 'info',
-  Trace = 'trace',
-  Warning = 'warning',
+  Critical = "critical",
+  Debug = "debug",
+  Error = "error",
+  Info = "info",
+  Trace = "trace",
+  Warning = "warning",
 }
 
 export interface LogContext {
@@ -15,12 +15,12 @@ export interface LogContext {
 }
 
 export interface ILogger {
-  critical(message: string, context?: LogContext): void;
-  debug(message: string, context?: LogContext): void;
-  error(message: string, context?: LogContext): void;
-  info(message: string, context?: LogContext): void;
-  trace(message: string, context?: LogContext): void;
-  warning(message: string, context?: LogContext): void;
+  critical: (message: string, context?: LogContext) => void;
+  debug: (message: string, context?: LogContext) => void;
+  error: (message: string, context?: LogContext) => void;
+  info: (message: string, context?: LogContext) => void;
+  trace: (message: string, context?: LogContext) => void;
+  warning: (message: string, context?: LogContext) => void;
 }
 
-export const ILogger = createDecorator<ILogger>('logger');
+export const ILogger = createDecorator<ILogger>("logger");

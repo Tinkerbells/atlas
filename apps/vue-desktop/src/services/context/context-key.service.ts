@@ -1,24 +1,21 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import { Disposable } from '@atlas/shared';
+import { Disposable, equals, isEditableElement } from "@atlas/shared";
 
-import { isEditableElement } from '@atlas/shared';
-
-import { equals } from '@atlas/shared';
-import {
+import type {
   ContextKeyExpression,
   ContextKeyValue,
+  IContext,
   IContextKey,
   IContextKeyService,
   IContextKeyServiceTarget,
-  IContext,
   IScopedContextKeyService,
-} from './context-key';
+} from "./context-key";
 
-const KEYBINDING_CONTEXT_ATTR = 'data-ctx-id';
+const KEYBINDING_CONTEXT_ATTR = "data-ctx-id";
 
 export class Context implements IContext {
   protected _parent: Context | null;
@@ -54,7 +51,7 @@ export class Context implements IContext {
 
   public getValue<T>(key: string): T | undefined {
     const ret = this._value[key];
-    if (typeof ret === 'undefined' && this._parent) {
+    if (typeof ret === "undefined" && this._parent) {
       return this._parent.getValue<T>(key);
     }
     return ret;
@@ -76,8 +73,7 @@ export class Context implements IContext {
 
 export abstract class AbstractContextKeyService
   extends Disposable
-  implements IContextKeyService
-{
+  implements IContextKeyService {
   declare _serviceBrand: undefined;
 
   protected _isDisposed: boolean;
@@ -169,8 +165,7 @@ export abstract class AbstractContextKeyService
 
 export class ContextKeyService
   extends AbstractContextKeyService
-  implements IContextKeyService
-{
+  implements IContextKeyService {
   private _lastContextId: number;
   private readonly _contexts = new Map<number, Context>();
 
@@ -179,19 +174,19 @@ export class ContextKeyService
   constructor() {
     super(0);
     this._lastContextId = 0;
-    this.inputFocusedContext = this.createKey<boolean>('inputFocus', false);
+    this.inputFocusedContext = this.createKey<boolean>("inputFocus", false);
 
     const myContext = new Context(this._myContextId, null);
     this._contexts.set(this._myContextId, myContext);
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('focusin', this.handleFocusChange);
-      window.addEventListener('focusout', this.handleFocusChange);
+    if (typeof window !== "undefined") {
+      window.addEventListener("focusin", this.handleFocusChange);
+      window.addEventListener("focusout", this.handleFocusChange);
 
       this._register({
         dispose: () => {
-          window.removeEventListener('focusin', this.handleFocusChange);
-          window.removeEventListener('focusout', this.handleFocusChange);
+          window.removeEventListener("focusin", this.handleFocusChange);
+          window.removeEventListener("focusout", this.handleFocusChange);
         },
       });
     }
@@ -200,7 +195,7 @@ export class ContextKeyService
   }
 
   private handleFocusChange = () => {
-    if (typeof document === 'undefined') {
+    if (typeof document === "undefined") {
       return;
     }
 
@@ -242,7 +237,7 @@ export class ContextKeyService
   }
 
   public updateParent(_parentContextKeyService: IContextKeyService): void {
-    throw new Error('Cannot update parent of root ContextKeyService');
+    throw new Error("Cannot update parent of root ContextKeyService");
   }
 }
 
@@ -259,14 +254,14 @@ class ScopedContextKeyService extends AbstractContextKeyService {
 
     this._domNode = domNode;
     if (this._domNode.hasAttribute(KEYBINDING_CONTEXT_ATTR)) {
-      let extraInfo = '';
+      let extraInfo = "";
       const classList = (this._domNode as HTMLElement).classList;
       if (classList) {
-        extraInfo = Array.from(classList).join(', ');
+        extraInfo = Array.from(classList).join(", ");
       }
 
       console.error(
-        `Element already has context attribute${extraInfo ? `: ${extraInfo}` : ''}`,
+        `Element already has context attribute${extraInfo ? `: ${extraInfo}` : ""}`,
       );
     }
     this._domNode.setAttribute(
@@ -338,7 +333,7 @@ class OverlayContextKeyService implements IContextKeyService {
   }
 
   createKey<T extends ContextKeyValue>(): IContextKey<T> {
-    throw new Error('Not supported.');
+    throw new Error("Not supported.");
   }
 
   getContext(target: IContextKeyServiceTarget | null): IContext {
@@ -363,7 +358,7 @@ class OverlayContextKeyService implements IContextKeyService {
   }
 
   createScoped(): IScopedContextKeyService {
-    throw new Error('Not supported.');
+    throw new Error("Not supported.");
   }
 
   createOverlay(overlay: Iterable<[string, any]> = []): IContextKeyService {
@@ -371,7 +366,7 @@ class OverlayContextKeyService implements IContextKeyService {
   }
 
   updateParent(): void {
-    throw new Error('Not supported.');
+    throw new Error("Not supported.");
   }
 }
 
@@ -396,9 +391,10 @@ class ContextKey<T extends ContextKeyValue> implements IContextKey<T> {
   }
 
   public reset(): void {
-    if (typeof this._defaultValue === 'undefined') {
+    if (typeof this._defaultValue === "undefined") {
       this._service.removeContext(this._key);
-    } else {
+    }
+    else {
       this._service.setContext(this._key, this._defaultValue);
     }
   }

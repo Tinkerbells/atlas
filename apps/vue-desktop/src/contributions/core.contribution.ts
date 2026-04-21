@@ -1,8 +1,10 @@
-import type { ILogger } from '@/services/logger/logger';
-import type { SettingsService } from '@/services/settings/settings.service';
-import type { CommandDescriptor } from './contribution-registry';
-import { ScanCodeMod } from '@/services/keybindings/keybindings';
-import { ScanCode } from '@/services/keybindings/scan-code';
+import type { ILogger } from "@/services/logger/logger";
+import type { SettingsService } from "@/services/settings/settings.service";
+
+import { ScanCode } from "@/services/keybindings/scan-code";
+import { ScanCodeMod } from "@/services/keybindings/keybindings";
+
+import type { CommandDescriptor } from "./contribution-registry";
 
 const { CtrlCmd, Shift, Alt } = ScanCodeMod;
 
@@ -12,9 +14,9 @@ export function createCoreContributions(
 ): CommandDescriptor[] {
   return [
     {
-      id: 'app.showInfo',
+      id: "app.showInfo",
       handler: () => {
-        logger.info('Atlas Vue Desktop — info panel', { scope: 'Core' });
+        logger.info("Atlas Vue Desktop — info panel", { scope: "Core" });
       },
       keybinding: {
         weight: 100,
@@ -24,12 +26,12 @@ export function createCoreContributions(
     },
 
     {
-      id: 'editor.fontSize.increase',
+      id: "editor.fontSize.increase",
       handler: () => {
-        const current = settings.get('fontSize') ?? 14;
+        const current = settings.get("fontSize") ?? 14;
         const next = Math.min(32, current + 1);
-        settings.set('fontSize', next);
-        logger.info(`Font size: ${next}px`, { scope: 'Editor' });
+        settings.set("fontSize", next);
+        logger.info(`Font size: ${next}px`, { scope: "Editor" });
       },
       keybinding: {
         weight: 100,
@@ -39,12 +41,12 @@ export function createCoreContributions(
     },
 
     {
-      id: 'editor.fontSize.decrease',
+      id: "editor.fontSize.decrease",
       handler: () => {
-        const current = settings.get('fontSize') ?? 14;
+        const current = settings.get("fontSize") ?? 14;
         const next = Math.max(10, current - 1);
-        settings.set('fontSize', next);
-        logger.info(`Font size: ${next}px`, { scope: 'Editor' });
+        settings.set("fontSize", next);
+        logger.info(`Font size: ${next}px`, { scope: "Editor" });
       },
       keybinding: {
         weight: 100,
@@ -54,10 +56,10 @@ export function createCoreContributions(
     },
 
     {
-      id: 'editor.fontSize.reset',
+      id: "editor.fontSize.reset",
       handler: () => {
-        settings.set('fontSize', 14);
-        logger.info('Font size reset to 14px', { scope: 'Editor' });
+        settings.set("fontSize", 14);
+        logger.info("Font size reset to 14px", { scope: "Editor" });
       },
       keybinding: {
         weight: 100,
@@ -67,11 +69,11 @@ export function createCoreContributions(
     },
 
     {
-      id: 'editor.toggleWordWrap',
+      id: "editor.toggleWordWrap",
       handler: () => {
-        const current = settings.get('wordWrap') ?? false;
-        settings.set('wordWrap', !current);
-        logger.info(`Word wrap: ${!current}`, { scope: 'Editor' });
+        const current = settings.get("wordWrap") ?? false;
+        settings.set("wordWrap", !current);
+        logger.info(`Word wrap: ${!current}`, { scope: "Editor" });
       },
       keybinding: {
         weight: 100,
@@ -81,11 +83,11 @@ export function createCoreContributions(
     },
 
     {
-      id: 'editor.toggleLineNumbers',
+      id: "editor.toggleLineNumbers",
       handler: () => {
-        const current = settings.get('lineNumbers') ?? true;
-        settings.set('lineNumbers', !current);
-        logger.info(`Line numbers: ${!current}`, { scope: 'Editor' });
+        const current = settings.get("lineNumbers") ?? true;
+        settings.set("lineNumbers", !current);
+        logger.info(`Line numbers: ${!current}`, { scope: "Editor" });
       },
       keybinding: {
         weight: 100,
@@ -95,11 +97,11 @@ export function createCoreContributions(
     },
 
     {
-      id: 'app.toggleLogging',
+      id: "app.toggleLogging",
       handler: () => {
-        const current = settings.get('logging') ?? true;
-        settings.set('logging', !current);
-        logger.info(`Logging: ${!current}`, { scope: 'Core' });
+        const current = settings.get("logging") ?? true;
+        settings.set("logging", !current);
+        logger.info(`Logging: ${!current}`, { scope: "Core" });
       },
       keybinding: {
         weight: 100,

@@ -1,90 +1,91 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { IKeyboardMapper } from './keyboard-mapper';
+import { createDecorator } from "@atlas/di";
+import { OperatingSystem } from "@atlas/shared";
 
-import { KeyboardMapper } from './keyboard-mapper';
-import { OperatingSystem } from '@atlas/shared';
-import { createDecorator } from '@atlas/di';
+import type { IKeyboardMapper } from "./keyboard-mapper";
+
+import { KeyboardMapper } from "./keyboard-mapper";
 
 export interface IWindowsKeyMapping {
-  vkey: string
-  value: string
-  withShift: string
-  withAltGr: string
-  withShiftAltGr: string
+  vkey: string;
+  value: string;
+  withShift: string;
+  withAltGr: string;
+  withShiftAltGr: string;
 }
 export interface IWindowsKeyboardMapping {
-  [code: string]: IWindowsKeyMapping
+  [code: string]: IWindowsKeyMapping;
 }
 export interface ILinuxKeyMapping {
-  value: string
-  withShift: string
-  withAltGr: string
-  withShiftAltGr: string
+  value: string;
+  withShift: string;
+  withAltGr: string;
+  withShiftAltGr: string;
 }
 export interface ILinuxKeyboardMapping {
-  [code: string]: ILinuxKeyMapping
+  [code: string]: ILinuxKeyMapping;
 }
 export interface IMacKeyMapping {
-  value: string
-  valueIsDeadKey: boolean
-  withShift: string
-  withShiftIsDeadKey: boolean
-  withAltGr: string
-  withAltGrIsDeadKey: boolean
-  withShiftAltGr: string
-  withShiftAltGrIsDeadKey: boolean
+  value: string;
+  valueIsDeadKey: boolean;
+  withShift: string;
+  withShiftIsDeadKey: boolean;
+  withAltGr: string;
+  withAltGrIsDeadKey: boolean;
+  withShiftAltGr: string;
+  withShiftAltGrIsDeadKey: boolean;
 }
 export interface IMacKeyboardMapping {
-  [code: string]: IMacKeyMapping
+  [code: string]: IMacKeyMapping;
 }
 
-export type IMacLinuxKeyMapping = IMacKeyMapping | ILinuxKeyMapping
-export type IMacLinuxKeyboardMapping = IMacKeyboardMapping | ILinuxKeyboardMapping
-export type IKeyboardMapping = IWindowsKeyboardMapping | ILinuxKeyboardMapping | IMacKeyboardMapping
+export type IMacLinuxKeyMapping = IMacKeyMapping | ILinuxKeyMapping;
+export type IMacLinuxKeyboardMapping = IMacKeyboardMapping | ILinuxKeyboardMapping;
+export type IKeyboardMapping = IWindowsKeyboardMapping | ILinuxKeyboardMapping | IMacKeyboardMapping;
 
 export interface IWindowsKeyboardLayoutInfo {
-  name: string
-  id: string
-  text: string
+  name: string;
+  id: string;
+  text: string;
 }
 
 export interface ILinuxKeyboardLayoutInfo {
-  model: string
-  group: number
-  layout: string
-  variant: string
-  options: string
-  rules: string
+  model: string;
+  group: number;
+  layout: string;
+  variant: string;
+  options: string;
+  rules: string;
 }
 
 export interface IMacKeyboardLayoutInfo {
-  id: string
-  lang: string
-  localizedName?: string
+  id: string;
+  lang: string;
+  localizedName?: string;
 }
 
-export type IKeyboardLayoutInfo = (IWindowsKeyboardLayoutInfo | ILinuxKeyboardLayoutInfo | IMacKeyboardLayoutInfo) & { isUserKeyboardLayout?: boolean, isUSStandard?: true }
+export type IKeyboardLayoutInfo = (IWindowsKeyboardLayoutInfo | ILinuxKeyboardLayoutInfo | IMacKeyboardLayoutInfo) & { isUserKeyboardLayout?: boolean; isUSStandard?: true };
 
 export interface IKeyboardLayoutService {
 
-  readonly _serviceBrand: undefined
+  readonly _serviceBrand: undefined;
 
-  getKeyboardMapper: () => IKeyboardMapper
+  getKeyboardMapper: () => IKeyboardMapper;
 }
 
-export const IKeyboardLayoutService = createDecorator<IKeyboardLayoutService>('keyboardLayoutService')
+export const IKeyboardLayoutService = createDecorator<IKeyboardLayoutService>("keyboardLayoutService");
 
 export class BrowserKeyboardLayoutService implements IKeyboardLayoutService {
-  public _serviceBrand: undefined
+  public _serviceBrand: undefined;
 
   constructor() { }
 
   getKeyboardMapper(): IKeyboardMapper {
-    return new KeyboardMapper(OperatingSystem.Macintosh, false)
+    return new KeyboardMapper(OperatingSystem.Macintosh, false);
   }
 
   public validateCurrentKeyboardMapping() {

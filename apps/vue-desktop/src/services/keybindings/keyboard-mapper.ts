@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { OperatingSystem } from '@atlas/shared';
-import type { ResolvedKeybinding } from './resolved-keybinding';
+import type { OperatingSystem } from "@atlas/shared";
 
-import { Keybinding, ScanCodeChord } from './keybindings';
-import { USLayoutResolvedKeybinding } from './us-layout-resolved-keybinding';
-import { ScanCode, ScanCodeUtils } from './scan-code';
+import type { ResolvedKeybinding } from "./resolved-keybinding";
+
+import { ScanCode, ScanCodeUtils } from "./scan-code";
+import { Keybinding, ScanCodeChord } from "./keybindings";
+import { USLayoutResolvedKeybinding } from "./us-layout-resolved-keybinding";
 
 export interface IKeyboardMapper {
   dumpDebugInfo: () => string;
@@ -54,22 +55,22 @@ export class KeyboardMapper implements IKeyboardMapper {
         continue;
       }
       const scanCodeName = ScanCodeUtils.toString(scanCode);
-      if (scanCodeName && typeof scanCodeName === 'string') {
+      if (scanCodeName && typeof scanCodeName === "string") {
         this._scanCodeToDispatch[scanCode] = scanCodeName;
       }
     }
   }
 
   public dumpDebugInfo(): string {
-    return 'FallbackKeyboardMapper dispatching on scanCode';
+    return "FallbackKeyboardMapper dispatching on scanCode";
   }
 
   public resolveKeyboardEvent(e: KeyboardEvent): ResolvedKeybinding {
-    const ctrlKey =
-      e.ctrlKey ||
-      (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
-    const altKey =
-      e.altKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.('AltGraph'));
+    const ctrlKey
+      = e.ctrlKey
+        || (this._mapAltGrToCtrlAlt && e.getModifierState?.("AltGraph"));
+    const altKey
+      = e.altKey || (this._mapAltGrToCtrlAlt && e.getModifierState?.("AltGraph"));
 
     const chord = new ScanCodeChord(
       ctrlKey,
@@ -91,19 +92,19 @@ export class KeyboardMapper implements IKeyboardMapper {
     if (!codeDispatch) {
       return null;
     }
-    let result = '';
+    let result = "";
 
     if (chord.ctrlKey) {
-      result += 'ctrl+';
+      result += "ctrl+";
     }
     if (chord.shiftKey) {
-      result += 'shift+';
+      result += "shift+";
     }
     if (chord.altKey) {
-      result += 'alt+';
+      result += "alt+";
     }
     if (chord.metaKey) {
-      result += 'meta+';
+      result += "meta+";
     }
     result += codeDispatch;
 

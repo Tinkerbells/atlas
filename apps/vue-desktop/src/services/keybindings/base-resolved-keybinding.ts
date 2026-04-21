@@ -1,14 +1,15 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { Chord } from './keybindings';
-import type { ResolvedChord } from './resolved-keybinding';
-import type { OperatingSystem } from '@atlas/shared';
+import type { OperatingSystem } from "@atlas/shared";
 
-import { ResolvedKeybinding } from './resolved-keybinding';
-import { ScanCodeUtils } from './scan-code';
+import type { Chord } from "./keybindings";
+import type { ResolvedChord } from "./resolved-keybinding";
+
+import { ScanCodeUtils } from "./scan-code";
+import { ResolvedKeybinding } from "./resolved-keybinding";
 
 export class BaseResolvedKeybinding<
   T extends Chord = Chord,
@@ -38,7 +39,7 @@ export class BaseResolvedKeybinding<
     const chords = this.getDispatchChords().filter((chord): chord is string =>
       Boolean(chord),
     );
-    return chords.length ? chords.join(' ') : null;
+    return chords.length ? chords.join(" ") : null;
   }
 
   public hasMultipleChords(): boolean {
@@ -53,19 +54,19 @@ export class BaseResolvedKeybinding<
     if (!chord.code) {
       return null;
     }
-    let result = '';
+    let result = "";
 
     if (chord.ctrlKey) {
-      result += 'ctrl+';
+      result += "ctrl+";
     }
     if (chord.shiftKey) {
-      result += 'shift+';
+      result += "shift+";
     }
     if (chord.altKey) {
-      result += 'alt+';
+      result += "alt+";
     }
     if (chord.metaKey) {
-      result += 'meta+';
+      result += "meta+";
     }
     result += ScanCodeUtils.toString(chord.code);
 
@@ -73,6 +74,6 @@ export class BaseResolvedKeybinding<
   }
 
   public getDispatchChords(): (string | null)[] {
-    return this._chords.map((chord) => this._getChordDispatch(chord));
+    return this._chords.map(chord => this._getChordDispatch(chord));
   }
 }

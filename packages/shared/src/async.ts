@@ -1,5 +1,6 @@
-import type { IDisposable } from './lifecycle';
-import { toDisposable } from './lifecycle';
+import type { IDisposable } from "./lifecycle";
+
+import { toDisposable } from "./lifecycle";
 
 export class IntervalTimer implements IDisposable {
   private disposable: IDisposable | undefined = undefined;

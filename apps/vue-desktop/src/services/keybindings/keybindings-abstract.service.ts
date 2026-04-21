@@ -1,20 +1,21 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { Keybinding } from './keybindings';
-import type { IKeybindingItem } from './keybindings-registry';
-import type { ResolvedKeybinding } from './resolved-keybinding';
-import type { KeybindingResolver } from './keybindings-resolver';
-import type { ICommandService } from '../commands/commands-service';
-import type { ResolvedKeybindingItem } from './resolved-keybinding-item';
-import type { IContextKeyService, IContextKeyServiceTarget } from '../context/context-key';
-import type { ILogger } from '../logger/logger';
+import { Disposable, IntervalTimer } from "@atlas/shared";
 
-import { IntervalTimer } from '@atlas/shared';
-import { Disposable } from '@atlas/shared';
-import { ResultKind } from './keybindings-resolver';
+import type { Keybinding } from "./keybindings";
+import type { ILogger } from "../logger/logger";
+import type { IKeybindingItem } from "./keybindings-registry";
+import type { ResolvedKeybinding } from "./resolved-keybinding";
+import type { KeybindingResolver } from "./keybindings-resolver";
+import type { ICommandService } from "../commands/commands-service";
+import type { ResolvedKeybindingItem } from "./resolved-keybinding-item";
+import type { IKeypressEventBus, KeypressEvent } from "./keypress-event-bus";
+import type { IContextKeyService, IContextKeyServiceTarget } from "../context/context-key";
+
+import { ResultKind } from "./keybindings-resolver";
 
 interface CurrentChord {
   keypress: string;
@@ -39,6 +40,7 @@ export abstract class AbstractKeybindingService extends Disposable {
     protected _contextKeyService: IContextKeyService,
     protected _commandService: ICommandService,
     protected _logger: ILogger,
+    protected _keypressBus: IKeypressEventBus,
   ) {
     super();
     this._logging = true;
@@ -55,8 +57,8 @@ export abstract class AbstractKeybindingService extends Disposable {
   protected _log(str: string, payload?: Record<string, unknown>): void {
     if (this._logging) {
       this._logger.info(str, {
-        scope: 'KeybindingService',
-        payload: payload,
+        scope: "KeybindingService",
+        payload,
       });
     }
   }
@@ -112,14 +114,15 @@ export abstract class AbstractKeybindingService extends Disposable {
     }
 
     const resolved = this.resolveKeyboardEvent(e);
-    this._log('Resolved keybinding', {
+    this._log("Resolved keybinding", {
       resolved: JSON.stringify(resolved),
       event: e,
     });
-    return this._doDispatch(resolved, target);
+    return this._doDispatch(e, resolved, target);
   }
 
   private _doDispatch(
+    e: KeyboardEvent,
     userKeypress: ResolvedKeybinding,
     target: IContextKeyServiceTarget,
   ): boolean {
@@ -138,16 +141,19 @@ export abstract class AbstractKeybindingService extends Disposable {
       return shouldPreventDefault;
     }
     const contextValue = this._contextKeyService.getContext(target);
-    const readableChords = [...currentChords, userPressedChord].join(' → ');
-    this._log(`pressed: ${readableChords || '(none)'}`);
+    const readableChords = [...currentChords, userPressedChord].join(" → ");
+    this._log(`pressed: ${readableChords || "(none)"}`);
     const resolveResult = this._getResolver().resolve(
       contextValue,
       currentChords,
       userPressedChord,
     );
 
+    const resolvedLabel = userKeypress.getLabel();
+
     switch (resolveResult.kind) {
       case ResultKind.NoMatchingKb: {
+        this._emitKeypress(e, resolvedLabel, null, "none");
         if (this.inChordMode) {
           this._leaveChordMode();
 
@@ -157,6 +163,7 @@ export abstract class AbstractKeybindingService extends Disposable {
       }
 
       case ResultKind.MoreChordsNeeded: {
+        this._emitKeypress(e, resolvedLabel, null, "moreChords");
         shouldPreventDefault = true;
         this._currentChords.push({ keypress: userPressedChord, label: null });
         this._scheduleLeaveChordMode();
@@ -164,15 +171,17 @@ export abstract class AbstractKeybindingService extends Disposable {
       }
 
       case ResultKind.KbFound: {
+        this._emitKeypress(e, resolvedLabel, resolveResult.commandId, "found");
         if (
-          resolveResult.commandId === null ||
-          resolveResult.commandId === ''
+          resolveResult.commandId === null
+          || resolveResult.commandId === ""
         ) {
           if (this.inChordMode) {
             this._leaveChordMode();
             shouldPreventDefault = true;
           }
-        } else {
+        }
+        else {
           if (this.inChordMode) {
             this._leaveChordMode();
           }
@@ -183,11 +192,12 @@ export abstract class AbstractKeybindingService extends Disposable {
 
           this._currentlyDispatchingCommandId = resolveResult.commandId;
           try {
-            if (typeof resolveResult.commandArgs === 'undefined') {
+            if (typeof resolveResult.commandArgs === "undefined") {
               this._commandService
                 .executeCommand(resolveResult.commandId)
                 .catch(() => {});
-            } else {
+            }
+            else {
               this._commandService
                 .executeCommand(
                   resolveResult.commandId,
@@ -195,7 +205,8 @@ export abstract class AbstractKeybindingService extends Disposable {
                 )
                 .catch(() => {});
             }
-          } finally {
+          }
+          finally {
             this._currentlyDispatchingCommandId = null;
           }
         }
@@ -203,6 +214,26 @@ export abstract class AbstractKeybindingService extends Disposable {
         return shouldPreventDefault;
       }
     }
+  }
+
+  private _emitKeypress(
+    e: KeyboardEvent,
+    resolvedLabel: string | null,
+    commandId: string | null,
+    resultKind: KeypressEvent["resultKind"],
+  ): void {
+    this._keypressBus.emit({
+      timestamp: Date.now(),
+      key: e.key,
+      code: e.code,
+      ctrlKey: e.ctrlKey,
+      shiftKey: e.shiftKey,
+      altKey: e.altKey,
+      metaKey: e.metaKey,
+      resolvedLabel,
+      commandId,
+      resultKind,
+    });
   }
 
   private _leaveChordMode(): void {

@@ -1,10 +1,10 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import type { ContextKeyExpression } from '../context/context-key';
-import type { ResolvedKeybinding } from './resolved-keybinding';
+import type { ResolvedKeybinding } from "./resolved-keybinding";
+import type { ContextKeyExpression } from "../context/context-key";
 
 export class ResolvedKeybindingItem {
   _resolvedKeybindingItemBrand: void = undefined;
@@ -29,10 +29,11 @@ export class ResolvedKeybindingItem {
       this.chords = toEmptyArrayIfContainsNull(
         resolvedKeybinding.getDispatchChords(),
       );
-    } else {
+    }
+    else {
       this.chords = [];
     }
-    this.bubble = command ? command.charAt(0) === '^' : false;
+    this.bubble = command ? command.charAt(0) === "^" : false;
     this.command = this.bubble ? command!.substr(1) : command;
     this.commandArgs = commandArgs;
     this.when = when;

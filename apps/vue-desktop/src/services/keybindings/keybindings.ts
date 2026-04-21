@@ -1,10 +1,11 @@
-/*---------------------------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *-------------------------------------------------------------------------------------------- */
 
-import { OperatingSystem } from '@atlas/shared';
-import { ScanCode } from './scan-code';
+import { OperatingSystem } from "@atlas/shared";
+
+import { ScanCode } from "./scan-code";
 
 export const enum ScanCodeMod {
   CtrlCmd = (1 << 11) >>> 0,
@@ -18,7 +19,7 @@ export const enum BinaryScanCodeMask {
   Shift = (1 << 10) >>> 0,
   Alt = (1 << 9) >>> 0,
   WinCtrl = (1 << 8) >>> 0,
-  ScanCode = 0x000000ff,
+  ScanCode = 0x000000FF,
 }
 
 export interface Modifiers {
@@ -63,34 +64,38 @@ export class ScanCodeChord implements Modifiers {
 
     let result = this.code;
 
-    if (ctrlCmdFlag) result |= BinaryScanCodeMask.CtrlCmd;
-    if (this.shiftKey) result |= BinaryScanCodeMask.Shift;
-    if (this.altKey) result |= BinaryScanCodeMask.Alt;
-    if (winCtrlFlag) result |= BinaryScanCodeMask.WinCtrl;
+    if (ctrlCmdFlag)
+      result |= BinaryScanCodeMask.CtrlCmd;
+    if (this.shiftKey)
+      result |= BinaryScanCodeMask.Shift;
+    if (this.altKey)
+      result |= BinaryScanCodeMask.Alt;
+    if (winCtrlFlag)
+      result |= BinaryScanCodeMask.WinCtrl;
 
     return result >>> 0;
   }
 
   public equals(other: ScanCodeChord): boolean {
     return (
-      this.ctrlKey === other.ctrlKey &&
-      this.shiftKey === other.shiftKey &&
-      this.altKey === other.altKey &&
-      this.metaKey === other.metaKey &&
-      this.code === other.code
+      this.ctrlKey === other.ctrlKey
+      && this.shiftKey === other.shiftKey
+      && this.altKey === other.altKey
+      && this.metaKey === other.metaKey
+      && this.code === other.code
     );
   }
 
   public isModifierKey(): boolean {
     return (
-      this.code === ScanCode.ControlLeft ||
-      this.code === ScanCode.ControlRight ||
-      this.code === ScanCode.ShiftLeft ||
-      this.code === ScanCode.ShiftRight ||
-      this.code === ScanCode.AltLeft ||
-      this.code === ScanCode.AltRight ||
-      this.code === ScanCode.MetaLeft ||
-      this.code === ScanCode.MetaRight
+      this.code === ScanCode.ControlLeft
+      || this.code === ScanCode.ControlRight
+      || this.code === ScanCode.ShiftLeft
+      || this.code === ScanCode.ShiftRight
+      || this.code === ScanCode.AltLeft
+      || this.code === ScanCode.AltRight
+      || this.code === ScanCode.MetaLeft
+      || this.code === ScanCode.MetaRight
     );
   }
 }
@@ -102,7 +107,7 @@ export class Keybinding {
 
   constructor(chords: Chord[]) {
     if (!chords || chords.length === 0) {
-      throw new Error('Keybinding must contain at least one chord.');
+      throw new Error("Keybinding must contain at least one chord.");
     }
     this.chords = chords;
   }
@@ -115,8 +120,8 @@ export class Keybinding {
       return null;
     }
 
-    const firstChord = (keybinding & 0x0000ffff) >>> 0;
-    const secondChord = (keybinding & 0xffff0000) >>> 16;
+    const firstChord = (keybinding & 0x0000FFFF) >>> 0;
+    const secondChord = (keybinding & 0xFFFF0000) >>> 16;
 
     if (secondChord !== 0) {
       return new Keybinding([
@@ -136,7 +141,7 @@ export class Keybinding {
     }
 
     if (this.chords.length > 1) {
-      result = result | ((this.chords[1].toNumber(OS) & 0xffff) << 16);
+      result = result | ((this.chords[1].toNumber(OS) & 0xFFFF) << 16);
     }
 
     return result >>> 0;
@@ -147,11 +152,14 @@ export class Keybinding {
   }
 
   equals(other: Keybinding | null | undefined): boolean {
-    if (!other) return false;
-    if (this.chords.length !== other.chords.length) return false;
+    if (!other)
+      return false;
+    if (this.chords.length !== other.chords.length)
+      return false;
 
     for (let i = 0; i < this.chords.length; i++) {
-      if (!this.chords[i].equals(other.chords[i])) return false;
+      if (!this.chords[i].equals(other.chords[i]))
+        return false;
     }
     return true;
   }
@@ -161,10 +169,11 @@ export function decodeKeybinding(
   keybinding: number | number[],
   OS: OperatingSystem,
 ): Keybinding | null {
-  if (typeof keybinding === 'number') {
+  if (typeof keybinding === "number") {
     return Keybinding.fromNumber(keybinding, OS);
-  } else {
-    const chords = keybinding.map((kb) => ScanCodeChord.fromNumber(kb, OS));
+  }
+  else {
+    const chords = keybinding.map(kb => ScanCodeChord.fromNumber(kb, OS));
     return new Keybinding(chords);
   }
 }

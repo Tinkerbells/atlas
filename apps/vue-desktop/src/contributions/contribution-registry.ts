@@ -1,18 +1,20 @@
-import type { IDisposable } from '@atlas/shared';
-import { DisposableStore } from '@atlas/shared';
-import { ICommandRegistry, type CommandHandler } from '@/services/commands/commands';
-import { IKeybindingsRegistry, type IKeybindingRule } from '@/services/keybindings/keybindings-registry';
-import { IKeybindingService } from '@/services/keybindings/keybindings.service';
+import type { IDisposable } from "@atlas/shared";
+
+import { DisposableStore } from "@atlas/shared";
+
+import type { IKeybindingService } from "@/services/keybindings/keybindings.service";
+import type { type CommandHandler, ICommandRegistry } from "@/services/commands/commands";
+import type { IKeybindingRule, IKeybindingsRegistry } from "@/services/keybindings/keybindings-registry";
 
 export interface IContribution {
-  registerCommands(registry: ICommandRegistry): void;
-  registerKeybindings?(registry: IKeybindingsRegistry): void;
+  registerCommands: (registry: ICommandRegistry) => void;
+  registerKeybindings?: (registry: IKeybindingsRegistry) => void;
 }
 
 interface CommandDescriptor {
   id: string;
   handler: CommandHandler;
-  keybinding?: Omit<IKeybindingRule, 'id'>;
+  keybinding?: Omit<IKeybindingRule, "id">;
 }
 
 export class ContributionRegistry implements IDisposable {

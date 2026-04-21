@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { onUnmounted } from 'vue';
-import { useLogger, useCommands, useSettings, useKeybindings } from '@/composables';
-import { ContributionRegistry, createCoreContributions } from '@/contributions';
+import { onUnmounted } from "vue";
+
+import KeypressVisualizer from "@/components/KeypressVisualizer.vue";
+import { ContributionRegistry, createCoreContributions } from "@/contributions";
+import { useCommands, useKeybindings, useLogger, useSettings } from "@/composables";
 
 const logger = useLogger();
 const { execute, commandRegistry } = useCommands();
 const { get, settingsService } = useSettings();
 const { keybindingService, keybindingsRegistry } = useKeybindings();
 
-logger.info('Atlas Vue Desktop initialized', { scope: 'App' });
+logger.info("Atlas Vue Desktop initialized", { scope: "App" });
 
 const contributionRegistry = new ContributionRegistry(
   commandRegistry,
@@ -28,13 +30,27 @@ onUnmounted(() => {
     <header class="app-header">
       <h1>Atlas</h1>
       <nav>
-        <button @click="execute('app.showInfo')">Info</button>
-        <button @click="execute('editor.fontSize.increase')">Font +</button>
-        <button @click="execute('editor.fontSize.decrease')">Font -</button>
-        <button @click="execute('editor.fontSize.reset')">Font Reset</button>
-        <button @click="execute('editor.toggleWordWrap')">Word Wrap</button>
-        <button @click="execute('editor.toggleLineNumbers')">Line #</button>
-        <button @click="execute('app.toggleLogging')">Log</button>
+        <button @click="execute('app.showInfo')">
+          Info
+        </button>
+        <button @click="execute('editor.fontSize.increase')">
+          Font +
+        </button>
+        <button @click="execute('editor.fontSize.decrease')">
+          Font -
+        </button>
+        <button @click="execute('editor.fontSize.reset')">
+          Font Reset
+        </button>
+        <button @click="execute('editor.toggleWordWrap')">
+          Word Wrap
+        </button>
+        <button @click="execute('editor.toggleLineNumbers')">
+          Line #
+        </button>
+        <button @click="execute('app.toggleLogging')">
+          Log
+        </button>
       </nav>
       <span class="status">
         Font: {{ get('fontSize') ?? 14 }}px
@@ -43,18 +59,23 @@ onUnmounted(() => {
       </span>
     </header>
     <main class="app-main">
-      <p>Atlas Vue Desktop — ready.</p>
-      <div class="shortcuts">
-        <h3>Keyboard Shortcuts</h3>
-        <ul>
-          <li><kbd>Ctrl+Shift+I</kbd> Show Info</li>
-          <li><kbd>Ctrl+Shift+=</kbd> Increase Font</li>
-          <li><kbd>Ctrl+-</kbd> Decrease Font</li>
-          <li><kbd>Ctrl+0</kbd> Reset Font Size</li>
-          <li><kbd>Alt+Z</kbd> Toggle Word Wrap</li>
-          <li><kbd>Ctrl+Shift+L</kbd> Toggle Line Numbers</li>
-          <li><kbd>Ctrl+Shift+K</kbd> Toggle Logging</li>
-        </ul>
+      <div class="main-grid">
+        <div>
+          <p>Atlas Vue Desktop — ready.</p>
+          <div class="shortcuts">
+            <h3>Keyboard Shortcuts</h3>
+            <ul>
+              <li><kbd>Ctrl+Shift+I</kbd> Show Info</li>
+              <li><kbd>Ctrl+Shift+=</kbd> Increase Font</li>
+              <li><kbd>Ctrl+-</kbd> Decrease Font</li>
+              <li><kbd>Ctrl+0</kbd> Reset Font Size</li>
+              <li><kbd>Alt+Z</kbd> Toggle Word Wrap</li>
+              <li><kbd>Ctrl+Shift+L</kbd> Toggle Line Numbers</li>
+              <li><kbd>Ctrl+Shift+K</kbd> Toggle Logging</li>
+            </ul>
+          </div>
+        </div>
+        <KeypressVisualizer />
       </div>
     </main>
   </div>
@@ -90,6 +111,13 @@ onUnmounted(() => {
 .app-main {
   flex: 1;
   padding: 24px;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
 .shortcuts {

@@ -1,12 +1,13 @@
-export { ScanCode } from './scan-code';
-export * from './keybindings-registry';
-export * from './keybindings.service';
-export * from './browser-keyboard-layout.service';
-export * from './keyboard-mapper';
+export * from "./browser-keyboard-layout.service";
 export {
-  Keybinding,
-  ScanCodeMod,
-  ScanCodeChord as KeyCodeChord,
-  decodeKeybinding,
   type Chord,
-} from './keybindings';
+  decodeKeybinding,
+  Keybinding,
+  ScanCodeChord as KeyCodeChord,
+  ScanCodeMod,
+} from "./keybindings";
+export * from "./keybindings-registry";
+export * from "./keybindings.service";
+export * from "./keyboard-mapper";
+export * from "./keypress-event-bus";
+export { ScanCode } from "./scan-code";

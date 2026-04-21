@@ -1,5 +1,6 @@
-import { consola } from 'consola';
-import type { LogContext, ILogger } from './logger';
+import { consola } from "consola";
+
+import type { ILogger, LogContext } from "./logger";
 
 export class ConsoleLogger implements ILogger {
   critical(message: string, context?: LogContext): void {

@@ -1,6 +1,8 @@
-import { createDecorator } from '@atlas/di';
-import type { IDisposable } from '@atlas/shared';
-import { ILogger } from '../logger/logger';
+import type { IDisposable } from "@atlas/shared";
+
+import { createDecorator } from "@atlas/di";
+
+import { ILogger } from "../logger/logger";
 
 export type CommandHandler = (...args: any[]) => void;
 
@@ -11,13 +13,13 @@ interface ICommand {
 
 export interface ICommandRegistry {
   registerCommand: (
-    id: ICommand['id'],
-    handler: ICommand['handler'],
+    id: ICommand["id"],
+    handler: ICommand["handler"],
   ) => IDisposable;
   getCommand: (id: string) => ICommand | undefined;
 }
 
-export const ICommandRegistry = createDecorator<ICommandRegistry>('commandRegistry');
+export const ICommandRegistry = createDecorator<ICommandRegistry>("commandRegistry");
 
 export class CommandRegistry implements ICommandRegistry {
   private _commands = new Map<string, ICommand>();
@@ -25,12 +27,12 @@ export class CommandRegistry implements ICommandRegistry {
   constructor(@ILogger private _logger: ILogger) {}
 
   registerCommand(
-    id: ICommand['id'],
-    handler: ICommand['handler'],
+    id: ICommand["id"],
+    handler: ICommand["handler"],
   ): IDisposable {
     if (this._commands.has(id)) {
       this._logger.warning(`Command ${id} is already registered!`, {
-        scope: 'CommandRegistry',
+        scope: "CommandRegistry",
       });
       return { dispose: () => {} };
     }

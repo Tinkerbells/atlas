@@ -8,7 +8,7 @@ export function equals(one: any, other: any): boolean {
   if (typeof one !== typeof other) {
     return false;
   }
-  if (typeof one !== 'object') {
+  if (typeof one !== "object") {
     return false;
   }
   if ((Array.isArray(one)) !== (Array.isArray(other))) {
@@ -27,7 +27,8 @@ export function equals(one: any, other: any): boolean {
         return false;
       }
     }
-  } else {
+  }
+  else {
     const oneKeys: string[] = [];
 
     for (key in one) {
