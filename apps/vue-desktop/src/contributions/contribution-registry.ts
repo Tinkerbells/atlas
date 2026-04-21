@@ -11,7 +11,7 @@ export interface IContribution {
   registerKeybindings?: (registry: IKeybindingsRegistry) => void;
 }
 
-interface CommandDescriptor {
+export interface CommandDescriptor {
   id: string;
   handler: CommandHandler;
   keybinding?: Omit<IKeybindingRule, "id">;

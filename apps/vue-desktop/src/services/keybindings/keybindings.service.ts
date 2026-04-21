@@ -23,6 +23,7 @@ import { IKeyboardLayoutService } from "./browser-keyboard-layout.service";
 
 export interface IKeybindingService extends AbstractKeybindingService {
   addDynamicKeybinding: (item: IKeybindingItem) => void;
+  updateResolver: () => void;
 }
 
 export const IKeybindingService = createDecorator<IKeybindingService>("keybindingService");

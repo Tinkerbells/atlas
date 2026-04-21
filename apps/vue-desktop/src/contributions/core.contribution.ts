@@ -6,8 +6,6 @@ import { ScanCodeMod } from "@/services/keybindings/keybindings";
 
 import type { CommandDescriptor } from "./contribution-registry";
 
-const { CtrlCmd, Shift, Alt } = ScanCodeMod;
-
 export function createCoreContributions(
   logger: ILogger,
   settings: SettingsService,
@@ -21,7 +19,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: CtrlCmd | Shift | ScanCode.KeyI,
+        primary: ScanCodeMod.CtrlCmd | ScanCodeMod.Shift | ScanCode.KeyI,
       },
     },
 
@@ -36,7 +34,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: CtrlCmd | Shift | ScanCode.Equal,
+        primary: ScanCodeMod.CtrlCmd | ScanCodeMod.Shift | ScanCode.Equal,
       },
     },
 
@@ -51,7 +49,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: CtrlCmd | ScanCode.Minus,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.Minus,
       },
     },
 
@@ -64,7 +62,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: CtrlCmd | ScanCode.Digit0,
+        primary: ScanCodeMod.CtrlCmd | ScanCode.Digit0,
       },
     },
 
@@ -78,7 +76,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: Alt | ScanCode.KeyZ,
+        primary: ScanCodeMod.Alt | ScanCode.KeyZ,
       },
     },
 
@@ -92,7 +90,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: CtrlCmd | Shift | ScanCode.KeyL,
+        primary: ScanCodeMod.CtrlCmd | ScanCodeMod.Shift | ScanCode.KeyL,
       },
     },
 
@@ -106,7 +104,7 @@ export function createCoreContributions(
       keybinding: {
         weight: 100,
         when: null,
-        primary: CtrlCmd | Shift | ScanCode.KeyK,
+        primary: ScanCodeMod.CtrlCmd | ScanCodeMod.Shift | ScanCode.KeyK,
       },
     },
   ];
