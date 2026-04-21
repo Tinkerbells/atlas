@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Compile
-        run: npm run compile -- --win
+        run: npm run compile -- --win -p never
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
