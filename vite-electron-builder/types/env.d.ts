@@ -18,6 +18,9 @@ interface ImportMetaEnv {
 
   /** Current app version */
   readonly VITE_APP_VERSION: string;
+
+  /** Distribution channel for auto-updater */
+  readonly VITE_DISTRIBUTION_CHANNEL: undefined | string;
 }
 
 interface ImportMeta {
