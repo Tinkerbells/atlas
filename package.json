@@ -26,6 +26,9 @@
     "electron:dev": "node scripts/ensure-electron.mjs && pnpm --filter @atlas/electron-main dev",
     "electron:build": "node scripts/ensure-electron.mjs && pnpm --filter @atlas/vue-desktop build:electron && pnpm run -r --filter './packages/electron-*' build",
     "electron:compile": "pnpm run electron:build && electron-builder build --config electron-builder.mjs",
+    "electron:compile:mac": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --mac",
+    "electron:compile:win": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --win",
+    "electron:compile:linux": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --linux",
     "e2e": "pnpm --filter atlas-e2e test",
     "e2e:show-trace": "pnpm --filter atlas-e2e show-trace"
   },
