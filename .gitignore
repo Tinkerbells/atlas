@@ -8,6 +8,8 @@
 /release
 /test-results
 *.js
+!eslint.config.js
+!lint-staged.config.mjs
 *.js.map
 
 # dependencies
