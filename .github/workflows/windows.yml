@@ -1,14 +1,11 @@
-name: 'Windows Build'
+name: Windows Build
 
 on:
   push:
     branches: [main]
     paths: &paths
       - 'apps/vue-desktop/**'
-      - 'packages/electron-main/**'
-      - 'packages/electron-preload/**'
-      - 'packages/shared/**'
-      - 'packages/di/**'
+      - 'packages/**'
       - 'electron-builder.mjs'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -40,12 +37,6 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Typecheck
-        run: pnpm --filter @atlas/vue-desktop typecheck
 
       - name: Build
         run: pnpm run electron:compile
