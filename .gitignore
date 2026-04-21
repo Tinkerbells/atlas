@@ -10,6 +10,7 @@
 *.js
 !eslint.config.js
 !lint-staged.config.mjs
+!**/vite.config.js
 *.js.map
 
 # dependencies

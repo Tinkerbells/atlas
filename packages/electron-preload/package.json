@@ -2,7 +2,7 @@
   "name": "@atlas/electron-preload",
   "type": "module",
   "scripts": {
-    "build": "vite build --ssr",
+    "build": "vite build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/"
   },
