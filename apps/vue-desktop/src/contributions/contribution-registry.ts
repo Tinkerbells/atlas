@@ -3,7 +3,7 @@ import type { IDisposable } from "@atlas/shared";
 import { DisposableStore } from "@atlas/shared";
 
 import type { IKeybindingService } from "@/services/keybindings/keybindings.service";
-import type { type CommandHandler, ICommandRegistry } from "@/services/commands/commands";
+import type { CommandHandler, ICommandRegistry } from "@/services/commands/commands";
 import type { IKeybindingRule, IKeybindingsRegistry } from "@/services/keybindings/keybindings-registry";
 
 export interface IContribution {
