@@ -9,7 +9,7 @@ let electronPath;
 try {
   electronPath = require.resolve('electron');
 } catch {
-  console.error('Electron package not found. Run `pnpm install` first.');
+  console.error('Electron package not found. Run `npm install` first.');
   process.exit(1);
 }
 

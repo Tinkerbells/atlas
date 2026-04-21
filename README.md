@@ -14,22 +14,22 @@ to extensibility.
 ## Setup
 
 ```bash
-pnpm install
+npm install
 ```
 
 ## Scripts
 
-- `pnpm dev` — run the app in development
-- `pnpm start` — preview the built app
-- `pnpm build` — typecheck + build
-- `pnpm build:win` — build for Windows
-- `pnpm build:mac` — build for macOS
-- `pnpm build:linux` — build for Linux
-- `pnpm build:unpack` — build unpacked artifacts
-- `pnpm lint` — run ESLint
-- `pnpm lint:fix` — run ESLint with fixes
-- `pnpm format` — format with Prettier
-- `pnpm typecheck` — run TS checks for web and node
+- `npm dev` — run the app in development
+- `npm start` — preview the built app
+- `npm build` — typecheck + build
+- `npm build:win` — build for Windows
+- `npm build:mac` — build for macOS
+- `npm build:linux` — build for Linux
+- `npm build:unpack` — build unpacked artifacts
+- `npm lint` — run ESLint
+- `npm lint:fix` — run ESLint with fixes
+- `npm format` — format with Prettier
+- `npm typecheck` — run TS checks for web and node
 
 ## Features
 

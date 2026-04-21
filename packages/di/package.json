@@ -29,10 +29,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@atlas/shared": "workspace:*"
+    "@atlas/shared": "*"
   },
   "devDependencies": {
-    "@atlas/eslint": "workspace:*",
+    "@atlas/eslint": "*",
     "eslint": "^9.39.1",
     "typescript": "~5.9.3"
   }

@@ -8,21 +8,27 @@
     "name": "Atlas Team"
   },
   "private": true,
-  "packageManager": "pnpm@10.23.0",
   "main": "packages/electron-main/entry-point.mjs",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "prepare": "husky",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "lint": "pnpm -r --parallel run lint",
-    "vue:dev": "pnpm --filter @atlas/vue-desktop dev",
-    "vue:build": "pnpm --filter @atlas/vue-desktop build",
+    "lint": "npm -ws run --if-present lint",
+    "vue:dev": "npm run dev -w @atlas/vue-desktop",
+    "vue:build": "npm run build -w @atlas/vue-desktop",
     "electron:setup": "node scripts/ensure-electron.mjs",
-    "electron:dev": "node scripts/ensure-electron.mjs && pnpm --filter @atlas/electron-main dev",
-    "electron:build": "node scripts/ensure-electron.mjs && pnpm --filter @atlas/vue-desktop build:electron && pnpm run -r --filter './packages/electron-*' build",
-    "electron:compile": "pnpm run electron:build && electron-builder build --config electron-builder.mjs",
-    "electron:compile:mac": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --mac",
-    "electron:compile:win": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --win",
-    "electron:compile:linux": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --linux"
+    "electron:dev": "node scripts/ensure-electron.mjs && npm run dev -w @atlas/electron-main",
+    "electron:build": "node scripts/ensure-electron.mjs && npm run build:electron -w @atlas/vue-desktop && npm run build -w @atlas/electron-preload && npm run build -w @atlas/electron-main",
+    "electron:compile": "npm run electron:build && electron-builder build --config electron-builder.mjs",
+    "electron:compile:mac": "npm run electron:build && electron-builder build --config electron-builder.mjs --mac",
+    "electron:compile:win": "npm run electron:build && electron-builder build --config electron-builder.mjs --win",
+    "electron:compile:linux": "npm run electron:build && electron-builder build --config electron-builder.mjs --linux"
+  },
+  "dependencies": {
+    "@atlas/electron-main": "*"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.3.1",

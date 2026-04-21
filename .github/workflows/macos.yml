@@ -8,7 +8,7 @@ on:
       - 'packages/**'
       - 'electron-builder.mjs'
       - 'package.json'
-      - 'pnpm-lock.yaml'
+      - 'package-lock.json'
   pull_request:
     branches: [main]
     paths: *paths
@@ -24,23 +24,21 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
+          cache: npm
 
       - name: Install macOS dependencies
         run: |
           brew install gnu-tar coreutils
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: pnpm run electron:compile
+        run: npm run electron:compile
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

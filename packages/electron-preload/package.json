@@ -17,8 +17,8 @@
     }
   },
   "devDependencies": {
-    "@atlas/electron-versions": "workspace:*",
-    "@atlas/eslint": "workspace:*",
+    "@atlas/electron-versions": "*",
+    "@atlas/eslint": "*",
     "eslint": "^9.39.1",
     "mlly": "1.8.2",
     "typescript": "~5.9.3",

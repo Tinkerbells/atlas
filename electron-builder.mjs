@@ -25,7 +25,7 @@ export default /** @type import('electron-builder').Configuration */
   files: [
     'LICENSE*',
     pkg.main,
-    '!node_modules/**',
+    '!node_modules/@atlas/**',
     ...await getListOfFilesFromEachWorkspace(),
   ],
 });

@@ -1,24 +1,24 @@
 /** @type {import('lint-staged').Configuration} */
 const config = {
   "apps/vue-desktop/**/*.{ts,vue}": [
-    "pnpm --filter=@atlas/vue-desktop exec -- eslint --fix",
-    () => "pnpm --filter=@atlas/vue-desktop typecheck",
+    "npm exec -w @atlas/vue-desktop -- eslint --fix",
+    () => "npm run typecheck -w @atlas/vue-desktop",
   ],
   "packages/di/**/*.ts": [
-    "pnpm --filter=@atlas/di exec -- eslint --fix",
-    () => "pnpm --filter=@atlas/di typecheck",
+    "npm exec -w @atlas/di -- eslint --fix",
+    () => "npm run typecheck -w @atlas/di",
   ],
   "packages/shared/**/*.ts": [
-    "pnpm --filter=@atlas/shared exec -- eslint --fix",
-    () => "pnpm --filter=@atlas/shared typecheck",
+    "npm exec -w @atlas/shared -- eslint --fix",
+    () => "npm run typecheck -w @atlas/shared",
   ],
   "packages/electron-main/**/*.ts": [
-    "pnpm --filter=@atlas/electron-main exec -- eslint --fix",
-    () => "pnpm --filter=@atlas/electron-main typecheck",
+    "npm exec -w @atlas/electron-main -- eslint --fix",
+    () => "npm run typecheck -w @atlas/electron-main",
   ],
   "packages/electron-preload/**/*.ts": [
-    "pnpm --filter=@atlas/electron-preload exec -- eslint --fix",
-    () => "pnpm --filter=@atlas/electron-preload typecheck",
+    "npm exec -w @atlas/electron-preload -- eslint --fix",
+    () => "npm run typecheck -w @atlas/electron-preload",
   ],
 }
 

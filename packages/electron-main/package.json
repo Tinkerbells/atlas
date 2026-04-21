@@ -15,13 +15,13 @@
     }
   },
   "dependencies": {
-    "@atlas/electron-preload": "workspace:*",
-    "@atlas/vue-desktop": "workspace:*",
+    "@atlas/electron-preload": "*",
+    "@atlas/vue-desktop": "*",
     "electron-updater": "6.8.3"
   },
   "devDependencies": {
-    "@atlas/electron-versions": "workspace:*",
-    "@atlas/eslint": "workspace:*",
+    "@atlas/electron-versions": "*",
+    "@atlas/eslint": "*",
     "electron-devtools-installer": "4.0.0",
     "eslint": "^9.39.1",
     "typescript": "~5.9.3",
