@@ -5,7 +5,8 @@
   "description": "Atlas - Cross-platform file manager inspired by VSCode",
   "homepage": "https://github.com/atlas/atlas",
   "author": {
-    "name": "Atlas Team"
+    "name": "Atlas Team",
+    "email": "daniel.kasatkin.work@gmail.com"
   },
   "private": true,
   "main": "packages/electron-main/entry-point.mjs",
