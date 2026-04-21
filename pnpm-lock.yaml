@@ -202,12 +202,6 @@ importers:
         specifier: 13.0.2
         version: 13.0.2
 
-  apps/e2e:
-    devDependencies:
-      '@playwright/test':
-        specifier: 1.57.0
-        version: 1.57.0
-
   apps/vue-desktop:
     dependencies:
       '@atlas/di':
@@ -338,12 +332,9 @@ importers:
 
   packages/shared:
     devDependencies:
-      '@atlas/eslint':
-        specifier: workspace:*
-        version: link:../eslint
-      eslint:
-        specifier: ^9.39.1
-        version: 9.39.1(jiti@2.6.1)
+      '@types/node':
+        specifier: ^22.19.1
+        version: 22.19.1
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -2166,11 +2157,6 @@ packages:
   '@pkgr/core@0.2.9':
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
-
-  '@playwright/test@1.57.0':
-    resolution: {integrity: sha512-6TyEnHgd6SArQO8UO2OMTxshln3QMWBtPGrOCgs3wVEmQmwyuNtB10IZMfmYDE0riwNR1cu4q+pPcxMVtaG3TA==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -9529,10 +9515,6 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@playwright/test@1.57.0':
-    dependencies:
-      playwright: 1.57.0
-
   '@polka/url@1.0.0-next.29': {}
 
   '@primeuix/motion@0.0.10':
@@ -9826,7 +9808,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 24.12.2
+      '@types/node': 22.19.1
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.3':
@@ -9846,7 +9828,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 22.19.1
 
   '@types/http-cache-semantics@4.2.0': {}
 
@@ -9856,7 +9838,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 22.19.1
 
   '@types/mdast@4.0.4':
     dependencies:
@@ -9876,13 +9858,13 @@ snapshots:
 
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 22.19.1
       xmlbuilder: 15.1.1
     optional: true
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 22.19.1
 
   '@types/unist@3.0.3': {}
 
@@ -9891,7 +9873,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 22.19.1
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.48.1(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
