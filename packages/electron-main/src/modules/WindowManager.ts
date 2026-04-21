@@ -17,9 +17,9 @@ class WindowManager implements AppModule {
 
   async enable({ app }: ModuleContext): Promise<void> {
     await app.whenReady();
-    await this.restoreOrCreateWindow(true);
-    app.on("second-instance", () => this.restoreOrCreateWindow(true));
-    app.on("activate", () => this.restoreOrCreateWindow(true));
+    await this.restoreOrCreateWindow();
+    app.on("second-instance", () => this.restoreOrCreateWindow());
+    app.on("activate", () => this.restoreOrCreateWindow());
   }
 
   async createWindow(): Promise<BrowserWindow> {
