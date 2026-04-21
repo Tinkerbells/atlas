@@ -1,8 +1,5 @@
-import {initApp} from './dist/index.js';
+import {initApp} from '@atlas/electron-main';
 import {fileURLToPath} from 'node:url';
-import {dirname, join} from 'node:path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 if (process.env.NODE_ENV === 'development' || process.env.PLAYWRIGHT_TEST === 'true' || !!process.env.CI) {
   function showAndExit(...args) {
@@ -19,11 +16,11 @@ initApp(
     renderer: (process.env.MODE === 'development' && !!process.env.VITE_DEV_SERVER_URL) ?
       new URL(process.env.VITE_DEV_SERVER_URL)
       : {
-        path: join(__dirname, '../../apps/vue-desktop/dist/index.html'),
+        path: fileURLToPath(import.meta.resolve('@atlas/vue-desktop')),
       },
 
     preload: {
-      path: join(__dirname, '../electron-preload/dist/exposed.mjs'),
+      path: fileURLToPath(import.meta.resolve('@atlas/electron-preload/exposed.mjs')),
     },
   },
 );
