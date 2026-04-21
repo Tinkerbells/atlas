@@ -1,5 +1,4 @@
 import pkg from './package.json' with {type: 'json'};
-import mapWorkspaces from '@npmcli/map-workspaces';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
@@ -12,44 +11,41 @@ export default /** @type import('electron-builder').Configuration */
     buildResources: 'buildResources',
   },
   generateUpdatesFilesForAllChannels: true,
+  mac: {
+    target: ['dmg'],
+    category: 'public.app-category.utilities',
+  },
+  win: {
+    target: ['nsis'],
+  },
   linux: {
-    target: ['deb'],
+    target: ['deb', 'AppImage'],
   },
   artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
   files: [
     'LICENSE*',
     pkg.main,
-    '!node_modules/@atlas/electron-versions/**',
-    '!node_modules/@atlas/ui/**',
+    '!node_modules/**',
     ...await getListOfFilesFromEachWorkspace(),
   ],
 });
 
 async function getListOfFilesFromEachWorkspace() {
-  const electronPackages = [
-    '@atlas/electron-main',
-    '@atlas/electron-preload',
-    '@atlas/vue-desktop',
-  ];
-
-  const workspaces = await mapWorkspaces({
-    cwd: process.cwd(),
-    pkg,
-  });
+  const electronPackages = {
+    '@atlas/electron-main': 'packages/electron-main',
+    '@atlas/electron-preload': 'packages/electron-preload',
+    '@atlas/vue-desktop': 'apps/vue-desktop',
+  };
 
   const allFilesToInclude = [];
 
-  for (const [name, wsPath] of workspaces) {
-    if (!electronPackages.includes(name)) {
-      continue;
-    }
-
+  for (const [name, wsPath] of Object.entries(electronPackages)) {
     const pkgPath = join(wsPath, 'package.json');
     const {default: workspacePkg} = await import(pathToFileURL(pkgPath), {with: {type: 'json'}});
 
     let patterns = workspacePkg.files || ['dist/**', 'package.json'];
 
-    patterns = patterns.map(p => join('node_modules', name, p));
+    patterns = patterns.map(p => join(wsPath, p));
     allFilesToInclude.push(...patterns);
   }
 
