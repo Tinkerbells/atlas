@@ -9,6 +9,18 @@ on:
       distribution-channel:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      app-version:
+        description: 'App version for the build'
+        required: false
+        type: string
+        default: '0.0.0-dev'
+      distribution-channel:
+        description: 'Distribution channel (e.g. latest, beta, alpha)'
+        required: false
+        type: string
+        default: 'dev'
 
 defaults:
   run:
