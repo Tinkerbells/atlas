@@ -13,12 +13,6 @@
   "scripts": {
     "prepare": "husky",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "desktop:start": "pnpm --filter atlas start",
-    "desktop:build": "pnpm --filter atlas build",
-    "desktop:electron:local": "pnpm --filter atlas electron:local",
-    "desktop:electron:build": "pnpm --filter atlas electron:build",
-    "desktop:test": "pnpm --filter atlas test",
-    "desktop:test:watch": "pnpm --filter atlas test:watch",
     "lint": "pnpm -r --parallel run lint",
     "vue:dev": "pnpm --filter @atlas/vue-desktop dev",
     "vue:build": "pnpm --filter @atlas/vue-desktop build",
@@ -28,14 +22,11 @@
     "electron:compile": "pnpm run electron:build && electron-builder build --config electron-builder.mjs",
     "electron:compile:mac": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --mac",
     "electron:compile:win": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --win",
-    "electron:compile:linux": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --linux",
-    "e2e": "pnpm --filter atlas-e2e test",
-    "e2e:show-trace": "pnpm --filter atlas-e2e show-trace"
+    "electron:compile:linux": "pnpm run electron:build && electron-builder build --config electron-builder.mjs --linux"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
-    "@npmcli/map-workspaces": "5.0.3",
     "conventional-changelog": "7.1.1",
     "electron": "41.0.3",
     "electron-builder": "26.8.1",
