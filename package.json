@@ -18,7 +18,7 @@
     "desktop:electron:build": "pnpm --filter atlas electron:build",
     "desktop:test": "pnpm --filter atlas test",
     "desktop:test:watch": "pnpm --filter atlas test:watch",
-    "desktop:lint": "pnpm --filter atlas lint",
+    "lint": "pnpm -r --parallel run lint",
     "vue:dev": "pnpm --filter @atlas/vue-desktop dev",
     "vue:build": "pnpm --filter @atlas/vue-desktop build",
     "electron:setup": "node scripts/ensure-electron.mjs",

@@ -1,0 +1,18 @@
+{
+  "name": "@atlas/eslint",
+  "version": "0.0.0",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    }
+  },
+  "main": "index.mjs",
+  "types": "index.d.ts",
+  "dependencies": {
+    "@antfu/eslint-config": "^6.2.0",
+    "deepmerge": "^4.3.1",
+    "eslint-flat-config-utils": "^2.1.4"
+  }
+}

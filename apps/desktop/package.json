@@ -27,7 +27,6 @@
     "electron:build": "npm run web:prod && electron-builder build --publish=never",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
-    "lint": "ng lint",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {

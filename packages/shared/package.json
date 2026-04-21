@@ -17,11 +17,14 @@
   ],
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
   },
   "dependencies": {},
   "license": "MIT",
   "devDependencies": {
+    "@atlas/eslint": "workspace:*",
+    "eslint": "^9.39.1",
     "typescript": "~5.9.3"
   }
 }

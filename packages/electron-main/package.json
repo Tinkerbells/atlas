@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "node scripts/dev-mode.mjs",
     "build": "vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
   },
   "main": "entry-point.mjs",
   "exports": {
@@ -20,7 +21,9 @@
   },
   "devDependencies": {
     "@atlas/electron-versions": "workspace:*",
+    "@atlas/eslint": "workspace:*",
     "electron-devtools-installer": "4.0.0",
+    "eslint": "^9.39.1",
     "typescript": "~5.9.3",
     "vite": "8.0.3"
   }

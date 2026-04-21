@@ -8,7 +8,8 @@
     "build": "vite build",
     "build:electron": "vite build --base ./",
     "preview": "vite preview",
-    "typecheck": "vue-tsc --build --force"
+    "typecheck": "vue-tsc --build --force",
+    "lint": "eslint src/"
   },
   "dependencies": {
     "@atlas/di": "workspace:*",
@@ -19,9 +20,11 @@
     "vue": "^3.5.30"
   },
   "devDependencies": {
+    "@atlas/eslint": "workspace:*",
     "@types/node": "^24.12.0",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vue/tsconfig": "^0.9.0",
+    "eslint": "^9.39.1",
     "typescript": "~5.9.3",
     "vite": "^8.0.1",
     "vue-tsc": "^3.2.5"

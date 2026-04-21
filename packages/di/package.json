@@ -18,7 +18,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/"
   },
   "keywords": [
     "di",
@@ -31,6 +32,8 @@
     "@atlas/shared": "workspace:*"
   },
   "devDependencies": {
+    "@atlas/eslint": "workspace:*",
+    "eslint": "^9.39.1",
     "typescript": "~5.9.3"
   }
 }
