@@ -1,78 +1,21 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# compiled output
-/dist
-/tmp
-/out-tsc
-/app-builds
-/release
-/test-results
-*.js
-!eslint.config.js
-!lint-staged.config.mjs
-!**/vite.config.js
-*.js.map
-
-# dependencies
 node_modules
-**/node_modules
+.DS_Store
+dist
+*.local
+thumbs.db
 
-# package managers
-pnpm-lock.yaml
-**/npm-debug.log*
-**/pnpm-debug.log*
+.eslintcache
+.angular
 
-# IDEs and editors
+# IDEs
 .idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
 .vscode/*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Angular
-.angular
-.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-testem.log
-/typings
-.nx
-
-# Electron
-apps/desktop/app/main.js
-apps/desktop/app/main.js.map
-
-# UnoCSS generated files
-**/uno.css
-
-# E2E
-/apps/e2e/*.js
-/apps/e2e/*.map
-/apps/e2e/tracing
-/apps/e2e/screenshots
-
-# Build artifacts
-**/dist
-**/out-tsc
-**/.angular
-
 # System Files
-.DS_Store
 Thumbs.db
-
-# Other
-.cache
-.parcel-cache
 
 # VSCode (external repository)
 vscode
