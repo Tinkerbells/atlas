@@ -1,7 +1,6 @@
 import { inject } from "vue";
-
-import { InstantiationServiceKey } from "@/injection-keys";
-import { IContextKeyService } from "@/services/context/context-key";
+import { InstantiationServiceKey } from "~/injection-keys";
+import { IContextKeyService } from "~/services/context/context-key";
 
 export function useContextKeys() {
   const instantiationService = inject(InstantiationServiceKey);

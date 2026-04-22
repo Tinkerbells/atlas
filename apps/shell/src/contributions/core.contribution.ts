@@ -1,8 +1,8 @@
-import type { ILogger } from "@/services/logger/logger";
-import type { SettingsService } from "@/services/settings/settings.service";
+import type { ILogger } from "~/services/logger/logger";
+import type { SettingsService } from "~/services/settings/settings-service";
 
-import { ScanCode } from "@/services/keybindings/scan-code";
-import { ScanCodeMod } from "@/services/keybindings/keybindings";
+import { ScanCode } from "~/services/keybindings/scan-code";
+import { ScanCodeMod } from "~/services/keybindings/keybindings";
 
 import type { CommandDescriptor } from "./contribution-registry";
 
@@ -35,21 +35,6 @@ export function createCoreContributions(
         weight: 100,
         when: null,
         primary: ScanCodeMod.CtrlCmd | ScanCodeMod.Shift | ScanCode.Equal,
-      },
-    },
-
-    {
-      id: "editor.fontSize.decrease",
-      handler: () => {
-        const current = settings.get("fontSize") ?? 14;
-        const next = Math.max(10, current - 1);
-        settings.set("fontSize", next);
-        logger.info(`Font size: ${next}px`, { scope: "Editor" });
-      },
-      keybinding: {
-        weight: 100,
-        when: null,
-        primary: ScanCodeMod.CtrlCmd | ScanCode.Minus,
       },
     },
 

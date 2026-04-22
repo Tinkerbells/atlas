@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import type { KeypressEvent } from "~/services/keybindings/keypress-event-bus";
+
 import { computed } from "vue";
-
-import type { KeypressEvent } from "@/services/keybindings/keypress-event-bus";
-
-import { useKeypress } from "@/composables";
+import { useKeypress } from "~/composables";
 
 const { history, last, clear } = useKeypress({ maxLength: 50 });
 

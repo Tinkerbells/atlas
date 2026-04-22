@@ -1,11 +1,9 @@
 import type { DeepReadonly, Ref } from "vue";
+import type { KeypressEvent } from "~/services/keybindings/keypress-event-bus";
 
 import { inject, onUnmounted, readonly, ref } from "vue";
-
-import type { KeypressEvent } from "@/services/keybindings/keypress-event-bus";
-
-import { InstantiationServiceKey } from "@/injection-keys";
-import { IKeypressEventBus } from "@/services/keybindings/keypress-event-bus";
+import { InstantiationServiceKey } from "~/injection-keys";
+import { IKeypressEventBus } from "~/services/keybindings/keypress-event-bus";
 
 export interface UseKeypressReturn {
   history: DeepReadonly<Ref<KeypressEvent[]>>;

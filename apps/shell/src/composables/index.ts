@@ -1,6 +1,6 @@
-export { useCommands } from "./useCommands";
-export { useContextKeys } from "./useContextKeys";
-export { useKeybindings } from "./useKeybindings";
-export { useKeypress } from "./useKeypress";
-export { useLogger } from "./useLogger";
-export { useSettings } from "./useSettings";
+export { useCommands } from "./use-commands";
+export { useContextKeys } from "./use-context-keys";
+export { useKeybindings } from "./use-keybindings";
+export { useKeypress } from "./use-keypress";
+export { useLogger } from "./use-logger";
+export { useSettings } from "./use-settings";

@@ -13,18 +13,25 @@
   "dependencies": {
     "@atlas/di": "*",
     "@atlas/shared": "*",
+    "@jsep-plugin/ternary": "^1.1.4",
+    "@varlet/import-resolver": "3.15.1",
+    "@varlet/ui": "3.15.1",
     "consola": "3.4.2",
     "jsep": "^1.4.0",
-    "@jsep-plugin/ternary": "^1.1.4",
+    "unplugin-auto-import": "21.0.0",
+    "unplugin-vue-components": "32.0.0",
     "vue": "^3.5.30"
   },
   "devDependencies": {
     "@atlas/eslint": "*",
     "@types/node": "^24.12.0",
+    "@unocss/preset-attributify": "66.6.8",
+    "@unocss/preset-mini": "66.6.8",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vue/tsconfig": "^0.9.0",
     "eslint": "^9.39.1",
     "typescript": "~5.9.3",
+    "unocss": "66.6.8",
     "vite": "8.0.3",
     "vue-tsc": "^3.2.5"
   },

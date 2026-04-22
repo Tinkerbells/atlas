@@ -11,4 +11,16 @@ export default defineConfig(
       "storybook-static/**",
     ],
   },
+  {
+    files: ["src/**/*.{ts,vue}"],
+    rules: {
+      "unicorn/filename-case": [
+        "error",
+        {
+          case: "kebabCase",
+          ignore: [/README\.md/],
+        },
+      ],
+    },
+  },
 );

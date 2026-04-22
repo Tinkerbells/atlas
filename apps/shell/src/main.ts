@@ -1,20 +1,22 @@
 import { createApp } from "vue";
+import Varlet from "@varlet/ui";
+import "@varlet/ui/es/style";
+import "uno.css";
+import { IContextKeyService } from "~/services/context";
+import { ConsoleLogger, ILogger } from "~/services/logger";
+import { ContextKeyService } from "~/services/context/context-key-service";
+import {
+  CommandRegistry,
+  CommandService,
+  ICommandRegistry,
+  ICommandService,
+} from "~/services/commands";
 import {
   getSingletonServiceDescriptors,
   InstantiationService,
   registerSingleton,
   ServiceCollection,
 } from "@atlas/di";
-
-import { IContextKeyService } from "@/services/context";
-import { ConsoleLogger, ILogger } from "@/services/logger";
-import { ContextKeyService } from "@/services/context/context-key.service";
-import {
-  CommandRegistry,
-  CommandService,
-  ICommandRegistry,
-  ICommandService,
-} from "@/services/commands";
 import {
   BrowserKeyboardLayoutService,
   IKeybindingService,
@@ -24,9 +26,10 @@ import {
   KeybindingService,
   KeybindingsRegistryImpl,
   KeypressEventBus,
-} from "@/services/keybindings";
+} from "~/services/keybindings";
 
-import App from "./App.vue";
+import "./style.css";
+import App from "./app.vue";
 import { InstantiationServiceKey } from "./injection-keys";
 
 registerSingleton(ILogger, ConsoleLogger as any, 1);
@@ -43,5 +46,6 @@ const serviceCollection = new ServiceCollection(...descriptors);
 const instantiationService = new InstantiationService(serviceCollection);
 
 const app = createApp(App);
+app.use(Varlet);
 app.provide(InstantiationServiceKey, instantiationService);
 app.mount("#app");

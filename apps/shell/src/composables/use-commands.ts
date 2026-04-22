@@ -1,8 +1,7 @@
 import { inject } from "vue";
-
-import { InstantiationServiceKey } from "@/injection-keys";
-import { ICommandRegistry } from "@/services/commands/commands";
-import { ICommandService } from "@/services/commands/commands-service";
+import { InstantiationServiceKey } from "~/injection-keys";
+import { ICommandRegistry } from "~/services/commands/commands";
+import { ICommandService } from "~/services/commands/commands-service";
 
 export function useCommands() {
   const instantiationService = inject(InstantiationServiceKey);

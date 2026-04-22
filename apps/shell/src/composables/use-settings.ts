@@ -1,10 +1,9 @@
+import type { AppSettings } from "~/services/settings/settings-service";
+
 import { inject, readonly, ref } from "vue";
-
-import type { AppSettings } from "@/services/settings/settings.service";
-
-import { ILogger } from "@/services/logger/logger";
-import { InstantiationServiceKey } from "@/injection-keys";
-import { SettingsService } from "@/services/settings/settings.service";
+import { ILogger } from "~/services/logger/logger";
+import { InstantiationServiceKey } from "~/injection-keys";
+import { SettingsService } from "~/services/settings/settings-service";
 
 export function useSettings() {
   const instantiationService = inject(InstantiationServiceKey);
