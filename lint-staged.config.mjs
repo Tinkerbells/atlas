@@ -1,8 +1,8 @@
 /** @type {import('lint-staged').Configuration} */
 const config = {
-  "apps/vue-desktop/**/*.{ts,vue}": [
-    "npm exec -w @atlas/vue-desktop -- eslint --fix",
-    () => "npm run typecheck -w @atlas/vue-desktop",
+  "apps/shell/**/*.{ts,vue}": [
+    "npm exec -w @atlas/shell -- eslint --fix",
+    () => "npm run typecheck -w @atlas/shell",
   ],
   "packages/di/**/*.ts": [
     "npm exec -w @atlas/di -- eslint --fix",

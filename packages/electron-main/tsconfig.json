@@ -12,7 +12,7 @@
     "baseUrl": ".",
     "paths": {
       "@atlas/electron-preload": ["../electron-preload"],
-      "@atlas/vue-desktop": ["../../apps/vue-desktop"]
+      "@atlas/shell": ["../../apps/shell"]
     }
   },
     "include": ["src/**/*.ts", "../../vite-electron-builder/types/**/*.d.ts"],

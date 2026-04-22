@@ -16,7 +16,7 @@ initApp(
     renderer: (process.env.MODE === 'development' && !!process.env.VITE_DEV_SERVER_URL) ?
       new URL(process.env.VITE_DEV_SERVER_URL)
       : {
-        path: fileURLToPath(import.meta.resolve('@atlas/vue-desktop')),
+        path: fileURLToPath(import.meta.resolve('@atlas/shell')),
       },
 
     preload: {

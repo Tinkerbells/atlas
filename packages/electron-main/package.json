@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@atlas/electron-preload": "*",
-    "@atlas/vue-desktop": "*",
+    "@atlas/shell": "*",
     "electron-updater": "6.8.3"
   },
   "devDependencies": {

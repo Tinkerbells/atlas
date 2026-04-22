@@ -11,7 +11,7 @@ process.env.MODE = mode;
 
 const rendererWatchServer = await createServer({
   mode,
-  root: path.resolve(rootDir, 'apps/vue-desktop'),
+  root: path.resolve(rootDir, 'apps/shell'),
 });
 
 await rendererWatchServer.listen();
