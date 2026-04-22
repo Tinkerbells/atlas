@@ -1,6 +1,6 @@
 # VS Code Dependency Injection System
 
-A standalone Dependency Injection (DI) system extracted from VS Code's codebase. This library provides a lightweight, type-safe dependency injection container with support for:
+A standalone Dependency Injection (DI) system extracted from VS Code's codebase, used in the [Atlas](https://github.com/atlas/atlas) project. This library provides a lightweight, type-safe dependency injection container with support for:
 
 - **Service identification** via decorators
 - **Lazy instantiation** with proxy-based delayed creation
@@ -11,7 +11,7 @@ A standalone Dependency Injection (DI) system extracted from VS Code's codebase.
 ## Installation
 
 ```bash
-npm install @anthropic/di
+npm install @atlas/di
 ```
 
 ## Quick Start
@@ -19,7 +19,7 @@ npm install @anthropic/di
 ### 1. Define Service Interfaces
 
 ```typescript
-import { createDecorator, BrandedService } from '@anthropic/di';
+import { createDecorator, BrandedService } from '@atlas/di';
 
 // Create service identifiers
 export const ILogService = createDecorator<ILogService>('logService');
@@ -65,7 +65,7 @@ export class DatabaseService implements IDatabaseService {
 ### 3. Create Container and Register Services
 
 ```typescript
-import { InstantiationService, ServiceCollection, SyncDescriptor } from '@anthropic/di';
+import { InstantiationService, ServiceCollection, SyncDescriptor } from '@atlas/di';
 import { ILogService, IDatabaseService, LogService, DatabaseService } from './services';
 
 // Create service collection with registrations
@@ -85,7 +85,7 @@ await db.query('SELECT * FROM users');
 ### 4. Using `createInstance` with Constructor Injection
 
 ```typescript
-import { IInstantiationService } from '@anthropic/di';
+import { IInstantiationService } from '@atlas/di';
 
 class MyController {
   constructor(
@@ -106,7 +106,7 @@ const controller = instantiationService.createInstance(MyController);
 ### 5. Child Containers
 
 ```typescript
-import { DisposableStore } from '@anthropic/di';
+import { DisposableStore } from '@atlas/di';
 
 const store = new DisposableStore();
 
