@@ -29,3 +29,7 @@ Config: `uno.config.ts`. Presets: `presetMini` + `presetAttributify`.
 <!-- ❌ NOT OK: styling via UnoCSS outside Storybook -->
 <button class="bg-blue-500 text-white font-bold shadow-lg">
 ```
+
+## Linting and typechecking
+
+- Before committing, run `lint:fix` to auto-format and fix lint issues.

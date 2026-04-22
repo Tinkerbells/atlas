@@ -8,7 +8,9 @@
     "build": "vite build --base ./",
     "preview": "vite preview",
     "typecheck": "vue-tsc --build --force",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "test": "vitest run"
   },
   "dependencies": {
     "@atlas/di": "*",
@@ -33,6 +35,7 @@
     "typescript": "~5.9.3",
     "unocss": "66.6.8",
     "vite": "8.0.3",
+    "vitest": "4.1.5",
     "vue-tsc": "^3.2.5"
   },
   "files": [

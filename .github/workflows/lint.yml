@@ -38,3 +38,6 @@ jobs:
 
       - name: Typecheck
         run: npm -ws run --if-present typecheck
+
+      - name: Test
+        run: npm test
