@@ -1,6 +1,9 @@
 import { consola } from "consola";
+import { InstantiationType, registerSingleton } from "@atlas/di";
 
-import type { ILogger, LogContext } from "./logger";
+import type { LogContext } from "./logger";
+
+import { ILogger } from "./logger";
 
 export class ConsoleLogger implements ILogger {
   declare readonly _serviceBrand: undefined;
@@ -39,3 +42,5 @@ export class ConsoleLogger implements ILogger {
     return context?.scope ? consola.withTag(context.scope) : consola;
   }
 }
+
+registerSingleton(ILogger, ConsoleLogger, InstantiationType.Delayed);

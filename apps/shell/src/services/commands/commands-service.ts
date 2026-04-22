@@ -1,5 +1,5 @@
 import { Disposable } from "@atlas/shared";
-import { createDecorator } from "@atlas/di";
+import { createDecorator, InstantiationType, registerSingleton } from "@atlas/di";
 
 import { ILogger } from "../logger/logger";
 import { ICommandRegistry } from "./commands";
@@ -63,3 +63,5 @@ export class CommandService extends Disposable implements ICommandService {
     }
   }
 }
+
+registerSingleton(ICommandService, CommandService, InstantiationType.Eager);

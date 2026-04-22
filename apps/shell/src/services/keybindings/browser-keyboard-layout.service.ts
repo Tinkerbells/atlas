@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { createDecorator } from "@atlas/di";
 import { OperatingSystem } from "@atlas/shared";
+import { createDecorator, InstantiationType, registerSingleton } from "@atlas/di";
 
 import type { IKeyboardMapper } from "./keyboard-mapper";
 
@@ -92,3 +92,5 @@ export class BrowserKeyboardLayoutService implements IKeyboardLayoutService {
 
   }
 }
+
+registerSingleton(IKeyboardLayoutService, BrowserKeyboardLayoutService, InstantiationType.Delayed);

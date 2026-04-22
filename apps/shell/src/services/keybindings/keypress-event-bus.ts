@@ -1,7 +1,7 @@
 import type { IDisposable } from "@atlas/shared";
 
 import { Disposable } from "@atlas/shared";
-import { createDecorator } from "@atlas/di";
+import { createDecorator, InstantiationType, registerSingleton } from "@atlas/di";
 
 export interface KeypressEvent {
   readonly timestamp: number;
@@ -52,3 +52,5 @@ export class KeypressEventBus extends Disposable implements IKeypressEventBus {
     super.dispose();
   }
 }
+
+registerSingleton(IKeypressEventBus, KeypressEventBus, InstantiationType.Eager);

@@ -5,8 +5,8 @@
 
 import type { IDisposable } from "@atlas/shared";
 
-import { createDecorator } from "@atlas/di";
 import { DisposableStore, OperatingSystem, OS } from "@atlas/shared";
+import { createDecorator, InstantiationType, registerSingleton } from "@atlas/di";
 
 import type { Keybinding } from "./keybindings";
 import type { ContextKeyExpression } from "../context/context-key";
@@ -201,3 +201,5 @@ function sorter(a: IKeybindingItem, b: IKeybindingItem): number {
   }
   return a.weight2 - b.weight2;
 }
+
+registerSingleton(IKeybindingsRegistry, KeybindingsRegistryImpl, InstantiationType.Eager);

@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { createDecorator } from "@atlas/di";
 import { isEditableElement } from "@atlas/shared";
+import { createDecorator, InstantiationType, registerSingleton } from "@atlas/di";
 
 import type { Keybinding } from "./keybindings";
 import type { IKeyboardMapper } from "./keyboard-mapper";
@@ -184,3 +184,5 @@ export class KeybindingService extends AbstractKeybindingService {
     return result;
   }
 }
+
+registerSingleton(IKeybindingService, KeybindingService, InstantiationType.Delayed);

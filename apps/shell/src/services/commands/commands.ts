@@ -1,6 +1,6 @@
 import type { IDisposable } from "@atlas/shared";
 
-import { createDecorator } from "@atlas/di";
+import { createDecorator, InstantiationType, registerSingleton } from "@atlas/di";
 
 import { ILogger } from "../logger/logger";
 
@@ -58,3 +58,5 @@ export class CommandRegistry implements ICommandRegistry {
     return list;
   }
 }
+
+registerSingleton(ICommandRegistry, CommandRegistry, InstantiationType.Eager);

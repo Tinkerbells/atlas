@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
+import { InstantiationType, registerSingleton } from "@atlas/di";
 import { Disposable, equals, isEditableElement } from "@atlas/shared";
 
 import type {
@@ -10,10 +11,11 @@ import type {
   ContextKeyValue,
   IContext,
   IContextKey,
-  IContextKeyService,
   IContextKeyServiceTarget,
   IScopedContextKeyService,
 } from "./context-key";
+
+import { IContextKeyService } from "./context-key";
 
 const KEYBINDING_CONTEXT_ATTR = "data-ctx-id";
 
@@ -441,3 +443,5 @@ function findContextAttr(domNode: IContextKeyServiceTarget | null): number {
   }
   return 0;
 }
+
+registerSingleton(IContextKeyService, ContextKeyService, InstantiationType.Eager);
