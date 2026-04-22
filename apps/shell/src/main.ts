@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 import Varlet from "@varlet/ui";
-import "@varlet/ui/es/style";
 import "uno.css";
 import { IContextKeyService } from "~/services/context";
 import { ConsoleLogger, ILogger } from "~/services/logger";
