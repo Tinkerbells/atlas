@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { QuickOpen } from "~/modules/quick-open";
 </script>
 
 <template>
-  <div class="app" />
+  <QuickOpen />
+  <v-btn>
+    Button
+  </v-btn>
 </template>
