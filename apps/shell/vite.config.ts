@@ -2,23 +2,11 @@ import UnoCSS from "unocss/vite";
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import autoImport from "unplugin-auto-import/vite";
-import components from "unplugin-vue-components/vite";
-import { presetAttributify, presetUno } from "unocss";
-import { VarletImportResolver } from "@varlet/import-resolver";
 
 export default defineConfig({
   plugins: [
     vue(),
-    UnoCSS({
-      presets: [presetUno(), presetAttributify()],
-    }),
-    components({
-      resolvers: [VarletImportResolver()],
-    }),
-    autoImport({
-      resolvers: [VarletImportResolver({ autoImport: true })],
-    }),
+    UnoCSS({ configFile: resolve(__dirname, "uno.config.ts") }),
   ],
   resolve: {
     alias: {
