@@ -5,6 +5,8 @@ import { ILogger } from "../logger/logger";
 import { ICommandRegistry } from "./commands";
 
 export interface ICommandService {
+  readonly _serviceBrand: undefined;
+
   executeCommand: <R = unknown>(
     commandId: string,
     ...args: unknown[]
@@ -14,6 +16,8 @@ export interface ICommandService {
 export const ICommandService = createDecorator<ICommandService>("commandService");
 
 export class CommandService extends Disposable implements ICommandService {
+  declare readonly _serviceBrand: undefined;
+
   protected _logging: boolean;
 
   constructor(

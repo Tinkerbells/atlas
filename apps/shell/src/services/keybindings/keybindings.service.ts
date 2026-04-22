@@ -22,6 +22,8 @@ import { AbstractKeybindingService } from "./keybindings-abstract.service";
 import { IKeyboardLayoutService } from "./browser-keyboard-layout.service";
 
 export interface IKeybindingService extends AbstractKeybindingService {
+  readonly _serviceBrand: undefined;
+
   addDynamicKeybinding: (item: IKeybindingItem) => void;
   updateResolver: () => void;
 }
@@ -29,6 +31,8 @@ export interface IKeybindingService extends AbstractKeybindingService {
 export const IKeybindingService = createDecorator<IKeybindingService>("keybindingService");
 
 export class KeybindingService extends AbstractKeybindingService {
+  declare readonly _serviceBrand: undefined;
+
   private _keyboardMapper: IKeyboardMapper;
   private _cachedResolver: KeybindingResolver | null;
   private _dynamicKeybindings: IKeybindingItem[];

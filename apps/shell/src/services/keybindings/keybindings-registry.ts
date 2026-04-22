@@ -50,6 +50,8 @@ export interface IKeybindingItem {
 }
 
 export interface IKeybindingsRegistry {
+  readonly _serviceBrand: undefined;
+
   getDefaultKeybindings: () => IKeybindingItem[];
   registerKeybindingRule: (rule: IKeybindingRule) => IDisposable;
 }
@@ -57,6 +59,8 @@ export interface IKeybindingsRegistry {
 export const IKeybindingsRegistry = createDecorator<IKeybindingsRegistry>("keybindingsRegistry");
 
 export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
+  declare readonly _serviceBrand: undefined;
+
   private _coreKeybindings: IKeybindingItem[];
   private _cachedKeybindings: IKeybindingItem[] | null;
 

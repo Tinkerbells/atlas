@@ -12,6 +12,7 @@ export function createMockCommandService(): {
   const calls: TrackedCommandCall[] = [];
 
   const service: ICommandService = {
+    _serviceBrand: undefined,
     executeCommand: (commandId: string, ...args: unknown[]) => {
       calls.push({ commandId, args });
       return Promise.resolve(undefined);

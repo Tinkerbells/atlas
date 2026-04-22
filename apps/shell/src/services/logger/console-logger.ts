@@ -3,6 +3,8 @@ import { consola } from "consola";
 import type { ILogger, LogContext } from "./logger";
 
 export class ConsoleLogger implements ILogger {
+  declare readonly _serviceBrand: undefined;
+
   critical(message: string, context?: LogContext): void {
     const logger = this.getLogger(context);
     logger.fatal(message, context?.payload);

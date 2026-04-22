@@ -15,6 +15,8 @@ export interface LogContext {
 }
 
 export interface ILogger {
+  readonly _serviceBrand: undefined;
+
   critical: (message: string, context?: LogContext) => void;
   debug: (message: string, context?: LogContext) => void;
   error: (message: string, context?: LogContext) => void;

@@ -4,6 +4,7 @@ function noop() {}
 
 export function createMockLogger(): ILogger {
   return {
+    _serviceBrand: undefined,
     critical: noop,
     debug: noop,
     error: noop,
@@ -13,11 +14,13 @@ export function createMockLogger(): ILogger {
   };
 }
 
+type LogMethodKeys = "critical" | "debug" | "error" | "info" | "trace" | "warning";
+
 export function createTrackingLogger(): {
   logger: ILogger;
-  calls: Record<keyof ILogger, Array<{ message: string; context?: LogContext }>>;
+  calls: Record<LogMethodKeys, Array<{ message: string; context?: LogContext }>>;
 } {
-  const calls: Record<keyof ILogger, Array<{ message: string; context?: LogContext }>> = {
+  const calls: Record<LogMethodKeys, Array<{ message: string; context?: LogContext }>> = {
     critical: [],
     debug: [],
     error: [],
@@ -27,6 +30,7 @@ export function createTrackingLogger(): {
   };
 
   const logger: ILogger = {
+    _serviceBrand: undefined,
     critical: (message, context) => { calls.critical.push({ message, context }); },
     debug: (message, context) => { calls.debug.push({ message, context }); },
     error: (message, context) => { calls.error.push({ message, context }); },

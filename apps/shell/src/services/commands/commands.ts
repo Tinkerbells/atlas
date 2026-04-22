@@ -12,6 +12,8 @@ interface ICommand {
 }
 
 export interface ICommandRegistry {
+  readonly _serviceBrand: undefined;
+
   registerCommand: (
     id: ICommand["id"],
     handler: ICommand["handler"],
@@ -22,6 +24,8 @@ export interface ICommandRegistry {
 export const ICommandRegistry = createDecorator<ICommandRegistry>("commandRegistry");
 
 export class CommandRegistry implements ICommandRegistry {
+  declare readonly _serviceBrand: undefined;
+
   private _commands = new Map<string, ICommand>();
 
   constructor(@ILogger private _logger: ILogger) {}
