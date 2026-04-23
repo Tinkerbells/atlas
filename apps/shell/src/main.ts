@@ -4,6 +4,7 @@ import "~/services/logger";
 import "~/services/commands";
 import "~/services/context";
 import "~/services/keybindings";
+import "~/services/node-process";
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
