@@ -19,6 +19,7 @@ export interface ICommandRegistry {
     handler: ICommand["handler"],
   ) => IDisposable;
   getCommand: (id: string) => ICommand | undefined;
+  getCommands: () => ICommand[];
 }
 
 export const ICommandRegistry = createDecorator<ICommandRegistry>("commandRegistry");
@@ -56,6 +57,10 @@ export class CommandRegistry implements ICommandRegistry {
       return undefined;
     }
     return list;
+  }
+
+  getCommands(): ICommand[] {
+    return Array.from(this._commands.values());
   }
 }
 
