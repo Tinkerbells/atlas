@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "suggest-lucide-icons": {
+      "source": "nweii/agent-stuff",
+      "sourceType": "github",
+      "computedHash": "e65300bc92c624bdaadda1a334d94080e5a9e24ba31f4c41a0e930476b311a05"
+    },
     "vitest": {
       "source": "onmax/nuxt-skills",
       "sourceType": "github",
