@@ -2,6 +2,7 @@ import type { AppInitConfig } from "./AppInitConfig.js";
 
 import { createModuleRunner } from "./ModuleRunner.js";
 import { autoUpdater } from "./modules/AutoUpdater.js";
+import { nodeProcess } from "./modules/NodeProcess.js";
 import { allowExternalUrls } from "./modules/ExternalUrls.js";
 import { createWindowManagerModule } from "./modules/WindowManager.js";
 import { allowInternalOrigins } from "./modules/BlockNotAllowdOrigins.js";
@@ -15,6 +16,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({ enable: false }))
+    .init(nodeProcess())
     .init(autoUpdater())
 
   // Install DevTools extension if needed

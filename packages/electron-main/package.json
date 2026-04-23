@@ -17,6 +17,7 @@
   "dependencies": {
     "@atlas/electron-preload": "*",
     "@atlas/shell": "*",
+    "@vscode/ripgrep": "^1.15.9",
     "electron-updater": "6.8.3"
   },
   "devDependencies": {
