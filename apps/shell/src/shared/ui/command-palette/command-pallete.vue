@@ -5,9 +5,9 @@ import type { UseFuseOptions } from "@vueuse/integrations/useFuse";
 </script>
 
 <script setup lang="ts">
-import { refThrottled } from "@vueuse/core";
 import { computed, ref, useTemplateRef } from "vue";
 import { useFuse } from "@vueuse/integrations/useFuse";
+import { createReusableTemplate, refThrottled } from "@vueuse/core";
 import {
   ListboxContent,
   ListboxFilter,
@@ -16,6 +16,7 @@ import {
   ListboxItem,
   ListboxItemIndicator,
   ListboxRoot,
+  ListboxVirtualizer,
 } from "reka-ui";
 
 import { highlight } from "./highlight";
@@ -57,14 +58,20 @@ export interface CommandPaletteProps {
   closeIcon?: string;
   backIcon?: string;
   trailingIcon?: string;
+  loadingIcon?: string;
   autofocus?: boolean;
   close?: boolean;
   back?: boolean;
+  loading?: boolean;
   fuse?: UseFuseOptions<CommandPaletteItem>;
   labelKey?: string;
   descriptionKey?: string;
   preserveGroupOrder?: boolean;
   disabled?: boolean;
+  virtualize?: boolean | {
+    overscan?: number;
+    estimateSize?: number | ((index: number) => number);
+  };
 }
 
 type T = CommandPaletteItem;
@@ -81,6 +88,9 @@ const props = withDefaults(defineProps<CommandPaletteProps>(), {
   childrenIcon: "lucide:chevron-right",
   closeIcon: "lucide:x",
   backIcon: "lucide:arrow-left",
+  virtualize: false,
+  loadingIcon: "lucide:loader-circle",
+  loading: false,
 });
 
 const emit = defineEmits<{
@@ -97,6 +107,11 @@ const slots = defineSlots<{
 }>();
 
 const searchTerm = defineModel<string>("searchTerm", { default: "" });
+
+const [DefineItemTemplate, ReuseItemTemplate] = createReusableTemplate<{
+  item: T & { labelHtml?: string; suffixHtml?: string };
+  index: number;
+}>();
 
 const history = ref<(G & { placeholder?: string })[]>([]);
 
@@ -218,6 +233,22 @@ const filteredGroups = computed(() => {
   }, [...fuseGroups]);
 });
 
+const filteredItems = computed(() =>
+  filteredGroups.value.flatMap(group => group.items || []),
+);
+
+const virtualizerProps = computed(() => {
+  if (!props.virtualize)
+    return false;
+
+  const defaults = { overscan: 12, estimateSize: 32 };
+
+  if (typeof props.virtualize === "boolean")
+    return defaults;
+
+  return { ...defaults, ...props.virtualize };
+});
+
 const rootRef = useTemplateRef("rootRef");
 
 function navigate(item: T) {
@@ -265,6 +296,63 @@ function get(obj: any, key: string): any {
 </script>
 
 <template>
+  <DefineItemTemplate v-slot="{ item, index }">
+    <ListboxItem
+      :value="item"
+      :disabled="item.disabled"
+      data-slot="item"
+      class="cp__item"
+      @select="onSelect($event, item)"
+    >
+      <slot name="item-leading" :item="item" :index="index">
+        <span v-if="item.loading" data-slot="itemLeadingIcon" class="cp__item-icon cp__item-icon--loading">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+        </span>
+        <span v-else-if="item.icon" data-slot="itemLeadingIcon" class="cp__item-icon">{{ item.icon }}</span>
+      </slot>
+
+      <span data-slot="itemWrapper" class="cp__item-body">
+        <slot name="item-label" :item="item" :index="index">
+          <span data-slot="itemLabel" class="cp__item-label">
+            <span v-if="item.prefix" data-slot="itemLabelPrefix" class="cp__item-prefix">{{ item.prefix }}</span>
+
+            <span v-if="item.labelHtml" data-slot="itemLabelBase" class="cp__item-text" v-html="item.labelHtml" />
+            <span v-else data-slot="itemLabelBase" class="cp__item-text">{{ get(item, labelKey) }}</span>
+
+            <span v-if="item.suffixHtml" data-slot="itemLabelSuffix" class="cp__item-suffix" v-html="item.suffixHtml" />
+            <span v-else-if="item.suffix" data-slot="itemLabelSuffix" class="cp__item-suffix">{{ item.suffix }}</span>
+          </span>
+        </slot>
+
+        <span v-if="get(item, descriptionKey)" data-slot="itemDescription" class="cp__item-desc">
+          {{ get(item, descriptionKey) }}
+        </span>
+      </span>
+
+      <span data-slot="itemTrailing" class="cp__item-trailing">
+        <slot name="item-trailing" :item="item" :index="index">
+          <span
+            v-if="item.children && item.children.length > 0"
+            data-slot="itemTrailingIcon"
+            class="cp__item-arrow"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+
+          <span v-else-if="item.kbds?.length" data-slot="itemTrailingKbds" class="cp__item-kbds">
+            <kbd v-for="(kbd, kbdIndex) in item.kbds" :key="kbdIndex">{{ kbd }}</kbd>
+          </span>
+        </slot>
+
+        <ListboxItemIndicator v-if="!item.children?.length" as-child>
+          <span data-slot="itemSelectedIcon" class="cp__item-selected">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+        </ListboxItemIndicator>
+      </span>
+    </ListboxItem>
+  </DefineItemTemplate>
+
   <ListboxRoot
     ref="rootRef"
     :disabled="disabled"
@@ -286,7 +374,10 @@ function get(obj: any, key: string): any {
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </button>
 
-          <span class="cp__search-icon" data-slot="searchIcon">
+          <span v-if="loading" class="cp__search-icon cp__search-icon--loading" data-slot="searchIcon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+          </span>
+          <span v-else class="cp__search-icon" data-slot="searchIcon">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5" /><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
           </span>
 
@@ -313,74 +404,39 @@ function get(obj: any, key: string): any {
 
     <ListboxContent data-slot="content" class="cp__content">
       <div v-if="filteredGroups?.length" data-slot="viewport" class="cp__viewport">
-        <ListboxGroup
-          v-for="group in filteredGroups"
-          :key="`group-${group.id}`"
-          data-slot="group"
-          class="cp__group"
+        <ListboxVirtualizer
+          v-if="!!virtualize"
+          v-slot="{ option: item, virtualItem }"
+          :options="filteredItems"
+          :text-content="(item: any) => get(item, labelKey)"
+          v-bind="virtualizerProps"
         >
-          <ListboxGroupLabel
-            v-if="group.label"
-            data-slot="label"
-            class="cp__group-label"
+          <ReuseItemTemplate :item="item" :index="virtualItem.index" />
+        </ListboxVirtualizer>
+
+        <template v-else>
+          <ListboxGroup
+            v-for="group in filteredGroups"
+            :key="`group-${group.id}`"
+            data-slot="group"
+            class="cp__group"
           >
-            {{ group.label }}
-          </ListboxGroupLabel>
+            <ListboxGroupLabel
+              v-if="group.label"
+              data-slot="label"
+              class="cp__group-label"
+            >
+              {{ group.label }}
+            </ListboxGroupLabel>
 
-          <ListboxItem
-            v-for="(item, index) in group.items"
-            :key="`group-${group.id}-${index}`"
-            :value="item"
-            :disabled="item.disabled"
-            data-slot="item"
-            class="cp__item"
-            @select="onSelect($event, item)"
-          >
-            <slot name="item-leading" :item="item" :index="index">
-              <span v-if="item.icon" data-slot="itemLeadingIcon" class="cp__item-icon">{{ item.icon }}</span>
-            </slot>
-
-            <span data-slot="itemWrapper" class="cp__item-body">
-              <slot name="item-label" :item="item" :index="index">
-                <span data-slot="itemLabel" class="cp__item-label">
-                  <span v-if="item.prefix" data-slot="itemLabelPrefix" class="cp__item-prefix">{{ item.prefix }}</span>
-
-                  <span v-if="item.labelHtml" data-slot="itemLabelBase" class="cp__item-text" v-html="item.labelHtml" />
-                  <span v-else data-slot="itemLabelBase" class="cp__item-text">{{ get(item, labelKey) }}</span>
-
-                  <span v-if="item.suffixHtml" data-slot="itemLabelSuffix" class="cp__item-suffix" v-html="item.suffixHtml" />
-                  <span v-else-if="item.suffix" data-slot="itemLabelSuffix" class="cp__item-suffix">{{ item.suffix }}</span>
-                </span>
-              </slot>
-
-              <span v-if="get(item, descriptionKey)" data-slot="itemDescription" class="cp__item-desc">
-                {{ get(item, descriptionKey) }}
-              </span>
-            </span>
-
-            <span data-slot="itemTrailing" class="cp__item-trailing">
-              <slot name="item-trailing" :item="item" :index="index">
-                <span
-                  v-if="item.children && item.children.length > 0"
-                  data-slot="itemTrailingIcon"
-                  class="cp__item-arrow"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </span>
-
-                <span v-else-if="item.kbds?.length" data-slot="itemTrailingKbds" class="cp__item-kbds">
-                  <kbd v-for="(kbd, kbdIndex) in item.kbds" :key="kbdIndex">{{ kbd }}</kbd>
-                </span>
-              </slot>
-
-              <ListboxItemIndicator v-if="!item.children?.length" as-child>
-                <span data-slot="itemSelectedIcon" class="cp__item-selected">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </span>
-              </ListboxItemIndicator>
-            </span>
-          </ListboxItem>
-        </ListboxGroup>
+            <ReuseItemTemplate
+              v-for="(item, index) in group.items"
+              :key="`group-${group.id}-${index}`"
+              :item="item"
+              :index="index"
+            />
+          </ListboxGroup>
+        </template>
       </div>
 
       <div v-else data-slot="empty" class="cp__empty">
@@ -402,6 +458,11 @@ function get(obj: any, key: string): any {
 </template>
 
 <style scoped>
+@keyframes cp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .cp {
   display: flex;
   flex-direction: column;
@@ -452,6 +513,11 @@ function get(obj: any, key: string): any {
   justify-content: center;
   flex-shrink: 0;
   opacity: 0.4;
+}
+
+.cp__search-icon--loading {
+  opacity: 0.6;
+  animation: cp-spin 1s linear infinite;
 }
 
 .cp__input {
@@ -541,6 +607,10 @@ function get(obj: any, key: string): any {
   justify-content: center;
   flex-shrink: 0;
   font-size: 14px;
+}
+
+.cp__item-icon--loading {
+  animation: cp-spin 1s linear infinite;
 }
 
 .cp__item-body {
