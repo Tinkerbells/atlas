@@ -12,6 +12,13 @@ export {
   toDisposable,
 } from "./lifecycle.js";
 export type { IDisposable } from "./lifecycle.js";
+export {
+  basename,
+  dirname,
+  extname,
+  join,
+  relative,
+} from "./path.js";
 export { isLinux, isMacintosh, isWindows, OperatingSystem, OS } from "./platform.js";
 export {
   compareIgnoreCase,
