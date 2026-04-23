@@ -7,31 +7,31 @@ import { CommandPalette } from "./index";
 const sampleItems: CommandPaletteItem[] = [
   {
     label: "Open File",
-    icon: "📁",
+    icon: "folder-open",
     kbds: ["⌘", "O"],
     description: "Open a file from disk",
     onSelect: e => console.log("Open File", e),
   },
   {
     label: "Save File",
-    icon: "💾",
+    icon: "save",
     kbds: ["⌘", "S"],
     description: "Save the current file",
   },
   {
     label: "Find in Project",
-    icon: "🔍",
+    icon: "search",
     kbds: ["⌘", "⇧", "F"],
     description: "Search across all project files",
   },
   {
     label: "Toggle Terminal",
-    icon: "🖥️",
+    icon: "terminal",
     kbds: ["⌘", "`"],
   },
   {
     label: "Go to Line",
-    icon: "↕️",
+    icon: "arrow-up-down",
     kbds: ["⌘", "G"],
     description: "Jump to a specific line number",
   },
@@ -42,8 +42,8 @@ const sampleGroups: CommandPaletteGroup[] = [
     id: "recent",
     label: "Recent",
     items: [
-      { label: "src/app.vue", icon: "📄", description: "Modified 2 min ago" },
-      { label: "src/main.ts", icon: "📄", description: "Modified 1 hour ago" },
+      { label: "src/app.vue", icon: "file-text", description: "Modified 2 min ago" },
+      { label: "src/main.ts", icon: "file-text", description: "Modified 1 hour ago" },
     ],
   },
   {
@@ -60,24 +60,24 @@ const nestedGroups: CommandPaletteGroup[] = [
     items: [
       {
         label: "src/",
-        icon: "📁",
+        icon: "folder-open",
         children: [
           {
             label: "components/",
-            icon: "📁",
+            icon: "folder-open",
             children: [
-              { label: "Header.vue", icon: "📄" },
-              { label: "Footer.vue", icon: "📄" },
-              { label: "Sidebar.vue", icon: "📄" },
+              { label: "Header.vue", icon: "file-text" },
+              { label: "Footer.vue", icon: "file-text" },
+              { label: "Sidebar.vue", icon: "file-text" },
             ],
           },
-          { label: "app.vue", icon: "📄" },
-          { label: "main.ts", icon: "📄" },
+          { label: "app.vue", icon: "file-text" },
+          { label: "main.ts", icon: "file-text" },
         ],
       },
       {
         label: "package.json",
-        icon: "📄",
+        icon: "file-text",
         description: "Project manifest",
       },
     ],
@@ -89,7 +89,7 @@ const largeGroups: CommandPaletteGroup[] = Array.from({ length: 5 }, (_, gIdx) =
   label: `Group ${gIdx + 1}`,
   items: Array.from({ length: 20 }, (_, iIdx) => ({
     label: `Item ${gIdx * 20 + iIdx + 1}`,
-    icon: "📌",
+    icon: "pin",
     description: iIdx % 3 === 0 ? `Description for item ${gIdx * 20 + iIdx + 1}` : undefined,
   })),
 }));
@@ -152,9 +152,9 @@ export const WithPrefixAndSuffix: Story = {
         id: "files",
         label: "Files",
         items: [
-          { label: "app.vue", prefix: "src/", suffix: ".vue", icon: "📄" },
-          { label: "main", prefix: "src/", suffix: ".ts", icon: "📄" },
-          { label: "index", prefix: "src/components/", suffix: ".vue", icon: "📄" },
+          { label: "app.vue", prefix: "src/", suffix: ".vue", icon: "file-text" },
+          { label: "main", prefix: "src/", suffix: ".ts", icon: "file-text" },
+          { label: "index", prefix: "src/components/", suffix: ".vue", icon: "file-text" },
         ],
       },
     ],
@@ -168,11 +168,11 @@ export const WithKbds: Story = {
         id: "shortcuts",
         label: "Keyboard Shortcuts",
         items: [
-          { label: "Copy", icon: "📋", kbds: ["⌘", "C"] },
-          { label: "Paste", icon: "📋", kbds: ["⌘", "V"] },
-          { label: "Cut", icon: "✂️", kbds: ["⌘", "X"] },
-          { label: "Undo", icon: "↩️", kbds: ["⌘", "Z"] },
-          { label: "Redo", icon: "↪️", kbds: ["⌘", "⇧", "Z"] },
+          { label: "Copy", icon: "clipboard-copy", kbds: ["⌘", "C"] },
+          { label: "Paste", icon: "clipboard-copy", kbds: ["⌘", "V"] },
+          { label: "Cut", icon: "scissors", kbds: ["⌘", "X"] },
+          { label: "Undo", icon: "undo-2", kbds: ["⌘", "Z"] },
+          { label: "Redo", icon: "redo-2", kbds: ["⌘", "⇧", "Z"] },
         ],
       },
     ],
@@ -186,10 +186,10 @@ export const WithDescriptions: Story = {
         id: "commands",
         label: "Commands",
         items: [
-          { label: "Build Project", icon: "🔨", description: "Compile and bundle the project", kbds: ["⌘", "B"] },
-          { label: "Run Tests", icon: "🧪", description: "Execute the test suite", kbds: ["⌘", "T"] },
-          { label: "Deploy", icon: "🚀", description: "Deploy to production environment" },
-          { label: "Lint Code", icon: "🧹", description: "Run the linter on all files", kbds: ["⌘", "L"] },
+          { label: "Build Project", icon: "hammer", description: "Compile and bundle the project", kbds: ["⌘", "B"] },
+          { label: "Run Tests", icon: "flask-conical", description: "Execute the test suite", kbds: ["⌘", "T"] },
+          { label: "Deploy", icon: "rocket", description: "Deploy to production environment" },
+          { label: "Lint Code", icon: "brush", description: "Run the linter on all files", kbds: ["⌘", "L"] },
         ],
       },
     ],
@@ -203,10 +203,10 @@ export const WithDisabledItems: Story = {
         id: "mixed",
         label: "Actions",
         items: [
-          { label: "Available Action", icon: "✅", kbds: ["⌘", "A"] },
-          { label: "Disabled Action", icon: "🚫", disabled: true, description: "This action is not available" },
-          { label: "Another Available", icon: "✅", kbds: ["⌘", "B"] },
-          { label: "Also Disabled", icon: "🚫", disabled: true },
+          { label: "Available Action", icon: "circle-check", kbds: ["⌘", "A"] },
+          { label: "Disabled Action", icon: "ban", disabled: true, description: "This action is not available" },
+          { label: "Another Available", icon: "circle-check", kbds: ["⌘", "B"] },
+          { label: "Also Disabled", icon: "ban", disabled: true },
         ],
       },
     ],
@@ -220,9 +220,9 @@ export const WithLoadingItems: Story = {
         id: "loading",
         label: "Commands",
         items: [
-          { label: "Loaded Item", icon: "✅", description: "Data fetched successfully" },
+          { label: "Loaded Item", icon: "circle-check", description: "Data fetched successfully" },
           { label: "Loading Item...", loading: true, description: "Fetching data..." },
-          { label: "Another Loaded", icon: "✅", kbds: ["⌘", "K"] },
+          { label: "Another Loaded", icon: "circle-check", kbds: ["⌘", "K"] },
           { label: "Also Loading...", loading: true },
         ],
       },
@@ -257,24 +257,24 @@ export const PreserveGroupOrder: Story = {
         id: "recent",
         label: "Recent",
         items: [
-          { label: "File A", icon: "📄" },
-          { label: "File B", icon: "📄" },
+          { label: "File A", icon: "file-text" },
+          { label: "File B", icon: "file-text" },
         ],
       },
       {
         id: "actions",
         label: "Actions",
         items: [
-          { label: "Save", icon: "💾", kbds: ["⌘", "S"] },
-          { label: "Open", icon: "📁", kbds: ["⌘", "O"] },
+          { label: "Save", icon: "save", kbds: ["⌘", "S"] },
+          { label: "Open", icon: "folder-open", kbds: ["⌘", "O"] },
         ],
       },
       {
         id: "settings",
         label: "Settings",
         items: [
-          { label: "Preferences", icon: "⚙️" },
-          { label: "Keybindings", icon: "⌨️" },
+          { label: "Preferences", icon: "settings" },
+          { label: "Keybindings", icon: "keyboard" },
         ],
       },
     ],
@@ -306,7 +306,7 @@ export const CustomEmptySlot: Story = {
       <CommandPalette v-bind="args">
         <template #empty="{ searchTerm }">
           <div class="py-6 px-3 text-center">
-            <div class="text-2xl mb-2">🔍</div>
+            <div class="text-2xl mb-2">search</div>
             <div class="font-semibold mb-1">No results found</div>
             <div class="opacity-50 text-xs">
               {{ searchTerm ? \`No matches for "\${searchTerm}"\` : 'Try a different search term' }}
@@ -321,7 +321,7 @@ export const CustomEmptySlot: Story = {
       {
         id: "only",
         label: "Items",
-        items: [{ label: "Only Item", icon: "📌" }],
+        items: [{ label: "Only Item", icon: "pin" }],
       },
     ],
   },

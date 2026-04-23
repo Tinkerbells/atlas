@@ -19,6 +19,7 @@ import {
   ListboxVirtualizer,
 } from "reka-ui";
 
+import UiIcon from "./ui-icon.vue";
 import { highlight } from "./highlight";
 
 export interface CommandPaletteItem {
@@ -308,7 +309,7 @@ function get(obj: any, key: string): any {
         <span v-if="item.loading" data-slot="itemLeadingIcon" class="cp__item-icon cp__item-icon--loading">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
         </span>
-        <span v-else-if="item.icon" data-slot="itemLeadingIcon" class="cp__item-icon">{{ item.icon }}</span>
+        <UiIcon v-else-if="item.icon" :name="item.icon" data-slot="itemLeadingIcon" class="cp__item-icon" />
       </slot>
 
       <span data-slot="itemWrapper" class="cp__item-body">

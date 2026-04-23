@@ -19,6 +19,7 @@
     "@atlas/shared": "*",
     "@fontsource-variable/google-sans": "5.2.1",
     "@jsep-plugin/ternary": "^1.1.4",
+    "@lucide/vue": "1.8.0",
     "@vueuse/core": "14.2.1",
     "@vueuse/integrations": "14.2.1",
     "consola": "3.4.2",
