@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { QuickOpen } from "~/modules/quick-open";
+import { QuickAccess } from "~/modules/quick-access";
 </script>
 
 <template>
-  <QuickOpen />
+  <QuickAccess />
   <v-btn>
     Button
   </v-btn>
