@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import "@fontsource-variable/google-sans";
 import "uno.css";
 import "~/services/logger";
 import "~/services/commands";

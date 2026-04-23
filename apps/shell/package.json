@@ -17,6 +17,7 @@
   "dependencies": {
     "@atlas/di": "*",
     "@atlas/shared": "*",
+    "@fontsource-variable/google-sans": "5.2.1",
     "@jsep-plugin/ternary": "^1.1.4",
     "@vueuse/core": "14.2.1",
     "@vueuse/integrations": "14.2.1",
