@@ -8,13 +8,26 @@
     "skipLibCheck": true,
     "strict": true,
     "isolatedModules": true,
-    "types": ["node"],
+    "types": [
+      "node",
+      "vite/client"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@atlas/electron-preload": ["../electron-preload"],
-      "@atlas/shell": ["../../apps/shell"]
+      "@atlas/electron-preload": [
+        "../electron-preload"
+      ],
+      "@atlas/shell": [
+        "../../apps/shell"
+      ]
     }
   },
-    "include": ["src/**/*.ts", "../../vite-electron-builder/types/**/*.d.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
+  "include": [
+    "src/**/*.ts",
+    "../../vite-electron-builder/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
 }
