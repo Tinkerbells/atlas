@@ -1,5 +1,5 @@
 import type { IDisposable } from "@atlas/shared";
-import type { CommandPaletteGroup } from "~/shared/ui/command-palette/command-pallete.vue";
+import type { CommandPaletteGroup } from "@nuxt/ui";
 
 export interface IQuickAccessProvider {
   getPicks: (filter: string, signal: AbortSignal) => CommandPaletteGroup[] | Promise<CommandPaletteGroup[]>;
@@ -16,4 +16,4 @@ export interface IQuickAccessRegistry {
   resolve: (searchTerm: string) => { descriptor: QuickAccessProviderDescriptor; filter: string } | undefined;
 }
 
-export { type CommandPaletteGroup } from "~/shared/ui/command-palette/command-pallete.vue";
+export { type CommandPaletteGroup } from "@nuxt/ui";

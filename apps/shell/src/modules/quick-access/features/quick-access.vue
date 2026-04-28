@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import type { CommandPaletteGroup } from "~/shared/ui/command-palette/command-pallete.vue";
+import type { CommandPaletteGroup } from "@nuxt/ui";
 
 import { useDebounceFn } from "@vueuse/core";
 import { ILogger } from "~/services/logger/logger";
 import { InstantiationServiceKey } from "~/injection-keys";
-import { CommandPalette } from "~/shared/ui/command-palette";
+import { ScanCode } from "~/services/keybindings/scan-code";
 import { INodeProcess } from "~/services/node-process/types";
-import { inject, onMounted, ref, shallowRef, watch } from "vue";
 import { ICommandRegistry } from "~/services/commands/commands";
+import { DisposableStore, OperatingSystem, OS } from "@atlas/shared";
+import { inject, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
+import { Keybinding, ScanCodeChord } from "~/services/keybindings/keybindings";
 import { IFileSearchService } from "~/services/file-search/file-search-service";
+import { IKeybindingService } from "~/services/keybindings/keybindings.service";
 
 import { CommandProvider } from "../domain/command-provider";
 import { FileSearchProvider } from "../domain/file-search-provider";
@@ -32,6 +35,9 @@ const nodeProcess = instantiationService.invokeFunction(accessor =>
 const logger = instantiationService.invokeFunction(accessor =>
   accessor.get(ILogger),
 );
+const keybindingService = instantiationService.invokeFunction(accessor =>
+  accessor.get(IKeybindingService),
+);
 
 const registry = new QuickAccessRegistry();
 
@@ -48,6 +54,7 @@ registry.registerProvider({
   placeholder: "Search files by name...",
 });
 
+const open = ref(false);
 const searchTerm = ref("");
 const loading = ref(false);
 const groups = shallowRef<CommandPaletteGroup[]>([]);
@@ -90,17 +97,55 @@ async function doSearch(term: string) {
 
 watch(searchTerm, useDebounceFn(doSearch, 150));
 
+const disposables = new DisposableStore();
+
 onMounted(async () => {
+  disposables.add(
+    commandRegistry.registerCommand("quickAccess.open", () => {
+      open.value = true;
+    }),
+  );
+
+  const chord = new ScanCodeChord(
+    OS !== OperatingSystem.Macintosh,
+    false,
+    false,
+    OS === OperatingSystem.Macintosh,
+    ScanCode.KeyK,
+  );
+
+  keybindingService.addDynamicKeybinding({
+    keybinding: new Keybinding([chord]),
+    command: "quickAccess.open",
+    when: undefined,
+    weight1: 0,
+    weight2: 0,
+  });
+
   const home = await nodeProcess.getHome();
   logger.info(`home resolved: ${home}`, { scope: "QuickAccess" });
   fileSearchProvider.setFolder(home);
   doSearch(searchTerm.value);
 });
+
+onUnmounted(() => {
+  disposables.dispose();
+});
 </script>
 
 <template>
-  <CommandPalette
-    v-model:search-term="searchTerm" :groups="groups" :loading="loading" close virtualize
-    :placeholder="registry.resolve(searchTerm)?.descriptor.placeholder ?? 'Search...'"
-  />
+  <UModal v-model:open="open">
+    <template #content>
+      <UCommandPalette
+        v-model:search-term="searchTerm"
+        :groups="groups"
+        :loading="loading"
+        close
+        virtualize
+        :placeholder="registry.resolve(searchTerm)?.descriptor.placeholder ?? 'Search...'"
+        @update:open="open = $event"
+        @update:model-value="open = false"
+      />
+    </template>
+  </UModal>
 </template>
