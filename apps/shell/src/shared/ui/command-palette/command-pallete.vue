@@ -299,15 +299,14 @@ function get(obj: any, key: string): any {
 <template>
   <DefineItemTemplate v-slot="{ item, index }">
     <ListboxItem
-      :value="item"
-      :disabled="item.disabled"
-      data-slot="item"
-      class="cp__item"
+      :value="item" :disabled="item.disabled" data-slot="item" class="cp__item"
       @select="onSelect($event, item)"
     >
       <slot name="item-leading" :item="item" :index="index">
         <span v-if="item.loading" data-slot="itemLeadingIcon" class="cp__item-icon cp__item-icon--loading">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
         </span>
         <UiIcon v-else-if="item.icon" :name="item.icon" data-slot="itemLeadingIcon" class="cp__item-icon" />
       </slot>
@@ -332,12 +331,13 @@ function get(obj: any, key: string): any {
 
       <span data-slot="itemTrailing" class="cp__item-trailing">
         <slot name="item-trailing" :item="item" :index="index">
-          <span
-            v-if="item.children && item.children.length > 0"
-            data-slot="itemTrailingIcon"
-            class="cp__item-arrow"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <span v-if="item.children && item.children.length > 0" data-slot="itemTrailingIcon" class="cp__item-arrow">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </span>
 
           <span v-else-if="item.kbds?.length" data-slot="itemTrailingKbds" class="cp__item-kbds">
@@ -347,7 +347,12 @@ function get(obj: any, key: string): any {
 
         <ListboxItemIndicator v-if="!item.children?.length" as-child>
           <span data-slot="itemSelectedIcon" class="cp__item-selected">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M2 7l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </span>
         </ListboxItemIndicator>
       </span>
@@ -355,49 +360,48 @@ function get(obj: any, key: string): any {
   </DefineItemTemplate>
 
   <ListboxRoot
-    ref="rootRef"
-    :disabled="disabled"
-    highlight-on-hover
-    selection-behavior="replace"
-    data-slot="root"
+    ref="rootRef" :disabled="disabled" highlight-on-hover selection-behavior="replace" data-slot="root"
     class="cp"
   >
     <div data-slot="input-wrapper" class="cp__input-wrapper">
       <ListboxFilter v-model="searchTerm" as-child>
         <div class="cp__input-row">
           <button
-            v-if="history?.length && back"
-            class="cp__back-btn"
-            aria-label="Back"
-            data-slot="back"
+            v-if="history?.length && back" class="cp__back-btn" aria-label="Back" data-slot="back"
             @click="navigateBack"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
 
           <span v-if="loading" class="cp__search-icon cp__search-icon--loading" data-slot="searchIcon">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </span>
           <span v-else class="cp__search-icon" data-slot="searchIcon">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5" /><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5" />
+              <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </span>
 
           <input
-            class="cp__input"
-            :placeholder="placeholder"
-            :autofocus="autofocus"
-            data-slot="input"
+            class="cp__input" :placeholder="placeholder" :autofocus="autofocus" data-slot="input"
             @keydown.backspace="onBackspace"
           >
 
           <button
-            v-if="close"
-            class="cp__close-btn"
-            aria-label="Close"
-            data-slot="close"
+            v-if="close" class="cp__close-btn" aria-label="Close" data-slot="close"
             @click="emit('update:open', false)"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </button>
         </div>
       </ListboxFilter>
@@ -406,34 +410,20 @@ function get(obj: any, key: string): any {
     <ListboxContent data-slot="content" class="cp__content">
       <div v-if="filteredGroups?.length" data-slot="viewport" class="cp__viewport">
         <ListboxVirtualizer
-          v-if="!!virtualize"
-          v-slot="{ option: item, virtualItem }"
-          :options="filteredItems"
-          :text-content="(item: any) => get(item, labelKey)"
-          v-bind="virtualizerProps"
+          v-if="!!virtualize" v-slot="{ option: item, virtualItem }" :options="filteredItems"
+          :text-content="(item: any) => get(item, labelKey)" v-bind="virtualizerProps"
         >
           <ReuseItemTemplate :item="item" :index="virtualItem.index" />
         </ListboxVirtualizer>
 
         <template v-else>
-          <ListboxGroup
-            v-for="group in filteredGroups"
-            :key="`group-${group.id}`"
-            data-slot="group"
-            class="cp__group"
-          >
-            <ListboxGroupLabel
-              v-if="group.label"
-              data-slot="label"
-              class="cp__group-label"
-            >
+          <ListboxGroup v-for="group in filteredGroups" :key="`group-${group.id}`" data-slot="group" class="cp__group">
+            <ListboxGroupLabel v-if="group.label" data-slot="label" class="cp__group-label">
               {{ group.label }}
             </ListboxGroupLabel>
 
             <ReuseItemTemplate
-              v-for="(item, index) in group.items"
-              :key="`group-${group.id}-${index}`"
-              :item="item"
+              v-for="(item, index) in group.items" :key="`group-${group.id}-${index}`" :item="item"
               :index="index"
             />
           </ListboxGroup>
@@ -460,8 +450,13 @@ function get(obj: any, key: string): any {
 
 <style scoped>
 @keyframes cp-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .cp {
@@ -564,7 +559,7 @@ function get(obj: any, key: string): any {
   padding: 4px 0;
 }
 
-.cp__group + .cp__group {
+.cp__group+.cp__group {
   border-top: 1px solid var(--cp-border, var(--border, #e5e4e7));
   margin-top: 4px;
 }

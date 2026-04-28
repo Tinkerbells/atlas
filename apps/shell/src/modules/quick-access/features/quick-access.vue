@@ -15,6 +15,7 @@ import { FileSearchProvider } from "../domain/file-search-provider";
 import { QuickAccessRegistry } from "../domain/quick-access-registry";
 
 const instantiationService = inject(InstantiationServiceKey);
+
 if (!instantiationService) {
   throw new Error("InstantiationService not provided");
 }
@@ -67,6 +68,7 @@ async function doSearch(term: string) {
   const { descriptor, filter } = resolved;
 
   loading.value = true;
+
   try {
     const result = await descriptor.provider.getPicks(filter, abortController.signal);
     if (!abortController.signal.aborted) {
@@ -98,11 +100,7 @@ onMounted(async () => {
 
 <template>
   <CommandPalette
-    v-model:search-term="searchTerm"
-    :groups="groups"
-    :loading="loading"
-    close
-    virtualize
+    v-model:search-term="searchTerm" :groups="groups" :loading="loading" close virtualize
     :placeholder="registry.resolve(searchTerm)?.descriptor.placeholder ?? 'Search...'"
   />
 </template>
