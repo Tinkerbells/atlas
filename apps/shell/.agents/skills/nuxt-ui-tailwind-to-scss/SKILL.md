@@ -950,7 +950,7 @@ Before finishing the migration, verify:
 - [ ] `src/shared/ui/composables/index.ts` re-exports the new composable if one was added.
 - [ ] All Reka UI primitives (`Primitive`, `SelectRoot`, `ListboxRoot`, etc.) are preserved with their original props.
 - [ ] Every user-facing string in the template uses `t()` from `useI18n()`; local `<i18n>` custom block is provided for default English messages.
-- [ ] No UnoCSS utility classes are used for colours, typography, shadows, animations — only for layout geometry if necessary (per project `AGENTS.md`).
+- [ ] No utility-class framework (Tailwind, UnoCSS, etc.) classes are used for colours, typography, shadows, animations.
 
 ---
 
