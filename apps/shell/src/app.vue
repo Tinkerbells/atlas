@@ -4,7 +4,4 @@ import { QuickAccess } from "~/modules/quick-access";
 
 <template>
   <QuickAccess />
-  <v-btn>
-    Button
-  </v-btn>
 </template>
