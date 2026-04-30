@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/vue3-vite";
 
 import "@fontsource-variable/google-sans";
+import "uno.css";
 
 import "../src/style.css";
 

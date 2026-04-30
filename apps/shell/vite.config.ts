@@ -1,4 +1,4 @@
-import ui from "@nuxt/ui/vite";
+import UnoCSS from "unocss/vite";
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
@@ -6,7 +6,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   plugins: [
     vue(),
-    ui(),
+    UnoCSS({ configFile: resolve(__dirname, "uno.config.ts") }),
   ],
   resolve: {
     alias: {
