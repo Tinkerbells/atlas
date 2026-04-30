@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { CommandPaletteGroup } from "@nuxt/ui";
+import type { CommandPaletteGroup } from "~/shared/ui/command-palette/command-pallete.vue";
 
 import { useDebounceFn } from "@vueuse/core";
 import { ILogger } from "~/services/logger/logger";
 import { InstantiationServiceKey } from "~/injection-keys";
 import { ScanCode } from "~/services/keybindings/scan-code";
 import { INodeProcess } from "~/services/node-process/types";
+import { CommandPalette } from "~/shared/ui/command-palette";
 import { ICommandRegistry } from "~/services/commands/commands";
 import { DisposableStore, OperatingSystem, OS } from "@atlas/shared";
 import { inject, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
@@ -134,18 +135,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UModal v-model:open="open">
-    <template #content>
-      <UCommandPalette
-        v-model:search-term="searchTerm"
-        :groups="groups"
-        :loading="loading"
-        close
-        virtualize
-        :placeholder="registry.resolve(searchTerm)?.descriptor.placeholder ?? 'Search...'"
-        @update:open="open = $event"
-        @update:model-value="open = false"
-      />
-    </template>
-  </UModal>
+  <CommandPalette
+    v-if="open"
+    v-model:search-term="searchTerm"
+    :groups="groups"
+    :loading="loading"
+    close
+    virtualize
+    :placeholder="registry.resolve(searchTerm)?.descriptor.placeholder ?? 'Search...'"
+    @update:open="open = $event"
+    @select="open = false"
+  />
 </template>

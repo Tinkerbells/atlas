@@ -16,8 +16,12 @@ declare module 'vue' {
     KeypressVisualizer: typeof import('./src/components/keypress-visualizer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UApp: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
+    UButton: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     UCommandPalette: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/CommandPalette.vue')['default']
     UModal: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
+    UNavigationMenu: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/NavigationMenu.vue')['default']
+    USidebar: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Sidebar.vue')['default']
   }
 }
 
@@ -27,6 +31,10 @@ declare global {
   const KeypressVisualizer: typeof import('./src/components/keypress-visualizer.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
+  const UApp: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
+  const UButton: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
   const UCommandPalette: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/CommandPalette.vue')['default']
   const UModal: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
+  const UNavigationMenu: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/NavigationMenu.vue')['default']
+  const USidebar: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Sidebar.vue')['default']
 }
