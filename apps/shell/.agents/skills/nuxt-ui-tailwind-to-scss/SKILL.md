@@ -73,6 +73,7 @@ Nuxt UI components usually have two `<script>` blocks.
 
 **Changes allowed:**
 - Remove Nuxt UI-specific imports (`#build/ui/*`, `#imports`, `tv`, `defu` …).
+- Remove any Nuxt UI i18n / locale / RTL imports and replace them with `vue-i18n` (`useI18n`).
 - Replace `useAppConfig()` references with plain defaults or CSS custom properties.
 - Replace `tv(theme)` calls with simple computed props / BEM classes.
 - Keep `useVModel`, `Primitive`, Reka UI imports, `@vueuse/*` helpers exactly as they are.
@@ -175,7 +176,12 @@ Do **not** replace Reka UI wrappers with plain HTML elements. The migrated compo
 
 ## 5. i18n / Translations
 
-All user-facing strings inside migrated components **must be translatable via `vue-i18n`** (Composition API mode).
+**CRITICAL — Forbidden patterns:**
+- Do **NOT** use Nuxt UI's built-in translation, locale, or RTL/LTR utilities (e.g. `useLocale` from `#build/ui`, any `@nuxt/ui` i18n helpers, RTL/LTR classes, or `useI18n` from `@nuxtjs/i18n`).
+- Do **NOT** rely on Nuxt UI's `ui` config / `appConfig` for translations or text direction.
+- Do **NOT** copy any translation keys, locale files, or RTL logic from `nuxt-ui/src/runtime/locale/` or similar.
+
+**Mandatory replacement:** All user-facing strings inside migrated components **must be translatable via `vue-i18n`** (Composition API mode) **only**.
 
 ### 5.1 Setup in the component
 
