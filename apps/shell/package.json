@@ -51,6 +51,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-storybook": "^10.3.5",
     "playwright": "^1.59.1",
+    "sass-embedded": "1.99.0",
     "storybook": "^10.3.5",
     "typescript": "~5.9.3",
     "unocss": "66.6.8",
