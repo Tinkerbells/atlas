@@ -1,0 +1,11 @@
+.dashboard-sidebar-toggle {
+  display: flex;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  &--side-right {
+    margin-left: auto;
+  }
+}

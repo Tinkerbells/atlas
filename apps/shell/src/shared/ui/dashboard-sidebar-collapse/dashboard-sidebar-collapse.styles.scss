@@ -1,0 +1,7 @@
+.dashboard-sidebar-collapse {
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+}
