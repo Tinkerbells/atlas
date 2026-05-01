@@ -43,21 +43,10 @@ const customize = computed(() => resolveCustomizeFn(props.customize));
 
 <template>
   <IconifyIcon
-    v-if="typeof name === 'string'"
-    data-slot="root"
-    :icon="name.replace(/^i-/, '')"
-    :mode="mode"
-    :width="size"
-    :height="size"
-    :customise="customize"
-    :class="[b(), props.class]"
+    v-if="typeof name === 'string'" data-slot="root" :icon="name.replace(/^i-/, '')" :mode="mode"
+    :width="size" :height="size" :customise="customize" :class="[b(), props.class]"
   />
-  <component
-    :is="name"
-    v-else
-    data-slot="root"
-    :class="[b(), props.class]"
-  />
+  <component :is="name" v-else data-slot="root" :class="[b(), props.class]" />
 </template>
 
 <style scoped lang="scss">

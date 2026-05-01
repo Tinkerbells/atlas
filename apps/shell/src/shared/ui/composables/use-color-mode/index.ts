@@ -1,3 +1,4 @@
+// TODO: rewrite
 import { ref, watchEffect } from "vue";
 
 type ColorMode = "light" | "dark" | "system";
