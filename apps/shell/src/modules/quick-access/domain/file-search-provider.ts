@@ -1,6 +1,6 @@
 import type { ILogger } from "~/services/logger/logger";
 import type { IFileSearchService } from "~/services/file-search/file-search-service";
-import type { CommandPaletteGroup, CommandPaletteItem } from "~/shared/ui/command-palette/command-pallete.vue";
+import type { CommandPaletteGroup, CommandPaletteItem } from "~/shared/ui/command-palette/command-palette.vue";
 
 import { basename, dirname } from "@atlas/shared";
 

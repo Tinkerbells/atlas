@@ -5,6 +5,9 @@ import type { UseFuseOptions } from "@vueuse/integrations/useFuse";
 </script>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+import { Icon } from "~/shared/ui/icon";
+import { useBem } from "~/shared/ui/composables";
 import { computed, ref, useTemplateRef } from "vue";
 import { useFuse } from "@vueuse/integrations/useFuse";
 import { createReusableTemplate, refThrottled } from "@vueuse/core";
@@ -19,7 +22,6 @@ import {
   ListboxVirtualizer,
 } from "reka-ui";
 
-import UiIcon from "./ui-icon.vue";
 import { highlight } from "./highlight";
 
 export interface CommandPaletteItem {
@@ -108,6 +110,9 @@ const slots = defineSlots<{
   "item-trailing": (props: { item: T; index: number }) => any;
 }>();
 
+const { t } = useI18n();
+const b = useBem("command-palette");
+
 const searchTerm = defineModel<string>("searchTerm", { default: "" });
 
 const [DefineItemTemplate, ReuseItemTemplate] = createReusableTemplate<{
@@ -120,7 +125,7 @@ const history = ref<(G & { placeholder?: string })[]>([]);
 const placeholder = computed(() =>
   history.value[history.value.length - 1]?.placeholder
   || props.placeholder
-  || "Type a command or search...",
+  || t("commandPalette.placeholder"),
 );
 
 const currentGroups = computed<G[]>(
@@ -159,6 +164,14 @@ const { results: fuseResults } = useFuse<T>(
 );
 
 const throttledFuseResults = refThrottled(fuseResults, 16, true);
+
+function resolveIconName(name?: string): string {
+  if (!name)
+    return "";
+  if (name.includes(":"))
+    return name;
+  return `lucide:${name}`;
+}
 
 function processGroupItems(
   group: G,
@@ -301,60 +314,59 @@ function get(obj: any, key: string): any {
 <template>
   <DefineItemTemplate v-slot="{ item, index }">
     <ListboxItem
-      :value="item" :disabled="item.disabled" data-slot="item" class="cp__item"
+      :value="item" :disabled="item.disabled" data-slot="item" :class="b('item')"
       @select="onSelect($event, item)"
     >
       <slot name="item-leading" :item="item" :index="index">
-        <span v-if="item.loading" data-slot="itemLeadingIcon" class="cp__item-icon cp__item-icon--loading">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
+        <span
+          v-if="item.loading" data-slot="itemLeadingIcon"
+          :class="b('item-icon', { loading: item.loading })"
+        >
+          <Icon :name="loadingIcon" :size="16" />
         </span>
-        <UiIcon v-else-if="item.icon" :name="item.icon" data-slot="itemLeadingIcon" class="cp__item-icon" />
+        <span v-else-if="item.icon" data-slot="itemLeadingIcon" :class="b('item-icon')">
+          <Icon :name="resolveIconName(item.icon)" :size="16" />
+        </span>
       </slot>
 
-      <span data-slot="itemWrapper" class="cp__item-body">
+      <span data-slot="itemWrapper" :class="b('item-body')">
         <slot name="item-label" :item="item" :index="index">
-          <span data-slot="itemLabel" class="cp__item-label">
-            <span v-if="item.prefix" data-slot="itemLabelPrefix" class="cp__item-prefix">{{ item.prefix }}</span>
+          <span data-slot="itemLabel" :class="b('item-label')">
+            <span v-if="item.prefix" data-slot="itemLabelPrefix" :class="b('item-prefix')">{{ item.prefix }}</span>
 
-            <span v-if="item.labelHtml" data-slot="itemLabelBase" class="cp__item-text" v-html="item.labelHtml" />
-            <span v-else data-slot="itemLabelBase" class="cp__item-text">{{ get(item, labelKey) }}</span>
+            <span v-if="item.labelHtml" data-slot="itemLabelBase" :class="b('item-text')" v-html="item.labelHtml" />
+            <span v-else data-slot="itemLabelBase" :class="b('item-text')">{{ get(item, labelKey) }}</span>
 
-            <span v-if="item.suffixHtml" data-slot="itemLabelSuffix" class="cp__item-suffix" v-html="item.suffixHtml" />
-            <span v-else-if="item.suffix" data-slot="itemLabelSuffix" class="cp__item-suffix">{{ item.suffix }}</span>
+            <span
+              v-if="item.suffixHtml" data-slot="itemLabelSuffix" :class="b('item-suffix')"
+              v-html="item.suffixHtml"
+            />
+            <span v-else-if="item.suffix" data-slot="itemLabelSuffix" :class="b('item-suffix')">{{ item.suffix }}</span>
           </span>
         </slot>
 
-        <span v-if="get(item, descriptionKey)" data-slot="itemDescription" class="cp__item-desc">
+        <span v-if="get(item, descriptionKey)" data-slot="itemDescription" :class="b('item-desc')">
           {{ get(item, descriptionKey) }}
         </span>
       </span>
 
-      <span data-slot="itemTrailing" class="cp__item-trailing">
+      <span data-slot="itemTrailing" :class="b('item-trailing')">
         <slot name="item-trailing" :item="item" :index="index">
-          <span v-if="item.children && item.children.length > 0" data-slot="itemTrailingIcon" class="cp__item-arrow">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+          <span
+            v-if="item.children && item.children.length > 0" data-slot="itemTrailingIcon"
+            :class="b('item-arrow')"
+          >
+            <Icon :name="childrenIcon" :size="16" />
           </span>
 
-          <span v-else-if="item.kbds?.length" data-slot="itemTrailingKbds" class="cp__item-kbds">
+          <span v-else-if="item.kbds?.length" data-slot="itemTrailingKbds" :class="b('item-kbds')">
             <kbd v-for="(kbd, kbdIndex) in item.kbds" :key="kbdIndex">{{ kbd }}</kbd>
           </span>
         </slot>
 
         <ListboxItemIndicator v-if="!item.children?.length" as-child>
-          <span data-slot="itemSelectedIcon" class="cp__item-selected">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M2 7l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+          <span data-slot="itemSelectedIcon" :class="b('item-selected')">
+            <Icon :name="selectedIcon" :size="14" />
           </span>
         </ListboxItemIndicator>
       </span>
@@ -363,54 +375,42 @@ function get(obj: any, key: string): any {
 
   <ListboxRoot
     ref="rootRef" :disabled="disabled" highlight-on-hover selection-behavior="replace" data-slot="root"
-    class="cp"
+    :class="b()"
   >
-    <div data-slot="input-wrapper" class="cp__input-wrapper">
+    <div data-slot="input-wrapper" :class="b('input-wrapper')">
       <ListboxFilter v-model="searchTerm" as-child>
-        <div class="cp__input-row">
+        <div :class="b('input-row')">
           <button
-            v-if="history?.length && back" class="cp__back-btn" aria-label="Back" data-slot="back"
-            @click="navigateBack"
+            v-if="history?.length && back" :class="b('back-btn')" :aria-label="t('commandPalette.back')"
+            data-slot="back" @click="navigateBack"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+            <Icon :name="backIcon" :size="16" />
           </button>
 
-          <span v-if="loading" class="cp__search-icon cp__search-icon--loading" data-slot="searchIcon">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M8 1.5A6.5 6.5 0 1 1 1.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
+          <span v-if="loading" data-slot="searchIcon" :class="b('search-icon', { loading: true })">
+            <Icon :name="loadingIcon" :size="16" />
           </span>
-          <span v-else class="cp__search-icon" data-slot="searchIcon">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5" />
-              <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
+          <span v-else data-slot="searchIcon" :class="b('search-icon')">
+            <Icon :name="icon" :size="16" />
           </span>
 
           <input
-            class="cp__input" :placeholder="placeholder" :autofocus="autofocus" data-slot="input"
+            :class="b('input')" :placeholder="placeholder" :autofocus="autofocus" data-slot="input"
             @keydown.backspace="onBackspace"
           >
 
           <button
-            v-if="close" class="cp__close-btn" aria-label="Close" data-slot="close"
+            v-if="close" :class="b('close-btn')" :aria-label="t('commandPalette.close')" data-slot="close"
             @click="emit('update:open', false)"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
+            <Icon :name="closeIcon" :size="14" />
           </button>
         </div>
       </ListboxFilter>
     </div>
 
-    <ListboxContent data-slot="content" class="cp__content">
-      <div v-if="filteredGroups?.length" data-slot="viewport" class="cp__viewport">
+    <ListboxContent data-slot="content" :class="b('content')">
+      <div v-if="filteredGroups?.length" data-slot="viewport" :class="b('viewport')">
         <ListboxVirtualizer
           v-if="!!virtualize" v-slot="{ option: item, virtualItem }" :options="filteredItems"
           :text-content="(item: any) => get(item, labelKey)" v-bind="virtualizerProps"
@@ -419,8 +419,8 @@ function get(obj: any, key: string): any {
         </ListboxVirtualizer>
 
         <template v-else>
-          <ListboxGroup v-for="group in filteredGroups" :key="`group-${group.id}`" data-slot="group" class="cp__group">
-            <ListboxGroupLabel v-if="group.label" data-slot="label" class="cp__group-label">
+          <ListboxGroup v-for="group in filteredGroups" :key="`group-${group.id}`" data-slot="group" :class="b('group')">
+            <ListboxGroupLabel v-if="group.label" data-slot="label" :class="b('group-label')">
               {{ group.label }}
             </ListboxGroupLabel>
 
@@ -432,281 +432,24 @@ function get(obj: any, key: string): any {
         </template>
       </div>
 
-      <div v-else data-slot="empty" class="cp__empty">
+      <div v-else data-slot="empty" :class="b('empty')">
         <slot name="empty" :search-term="searchTerm">
           <template v-if="searchTerm">
-            No results for "{{ searchTerm }}"
+            {{ t("commandPalette.emptySearch", { searchTerm }) }}
           </template>
           <template v-else>
-            No results found.
+            {{ t("commandPalette.empty") }}
           </template>
         </slot>
       </div>
     </ListboxContent>
 
-    <div v-if="!!slots.footer" data-slot="footer" class="cp__footer">
+    <div v-if="!!slots.footer" data-slot="footer" :class="b('footer')">
       <slot name="footer" />
     </div>
   </ListboxRoot>
 </template>
 
-<style scoped>
-@keyframes cp-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.cp {
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px;
-  border: 1px solid var(--cp-border, var(--border, #e5e4e7));
-  background: var(--cp-bg, var(--color-body, #fff));
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  overflow: hidden;
-  max-width: 640px;
-  width: 100%;
-  font-size: 14px;
-  color: var(--cp-text, var(--color-text, #6b6375));
-}
-
-.cp__input-wrapper {
-  border-bottom: 1px solid var(--cp-border, var(--border, #e5e4e7));
-}
-
-.cp__input-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-}
-
-.cp__back-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-  padding: 4px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  opacity: 0.6;
-}
-
-.cp__back-btn:hover {
-  background: var(--cp-hover, rgb(0 0 0 / 0.06));
-  opacity: 1;
-}
-
-.cp__search-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  opacity: 0.4;
-}
-
-.cp__search-icon--loading {
-  opacity: 0.6;
-  animation: cp-spin 1s linear infinite;
-}
-
-.cp__input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  min-width: 0;
-}
-
-.cp__input::placeholder {
-  color: inherit;
-  opacity: 0.4;
-}
-
-.cp__close-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-  padding: 4px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  opacity: 0.6;
-}
-
-.cp__close-btn:hover {
-  background: var(--cp-hover, rgb(0 0 0 / 0.06));
-  opacity: 1;
-}
-
-.cp__content {
-  overflow-y: auto;
-  max-height: 400px;
-}
-
-.cp__viewport {
-  padding: 4px 0;
-}
-
-.cp__group+.cp__group {
-  border-top: 1px solid var(--cp-border, var(--border, #e5e4e7));
-  margin-top: 4px;
-}
-
-.cp__group-label {
-  display: block;
-  padding: 8px 12px 4px;
-  font-size: 11px;
-  font-weight: 600;
-  color: inherit;
-  opacity: 0.45;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  user-select: none;
-}
-
-.cp__item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: background-color 0.1s;
-  color: inherit;
-  outline: none;
-}
-
-.cp__item[data-highlighted] {
-  background: var(--cp-hover, rgb(0 0 0 / 0.06));
-}
-
-.cp__item[data-state="checked"] .cp__item-selected {
-  opacity: 1;
-}
-
-.cp__item-icon {
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 14px;
-}
-
-.cp__item-icon--loading {
-  animation: cp-spin 1s linear infinite;
-}
-
-.cp__item-body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.cp__item-label {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  min-width: 0;
-}
-
-.cp__item-prefix {
-  opacity: 0.45;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.cp__item-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp__item-text :deep(mark) {
-  background: none;
-  color: inherit;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-}
-
-.cp__item-suffix {
-  opacity: 0.45;
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp__item-desc {
-  font-size: 12px;
-  opacity: 0.5;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp__item-trailing {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.cp__item-arrow {
-  opacity: 0.35;
-  display: flex;
-  align-items: center;
-}
-
-.cp__item-kbds {
-  display: flex;
-  gap: 3px;
-}
-
-.cp__item-kbds kbd {
-  font-family: inherit;
-  font-size: 11px;
-  line-height: 1;
-  padding: 2px 5px;
-  border-radius: 4px;
-  border: 1px solid var(--cp-border, var(--border, #e5e4e7));
-  background: var(--cp-kbd-bg, rgb(0 0 0 / 0.04));
-}
-
-.cp__item-selected {
-  display: flex;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-.cp__empty {
-  padding: 24px 12px;
-  text-align: center;
-  opacity: 0.45;
-  font-size: 13px;
-}
-
-.cp__footer {
-  border-top: 1px solid var(--cp-border, var(--border, #e5e4e7));
-  padding: 8px 12px;
-}
+<style lang="scss">
+@use "./command-palette.styles.scss" as *;
 </style>

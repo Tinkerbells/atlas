@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CommandPaletteGroup } from "~/shared/ui/command-palette/command-pallete.vue";
+import type { CommandPaletteGroup } from "~/shared/ui/command-palette/command-palette.vue";
 
 import { useDebounceFn } from "@vueuse/core";
 import { ILogger } from "~/services/logger/logger";

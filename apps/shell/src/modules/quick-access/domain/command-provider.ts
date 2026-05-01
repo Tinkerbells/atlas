@@ -1,5 +1,5 @@
 import type { ICommandRegistry } from "~/services/commands/commands";
-import type { CommandPaletteGroup, CommandPaletteItem } from "~/shared/ui/command-palette/command-pallete.vue";
+import type { CommandPaletteGroup, CommandPaletteItem } from "~/shared/ui/command-palette/command-palette.vue";
 
 import type { IQuickAccessProvider } from "./types";
 
