@@ -11,13 +11,10 @@ import type {
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { computed, toRef } from "vue";
-import { Icon } from "~/shared/ui/icon";
-import { useBem } from "~/shared/ui/composables/use-bem";
-import { usePortal } from "~/shared/ui/composables/use-portal";
+import { Button } from "~/shared/ui/button";
 import { pointerDownOutside } from "~/shared/ui/utils/overlay";
 import { createReusableTemplate, reactivePick } from "@vueuse/core";
-import { FieldGroupReset } from "~/shared/ui/composables/use-field-group";
-import { useComponentUI } from "~/shared/ui/composables/use-component-ui";
+import { FieldGroupReset, useBem, useComponentUI, usePortal } from "~/shared/ui/composables";
 import {
   DialogClose,
   DialogContent,
@@ -110,7 +107,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
 const emits = defineEmits<ModalEmits>();
 const slots = defineSlots<ModalSlots>();
 
-const { t } = useI18n({ useScope: "local" });
+const { t } = useI18n();
 const uiProp = useComponentUI("modal", props);
 
 const rootProps = useForwardPropsEmits(reactivePick(props, "open", "defaultOpen", "modal"), emits);
@@ -147,8 +144,7 @@ const b = useBem("modal");
   <DialogRoot v-slot="{ open, close }" v-bind="rootProps">
     <DefineContentTemplate>
       <DialogContent
-        data-slot="content"
-        :class="[
+        data-slot="content" :class="[
           b('content', {
             transition: props.transition,
             fullscreen: props.fullscreen,
@@ -156,10 +152,7 @@ const b = useBem("modal");
           }),
           !slots.default && props.class,
           uiProp?.content,
-        ]"
-        v-bind="contentProps"
-        @after-enter="emits('after:enter')"
-        @after-leave="emits('after:leave')"
+        ]" v-bind="contentProps" @after-enter="emits('after:enter')" @after-leave="emits('after:leave')"
         v-on="contentEvents"
       >
         <VisuallyHidden
@@ -189,29 +182,21 @@ const b = useBem("modal");
             v-if="!!slots.header
               || (title || !!slots.title)
               || (description || !!slots.description)
-              || (props.close || !!slots.close)"
-            data-slot="header"
-            :class="[b('header'), uiProp?.header]"
+              || (props.close || !!slots.close)" data-slot="header" :class="[b('header'), uiProp?.header]"
           >
             <slot name="header" :close="close">
               <div
-                v-if="title || !!slots.title || description || !!slots.description"
-                data-slot="wrapper"
+                v-if="title || !!slots.title || description || !!slots.description" data-slot="wrapper"
                 :class="[b('wrapper'), uiProp?.wrapper]"
               >
-                <DialogTitle
-                  v-if="title || !!slots.title"
-                  data-slot="title"
-                  :class="[b('title'), uiProp?.title]"
-                >
+                <DialogTitle v-if="title || !!slots.title" data-slot="title" :class="[b('title'), uiProp?.title]">
                   <slot name="title">
                     {{ title }}
                   </slot>
                 </DialogTitle>
 
                 <DialogDescription
-                  v-if="description || !!slots.description"
-                  data-slot="description"
+                  v-if="description || !!slots.description" data-slot="description"
                   :class="[b('description'), uiProp?.description]"
                 >
                   <slot name="description">
@@ -224,15 +209,11 @@ const b = useBem("modal");
 
               <DialogClose v-if="props.close || !!slots.close" as-child>
                 <slot name="close" :ui="{}">
-                  <button
-                    v-if="props.close"
-                    type="button"
-                    :aria-label="t('modal.close')"
-                    data-slot="close"
-                    :class="[b('close'), uiProp?.close]"
-                  >
-                    <Icon :name="closeIcon || 'lucide:x'" data-slot="close-icon" />
-                  </button>
+                  <Button
+                    v-if="props.close" :icon="closeIcon || 'lucide:x'" color="neutral" variant="ghost"
+                    :aria-label="t('modal.close')" v-bind="(typeof props.close === 'object' ? props.close : {})"
+                    data-slot="close" :class="[b('close'), uiProp?.close]"
+                  />
                 </slot>
               </DialogClose>
             </slot>
@@ -257,8 +238,7 @@ const b = useBem("modal");
       <FieldGroupReset>
         <template v-if="scrollable">
           <DialogOverlay
-            data-slot="overlay"
-            :class="[
+            data-slot="overlay" :class="[
               b('overlay', {
                 'overlay': props.overlay,
                 'transition': props.transition,
@@ -274,9 +254,7 @@ const b = useBem("modal");
 
         <template v-else>
           <DialogOverlay
-            v-if="overlay"
-            data-slot="overlay"
-            :class="[
+            v-if="overlay" data-slot="overlay" :class="[
               b('overlay', {
                 overlay: props.overlay,
                 transition: props.transition,
@@ -294,16 +272,6 @@ const b = useBem("modal");
 </template>
 <!-- eslint-enable vue/custom-event-name-casing -->
 
-<i18n>
-{
-  "en": {
-    "modal": {
-      "close": "Close"
-    }
-  }
-}
-</i18n>
-
-<style scoped lang="scss">
+<style lang="scss">
 @use "./modal.styles.scss" as *;
 </style>
