@@ -57,7 +57,7 @@ function normalizeMods(mods: BemMods | undefined): string[] {
 
   return Object.entries(mods)
     .filter(([, value]) => Boolean(value))
-    .map(([key, value]) => (typeof value === "string" ? value : key));
+    .map(([key, value]) => (typeof value === "string" ? `${key}-${value}` : key));
 }
 
 /**
