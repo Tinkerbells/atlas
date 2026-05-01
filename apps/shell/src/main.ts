@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import "@fontsource-variable/google-sans";
+import "@unocss/reset/tailwind.css";
 import "uno.css";
 import "~/services/logger";
 import "~/services/commands";
@@ -20,7 +21,37 @@ import "~/shared/ui/styles/_tokens.scss";
 import App from "./app.vue";
 import { InstantiationServiceKey } from "./injection-keys";
 
-const i18n = createI18n({});
+const i18n = createI18n({
+  locale: "en",
+  fallbackLocale: "en",
+  messages: {
+    en: {
+      commandPalette: {
+        placeholder: "Type a command or search...",
+        back: "Back",
+        close: "Close",
+        emptySearch: "No results for \"{searchTerm}\"",
+        empty: "No results found.",
+      },
+      sidebar: {
+        close: "Close sidebar",
+        toggle: "Toggle sidebar",
+      },
+      dashboardSidebar: {
+        title: "Sidebar",
+        description: "",
+      },
+      dashboardSidebarToggle: {
+        open: "Open sidebar",
+        close: "Close sidebar",
+      },
+      dashboardSidebarCollapse: {
+        expand: "Expand sidebar",
+        collapse: "Collapse sidebar",
+      },
+    },
+  },
+});
 
 const descriptors = getSingletonServiceDescriptors();
 const serviceCollection = new ServiceCollection(...descriptors);
