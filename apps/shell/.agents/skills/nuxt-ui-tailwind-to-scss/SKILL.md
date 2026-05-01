@@ -204,39 +204,28 @@ Use `t()` in the template for every hard-coded label, placeholder, or aria-label
 </template>
 ```
 
-### 5.2 Local locale messages (i18n custom block)
+### 5.2 No `<i18n>` custom blocks in components
 
-Define component-level translations inside a `<i18n>` custom block so that keys are co-located with the component:
+**Do NOT use `<i18n>` custom blocks inside `.vue` files.**  
+All translations must be stored in the **central vue-i18n message collection** (global messages). This keeps translations discoverable, avoids duplicating keys across files, and prevents bundler issues with custom blocks.
 
-```vue
-<i18n>
+Always use the global scope:
+
+```ts
+const { t } = useI18n(); // global scope only
+```
+
+Register component keys in the project's global i18n messages under a namespace matching the component block name:
+
+```json
 {
   "en": {
     "input": {
       "placeholder": "Type something…",
       "clear": "Clear"
     }
-  },
-  "ru": {
-    "input": {
-      "placeholder": "Введите что-нибудь…",
-      "clear": "Очистить"
-    }
   }
 }
-</i18n>
-```
-
-For Composition API mode you **must** call `useI18n()` with `useScope: 'local'` (or without arguments if the bundler plugin is configured to pick up custom blocks automatically):
-
-```ts
-const { t } = useI18n({ useScope: "local" });
-```
-
-If the component has no local `<i18n>` block and only needs global keys, use the global scope:
-
-```ts
-const { t } = useI18n(); // global scope
 ```
 
 ### 5.3 Dynamic values / interpolation
@@ -247,8 +236,10 @@ Pass interpolation values as the second argument to `t()`:
 <template>
   <span>{{ t('input.remaining', { count: 5 }) }}</span>
 </template>
+```
 
-<i18n>
+Global messages:
+```json
 {
   "en": {
     "input": {
@@ -256,7 +247,6 @@ Pass interpolation values as the second argument to `t()`:
     }
   }
 }
-</i18n>
 ```
 
 ### 5.4 Pluralization
@@ -267,8 +257,10 @@ Use the pipe syntax for pluralization:
 <template>
   <span>{{ t('input.items', itemCount) }}</span>
 </template>
+```
 
-<i18n>
+Global messages:
+```json
 {
   "en": {
     "input": {
@@ -276,14 +268,13 @@ Use the pipe syntax for pluralization:
     }
   }
 }
-</i18n>
 ```
 
 ### 5.5 Rules summary
 
 - Every visible string in the template must use `t()` — no hard-coded text.
-- Default English messages must be provided in the `<i18n>` block.
-- Prefer **local scope** (`useScope: 'local'`) so that each component owns its keys.
+- **Do NOT add `<i18n>` custom blocks inside `.vue` files.** Store all translations in the global vue-i18n message collection.
+- Use **global scope** (`useI18n()` without `useScope: 'local'`).
 - Keep keys namespaced by the component block name, e.g. `input.placeholder`, `button.loading`, `select.empty`.
 - If the original Nuxt UI component uses no translations (only props like `placeholder`), preserve the prop but also provide a sensible default via `t()`:
   ```ts
@@ -298,16 +289,16 @@ Use the pipe syntax for pluralization:
 
 Create `src/shared/ui/<component-name>/<component-name>.styles.scss`.
 
-Import it inside the component:
+Import it inside the component (omit `scoped` when the component uses Reka UI portals — see 6.7):
 ```vue
-<style scoped lang="scss">
+<style lang="scss">
 @use "./<component-name>.styles.scss" as *;
 </style>
 ```
 
 Or, if the project build pipeline prefers `@import`:
 ```vue
-<style scoped lang="scss">
+<style lang="scss">
 @import "./<component-name>.styles.scss";
 </style>
 ```
@@ -485,6 +476,90 @@ In SCSS, flatten this hierarchy into **modifier classes** applied by Vue via `b(
 ```
 
 Use **chained BEM modifiers** (`&--color-primary.&--variant-solid`) to replicate `compoundVariants` exactly.
+
+### 6.7 Scoped styles warning
+
+Do **NOT** use `<style scoped>` on migrated components that rely on **Reka UI portals** (`Dialog`, `Modal`, `Popover`, `Tooltip`, `Select`, `DropdownMenu`, etc.).
+
+Vue's scoped CSS adds a `data-v-xxxxx` attribute only to elements rendered by the component's own template. Reka UI portal elements (`DialogOverlay`, `DialogContent`, `SelectContent`, etc.) are rendered **outside** the component DOM tree, so they never receive that attribute. Selectors like:
+
+```scss
+.modal__content--transition[data-state="open"] {
+  animation: scale-in 200ms ease-out;
+}
+```
+
+will **fail** because the actual DOM element has `data-state` but **not** `data-v-xxxxx`. This breaks enter/leave animations and any state-driven styles.
+
+**Solution:** Remove `scoped` from `<style>` and rely on BEM class names for isolation. The `.modal__*` prefix already prevents collisions.
+
+```vue
+<!-- ✅ Correct -->
+<style lang="scss">
+@use "./modal.styles.scss" as *;
+</style>
+
+<!-- ❌ Wrong — breaks portal animations -->
+<style scoped lang="scss">
+@use "./modal.styles.scss" as *;
+</style>
+```
+
+### 6.8 `transform` vs `translate` / `scale` — animation conflicts
+
+**CRITICAL:** Do **NOT** use `transform: translate(-50%, -50%)` for centering when the same element also has a CSS animation that uses `transform: scale()`.
+
+CSS animations override the entire `transform` property. During the animation, the `translate()` part is lost, causing the element to jump out of position.
+
+**Before (broken — janky opening animation):**
+```scss
+.modal__content {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);   // overridden by animation!
+  animation: scale-in 200ms ease-out;
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }  // translate is lost
+  to   { opacity: 1; transform: scale(1); }
+}
+```
+
+**After (smooth):**
+```scss
+.modal__content {
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;                // independent property
+  animation: scale-in 200ms ease-out;
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+```
+
+Modern browsers apply `translate` **after** `transform`, so the element stays centered while scaling. Electron ≥ 28 / Chrome ≥ 104 fully support the `translate` property.
+
+> If you must support very old browsers, include `translate(-50%, -50%)` inside the `@keyframes` — but only for elements that are always centered (not fullscreen variants).
+
+### 6.9 Exit animation fill-mode
+
+Always add `animation-fill-mode: forwards` to **exit** animations (`fade-out`, `scale-out`, etc.). Without it, the element reverts to its static styles after the animation finishes, causing a visible flash before Reka UI removes it from the DOM.
+
+```scss
+&--transition {
+  &[data-state="open"] {
+    animation: scale-in 200ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: scale-out 200ms ease-in forwards;  // keeps final frame
+  }
+}
+```
 
 ---
 
@@ -784,7 +859,7 @@ defineExpose({ inputRef });
   </Primitive>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 @use "./input.styles.scss" as *;
 </style>
 ```
@@ -955,7 +1030,8 @@ Before finishing the migration, verify:
 - [ ] The component exports itself from `src/shared/ui/<name>/index.ts`.
 - [ ] `src/shared/ui/composables/index.ts` re-exports the new composable if one was added.
 - [ ] All Reka UI primitives (`Primitive`, `SelectRoot`, `ListboxRoot`, etc.) are preserved with their original props.
-- [ ] Every user-facing string in the template uses `t()` from `useI18n()`; local `<i18n>` custom block is provided for default English messages.
+- [ ] Every user-facing string in the template uses `t()` from `useI18n()` (global scope); no `<i18n>` custom blocks inside the component.
+- [ ] `scoped` is removed from `<style>` when the component uses Reka UI portals (Modal, Popover, Tooltip, Select, etc.) so that `[data-state]` animations are not broken.
 - [ ] No utility-class framework (Tailwind, UnoCSS, etc.) classes are used for colours, typography, shadows, animations.
 
 ---
