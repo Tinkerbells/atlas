@@ -91,6 +91,25 @@ const { el, size, collapse, isCollapsed, isDragging, onMouseDown, onTouchStart, 
 const [DefineToggleTemplate, ReuseToggleTemplate] = createReusableTemplate();
 const [DefineResizeHandleTemplate, ReuseResizeHandleTemplate] = createReusableTemplate();
 
+const Menu = computed(() =>
+  ({
+    modal: Modal,
+    slideover: Modal,
+    drawer: Modal,
+  })[props.mode],
+);
+
+const menuProps = computed(() => {
+  const defaults
+    = props.mode === "modal"
+      ? { fullscreen: true, transition: false }
+      : props.mode === "slideover"
+        ? { side: "left" }
+        : {};
+
+  return { ...defaults, ...props.menu };
+});
+
 function toggleOpen() {
   open.value = !open.value;
 }
@@ -108,30 +127,20 @@ watch(isCollapsed, () => {
   <DefineToggleTemplate>
     <slot name="toggle" :open="open" :toggle="toggleOpen" :ui="uiProp">
       <DashboardSidebarToggle
-        v-if="toggle"
-        v-bind="(typeof toggle === 'object' ? toggle : {})"
-        :side="toggleSide"
-        data-slot="toggle"
-        :class="[b('toggle', { toggleSide }), uiProp?.toggle]"
+        v-if="toggle" v-bind="(typeof toggle === 'object' ? toggle : {})" :side="toggleSide"
+        data-slot="toggle" :class="[b('toggle', { toggleSide }), uiProp?.toggle]"
       />
     </slot>
   </DefineToggleTemplate>
 
   <DefineResizeHandleTemplate>
     <slot
-      name="resize-handle"
-      :on-mouse-down="onMouseDown"
-      :on-touch-start="onTouchStart"
-      :on-double-click="onDoubleClick"
-      :ui="uiProp"
+      name="resize-handle" :on-mouse-down="onMouseDown" :on-touch-start="onTouchStart"
+      :on-double-click="onDoubleClick" :ui="uiProp"
     >
       <DashboardResizeHandle
-        v-if="resizable"
-        :aria-controls="id"
-        data-slot="handle"
-        :class="[b('handle'), uiProp?.handle]"
-        @mousedown="onMouseDown"
-        @touchstart="onTouchStart"
+        v-if="resizable" :aria-controls="id" data-slot="handle"
+        :class="[b('handle'), uiProp?.handle]" @mousedown="onMouseDown" @touchstart="onTouchStart"
         @dblclick="onDoubleClick"
       />
     </slot>
@@ -140,12 +149,7 @@ watch(isCollapsed, () => {
   <ReuseResizeHandleTemplate v-if="side === 'right'" />
 
   <div
-    :id="id"
-    ref="el"
-    v-bind="$attrs"
-    :data-collapsed="isCollapsed"
-    :data-dragging="isDragging"
-    data-slot="root"
+    :id="id" ref="el" v-bind="$attrs" :data-collapsed="isCollapsed" :data-dragging="isDragging" data-slot="root"
     :class="[b({ side: props.side }), props.class, uiProp?.root]"
     :style="{ '--width': `${size || 0}${dashboardContext.unit}` }"
   >
@@ -164,34 +168,36 @@ watch(isCollapsed, () => {
 
   <ReuseResizeHandleTemplate v-if="side === 'left'" />
 
-  <Modal
-    v-model:open="open"
-    :title="t('dashboardSidebar.title')"
-    :description="t('dashboardSidebar.description')"
-    :fullscreen="mode === 'modal'"
-    :transition="mode !== 'modal'"
-    :class="uiProp?.content"
+  <component
+    :is="Menu" v-model:open="open" :title="t('dashboardSidebar.title')"
+    :description="t('dashboardSidebar.description')" v-bind="menuProps" :ui="{
+      overlay: [b('overlay'), uiProp?.overlay],
+      content: [b('content'), uiProp?.content],
+    }"
   >
     <template #content="{ close }">
       <slot name="content" :close="close">
-        <div v-if="!!slots.header || mode !== 'drawer'" data-slot="header" :class="[b('header', { menu: true }), uiProp?.header]">
+        <div
+          v-if="!!slots.header || mode !== 'drawer'" data-slot="header"
+          :class="[b('header', { menu: true }), uiProp?.header]"
+        >
           <ReuseToggleTemplate v-if="mode !== 'drawer' && toggleSide === 'left'" />
 
-          <slot name="header" :collapsed="false" :collapse="() => {}" />
+          <slot name="header" :collapsed="false" :collapse="() => { }" />
 
           <ReuseToggleTemplate v-if="mode !== 'drawer' && toggleSide === 'right'" />
         </div>
 
         <div data-slot="body" :class="[b('body', { menu: true }), uiProp?.body]">
-          <slot :collapsed="false" :collapse="() => {}" />
+          <slot :collapsed="false" :collapse="() => { }" />
         </div>
 
         <div v-if="!!slots.footer" data-slot="footer" :class="[b('footer', { menu: true }), uiProp?.footer]">
-          <slot name="footer" :collapsed="false" :collapse="() => {}" />
+          <slot name="footer" :collapsed="false" :collapse="() => { }" />
         </div>
       </slot>
     </template>
-  </Modal>
+  </component>
 </template>
 
 <style lang="scss">

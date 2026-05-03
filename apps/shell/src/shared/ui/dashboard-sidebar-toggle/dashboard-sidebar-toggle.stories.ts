@@ -8,6 +8,12 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
+    docs: {
+      description: {
+        component:
+          "A Button to toggle the sidebar on mobile. Extends the Button component.",
+      },
+    },
   },
   argTypes: {
     color: {
@@ -39,6 +45,54 @@ export const Default: Story = {
     color: "neutral",
     variant: "ghost",
   },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Default appearance. The button defaults to `color=\"neutral\"` and `variant=\"ghost\"`.",
+      },
+    },
+  },
+};
+
+export const VariantSubtle: Story = {
+  args: {
+    color: "neutral",
+    variant: "subtle",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "Use the `variant` prop to change the visual style.",
+      },
+    },
+  },
+};
+
+export const Colors: Story = {
+  render: args => ({
+    components: { DashboardSidebarToggle },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="flex gap-2 flex-wrap">
+        <DashboardSidebarToggle v-bind="args" color="primary" />
+        <DashboardSidebarToggle v-bind="args" color="neutral" />
+        <DashboardSidebarToggle v-bind="args" color="error" />
+      </div>
+    `,
+  }),
+  args: {
+    variant: "ghost",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "Use the `color` prop to change the color.",
+      },
+    },
+  },
 };
 
 export const SideRight: Story = {
@@ -47,12 +101,35 @@ export const SideRight: Story = {
     variant: "ghost",
     side: "right",
   },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Use the `side` prop to change the side of the toggle button. When `side=\"right\"`, the button is pushed to the right.",
+      },
+    },
+  },
 };
 
-export const PrimarySolid: Story = {
+export const Sizes: Story = {
+  render: args => ({
+    components: { DashboardSidebarToggle },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="flex items-center gap-2 flex-wrap">
+        <DashboardSidebarToggle v-bind="args" size="xs" />
+        <DashboardSidebarToggle v-bind="args" size="sm" />
+        <DashboardSidebarToggle v-bind="args" size="md" />
+        <DashboardSidebarToggle v-bind="args" size="lg" />
+        <DashboardSidebarToggle v-bind="args" size="xl" />
+      </div>
+    `,
+  }),
   args: {
-    color: "primary",
-    variant: "solid",
+    color: "neutral",
+    variant: "ghost",
   },
 };
 

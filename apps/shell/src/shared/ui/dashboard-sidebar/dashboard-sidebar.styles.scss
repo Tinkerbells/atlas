@@ -12,7 +12,7 @@
   }
 
   &--side-left {
-    border-right: 1px solid var(--color-border);
+    border-inline-end: 1px solid var(--color-border);
   }
 
   &__header {
@@ -50,7 +50,7 @@
 
   &__toggle {
     &--toggle-side-right {
-      margin-left: auto;
+      margin-inline-start: auto;
     }
   }
 
@@ -59,6 +59,13 @@
 
     @media (min-width: 1024px) {
       display: block;
+    }
+  }
+
+  &__content,
+  &__overlay {
+    @media (min-width: 1024px) {
+      display: none;
     }
   }
 
