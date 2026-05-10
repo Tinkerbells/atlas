@@ -21,25 +21,24 @@ npm install
 
 | Command | Description |
 |---|---|
-| `npm run electron:dev` | Run the app in development mode |
-| `npm run build` | Build all workspaces |
+| `npm run dev` | Run the app in development mode |
+| `npm run build` | Build the application |
 | `npm run compile` | Build + create distributable (auto-detect OS) |
 | `npm run compile:mac` | Build macOS `.dmg` |
 | `npm run compile:win` | Build Windows `.exe` |
 | `npm run compile:linux` | Build Linux `.deb` + `.AppImage` |
-| `npm run lint` | Run ESLint across all workspaces |
+| `npm run lint` | Run ESLint |
 | `npm run version` | Generate CHANGELOG.md |
 
 ## Architecture
 
 Atlas follows a modular, service-oriented architecture inspired by VS Code.
-The app uses a custom Dependency Injection system (`@atlas/di`) extracted from
-VS Code's codebase, providing decorator-based service registration, lazy
-instantiation, and cyclic dependency detection.
+The app uses a custom Dependency Injection system extracted from VS Code's
+codebase, providing decorator-based service registration, lazy instantiation,
+and cyclic dependency detection.
 
-The renderer (`@atlas/shell`) is built with Vue 3 and communicates with the
-Electron main process (`@atlas/electron-main`) through a preload bridge
-(`@atlas/electron-preload`).
+The renderer is built with Vue 3 and communicates with the Electron main process
+through a preload bridge.
 
 ### Key Concepts
 
@@ -50,15 +49,13 @@ Electron main process (`@atlas/electron-main`) through a preload bridge
 
 ## Project Structure
 
-| Package | Description |
+| Directory | Description |
 |---|---|
-| `apps/shell` | Vue 3 renderer process (UI, services, composables) |
-| `packages/di` | Dependency Injection system (from VS Code) |
-| `packages/shared` | Framework-agnostic shared utilities |
-| `packages/electron-main` | Electron main process |
-| `packages/electron-preload` | Electron preload script (contextBridge) |
-| `packages/electron-versions` | Electron / Chrome / Node version helpers |
-| `packages/eslint` | Shared ESLint configuration |
+| `src/ui` | Vue 3 renderer process (UI, components, composables) |
+| `src/main` | Electron main process |
+| `src/preload` | Electron preload script (contextBridge) |
+| `src/core` | Core business logic, services, and DI system |
+| `src/platform` | Platform-specific abstractions and utilities |
 
 ## Development
 

@@ -1,0 +1,205 @@
+/* ---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *-------------------------------------------------------------------------------------------- */
+
+import type { IDisposable } from "@/core/base";
+import type { ContextKeyExpression } from "@/platform/context/renderer/context-key";
+
+import { ILogger } from "@/platform/logger/common/logger";
+import { DisposableStore, OperatingSystem, OS } from "@/core/base";
+import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+
+import type { Keybinding } from "./keybindings";
+
+import { decodeKeybinding } from "./keybindings";
+import { isReservedBrowserKeybinding } from "./reserved-keybindings";
+import { USLayoutResolvedKeybinding } from "./us-layout-resolved-keybinding";
+
+export interface IKeybindings {
+  primary?: number;
+  secondary?: number[];
+  win?: {
+    primary: number;
+    secondary?: number[];
+  };
+  linux?: {
+    primary: number;
+    secondary?: number[];
+  };
+  mac?: {
+    primary: number;
+    secondary?: number[];
+  };
+}
+
+export interface IKeybindingRule extends IKeybindings {
+  id: string;
+  weight: number;
+  args?: any;
+  when: ContextKeyExpression | null | undefined;
+}
+
+export interface IKeybindingItem {
+  keybinding: Keybinding | null;
+  command: string | null;
+  commandArgs?: any;
+  when: ContextKeyExpression | null | undefined;
+  weight1: number;
+  weight2: number;
+}
+
+export interface IKeybindingsRegistry {
+  readonly _serviceBrand: undefined;
+
+  getDefaultKeybindings: () => IKeybindingItem[];
+  registerKeybindingRule: (rule: IKeybindingRule) => IDisposable;
+}
+
+export const IKeybindingsRegistry = createDecorator<IKeybindingsRegistry>("keybindingsRegistry");
+
+export class KeybindingsRegistryImpl implements IKeybindingsRegistry {
+  declare readonly _serviceBrand: undefined;
+
+  private _coreKeybindings: IKeybindingItem[];
+  private _cachedKeybindings: IKeybindingItem[] | null;
+
+  constructor(@ILogger protected _logger: ILogger) {
+    this._coreKeybindings = [];
+    this._cachedKeybindings = null;
+  }
+
+  private static bindToCurrentPlatform(kb: IKeybindings): {
+    primary?: number;
+    secondary?: number[];
+  } {
+    if (OS === OperatingSystem.Windows && kb.win)
+      return kb.win;
+    if (OS === OperatingSystem.Macintosh && kb.mac)
+      return kb.mac;
+    if (kb.linux)
+      return kb.linux;
+    return kb;
+  }
+
+  public getDefaultKeybindings() {
+    if (!this._cachedKeybindings) {
+      this._cachedKeybindings = this._coreKeybindings.sort(sorter);
+    }
+    return this._cachedKeybindings.slice(0);
+  }
+
+  public registerKeybindingRule(rule: IKeybindingRule): IDisposable {
+    const actualKb = KeybindingsRegistryImpl.bindToCurrentPlatform(rule);
+
+    const result = new DisposableStore();
+
+    if (actualKb.primary) {
+      const kb = decodeKeybinding(actualKb.primary, OS);
+      if (kb) {
+        this._checkForReservedKeybinding(kb, OS, rule.id);
+        result.add(
+          this._registerDefaultKeybinding(
+            kb,
+            rule.id,
+            rule.args,
+            rule.weight,
+            0,
+            rule.when,
+          ),
+        );
+      }
+    }
+
+    if (actualKb.secondary) {
+      for (let i = 0; i < actualKb.secondary.length; i++) {
+        const kb = decodeKeybinding(actualKb.secondary[i], OS);
+        if (kb) {
+          this._checkForReservedKeybinding(kb, OS, rule.id);
+          result.add(
+            this._registerDefaultKeybinding(
+              kb,
+              rule.id,
+              rule.args,
+              rule.weight,
+              -i - 1,
+              rule.when,
+            ),
+          );
+        }
+      }
+    }
+    return result;
+  }
+
+  private _checkForReservedKeybinding(
+    keybinding: Keybinding,
+    os: OperatingSystem,
+    commandId: string,
+  ): void {
+    const resolvedKeybindings = USLayoutResolvedKeybinding.resolveKeybinding(
+      keybinding,
+      os,
+    );
+    if (resolvedKeybindings.length > 0) {
+      const dispatchStr = resolvedKeybindings[0].getDispatchChords()[0];
+      if (dispatchStr && isReservedBrowserKeybinding(dispatchStr)) {
+        this._logger.warning(
+          `Keybinding "${dispatchStr}" for command "${commandId}" may conflict with browser shortcuts`,
+          { scope: "KeybindingsRegistry" },
+        );
+      }
+    }
+  }
+
+  private _registerDefaultKeybinding(
+    keybinding: Keybinding,
+    commandId: string,
+    commandArgs: any,
+    weight1: number,
+    weight2: number,
+    when: ContextKeyExpression | null | undefined,
+  ): IDisposable {
+    const item: IKeybindingItem = {
+      keybinding,
+      command: commandId,
+      commandArgs,
+      when,
+      weight1,
+      weight2,
+    };
+
+    this._coreKeybindings.push(item);
+
+    this._cachedKeybindings = null;
+
+    const remove = () => {
+      const index = this._coreKeybindings.indexOf(item);
+      if (index !== -1) {
+        this._coreKeybindings.splice(index, 1);
+      }
+      this._cachedKeybindings = null;
+    };
+
+    return {
+      dispose: () => remove(),
+    };
+  }
+}
+
+function sorter(a: IKeybindingItem, b: IKeybindingItem): number {
+  if (a.weight1 !== b.weight1) {
+    return a.weight1 - b.weight1;
+  }
+  if (a.command && b.command) {
+    if (a.command < b.command) {
+      return -1;
+    }
+    if (a.command > b.command) {
+      return 1;
+    }
+  }
+  return a.weight2 - b.weight2;
+}
+
+registerSingleton(IKeybindingsRegistry, KeybindingsRegistryImpl, InstantiationType.Eager);

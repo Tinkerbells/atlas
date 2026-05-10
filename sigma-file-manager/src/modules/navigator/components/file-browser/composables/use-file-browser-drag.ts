@@ -1,0 +1,380 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// License: GNU GPLv3 or later. See the license file in the project root for more information.
+// Copyright © 2021 - present Aleksey Hoffman. All rights reserved.
+
+import { ref, computed, onUnmounted, type Ref } from 'vue';
+import { startDrag as startOutboundDrag } from '@crabnebula/tauri-plugin-drag';
+import { resolveResource } from '@tauri-apps/api/path';
+import type { DirEntry } from '@/types/dir-entry';
+import { UI_CONSTANTS } from '@/constants';
+import { useDismissalLayerStore } from '@/stores/runtime/dismissal-layer';
+import {
+  getDropTargetRegistry,
+  getCrossPaneDropTargetPaneId,
+  registerDropContainer,
+  unregisterDropContainer,
+} from '@/composables/use-drop-target-registry';
+
+export type DragOperationType = 'move' | 'copy';
+
+export interface DragState {
+  isActive: boolean;
+  items: DirEntry[];
+  operationType: DragOperationType;
+  cursorX: number;
+  cursorY: number;
+  dropTargetPath: string;
+}
+
+interface DropTargetInfo {
+  path: string;
+  element: Element;
+}
+
+export function useFileBrowserDrag(options: {
+  selectedEntries: Ref<DirEntry[]>;
+  currentPath: Ref<string>;
+  componentRef: Ref<Element | null>;
+  isEntrySelected: (entry: DirEntry) => boolean;
+  replaceSelection: (entry: DirEntry) => void;
+  entriesContainerRef: Ref<Element | null>;
+  onDrop: (items: DirEntry[], destinationPath: string, operation: DragOperationType) => void;
+  disableBackgroundDrop?: boolean;
+}) {
+  const dismissalLayerStore = useDismissalLayerStore();
+  const dropTargetRegistry = getDropTargetRegistry();
+  const crossPaneDropTargetPaneId = getCrossPaneDropTargetPaneId();
+  const paneId = registerDropContainer({
+    componentRef: options.componentRef,
+    entriesContainerRef: options.entriesContainerRef,
+    currentPath: options.currentPath,
+    disableBackgroundDrop: !!options.disableBackgroundDrop,
+  });
+  const isDragging = ref(false);
+  const dragItems = ref<DirEntry[]>([]);
+  const operationType = ref<DragOperationType>('move');
+  const cursorX = ref(0);
+  const cursorY = ref(0);
+  const dropTargetPath = ref('');
+
+  let mouseDownEntry: DirEntry | null = null;
+  let mouseDownX = 0;
+  let mouseDownY = 0;
+  let thresholdReached = false;
+  let isMouseDown = false;
+  let dropTargets: DropTargetInfo[] = [];
+  let currentTargetElement: Element | null = null;
+  let isOutboundDragActive = false;
+  let cachedDragIconPath: string | null = null;
+  let dismissalLayerId: string | null = null;
+
+  const dragState = computed<DragState>(() => ({
+    isActive: isDragging.value,
+    items: dragItems.value,
+    operationType: operationType.value,
+    cursorX: cursorX.value,
+    cursorY: cursorY.value,
+    dropTargetPath: dropTargetPath.value,
+  }));
+
+  const isCrossPaneTarget = computed(() => crossPaneDropTargetPaneId.value === paneId);
+
+  function collectDropTargets() {
+    dropTargets = [];
+
+    for (const container of dropTargetRegistry) {
+      const containerElement = container.entriesContainerRef.value;
+      if (!containerElement) continue;
+
+      const elements = containerElement.querySelectorAll('[data-drop-target]');
+      elements.forEach((element) => {
+        const path = element.getAttribute('data-entry-path');
+
+        if (path) {
+          dropTargets.push({
+            path,
+            element,
+          });
+        }
+      });
+    }
+  }
+
+  function findDropTarget(clientX: number, clientY: number): DropTargetInfo | null {
+    const topElement = document.elementFromPoint(clientX, clientY);
+    if (!topElement) return null;
+
+    for (const target of dropTargets) {
+      if (target.element === topElement || target.element.contains(topElement)) {
+        const isDraggedItem = dragItems.value.some(
+          item => item.path === target.path,
+        );
+
+        if (!isDraggedItem) {
+          return target;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function updateDropTargetAttributes(targetPath: string, targetElement?: Element | null) {
+    for (const container of dropTargetRegistry) {
+      const containerElement = container.entriesContainerRef.value;
+      if (!containerElement) continue;
+
+      containerElement.querySelectorAll('[data-drag-over]').forEach((element) => {
+        element.removeAttribute('data-drag-over');
+      });
+    }
+
+    if (targetElement) {
+      targetElement.setAttribute('data-drag-over', '');
+    }
+    else if (targetPath) {
+      for (const container of dropTargetRegistry) {
+        const containerElement = container.entriesContainerRef.value;
+        if (!containerElement) continue;
+
+        const foundElement = containerElement.querySelector(
+          `[data-entry-path="${CSS.escape(targetPath)}"]`,
+        );
+
+        if (foundElement) {
+          foundElement.setAttribute('data-drag-over', '');
+          break;
+        }
+      }
+    }
+  }
+
+  async function getDragIconPath(): Promise<string> {
+    if (!cachedDragIconPath) {
+      cachedDragIconPath = await resolveResource('icons/32x32.png');
+    }
+
+    return cachedDragIconPath;
+  }
+
+  function isCursorOutsideViewport(clientX: number, clientY: number): boolean {
+    return (
+      clientX <= 0
+      || clientY <= 0
+      || clientX >= window.innerWidth
+      || clientY >= window.innerHeight
+    );
+  }
+
+  function findCrossPanePath(clientX: number, clientY: number): {
+    path: string;
+    targetPaneId: number | null;
+  } {
+    for (const container of dropTargetRegistry) {
+      if (container.id === paneId) continue;
+
+      const element = container.componentRef.value;
+      if (!element) continue;
+
+      const rect = element.getBoundingClientRect();
+
+      if (
+        clientX >= rect.left
+        && clientX <= rect.right
+        && clientY >= rect.top
+        && clientY <= rect.bottom
+      ) {
+        return {
+          path: container.disableBackgroundDrop ? '' : container.currentPath.value,
+          targetPaneId: container.disableBackgroundDrop ? null : container.id,
+        };
+      }
+    }
+
+    return {
+      path: '',
+      targetPaneId: null,
+    };
+  }
+
+  async function initiateOutboundDrag() {
+    if (isOutboundDragActive || dragItems.value.length === 0) return;
+
+    isOutboundDragActive = true;
+    const filePaths = dragItems.value.map(item => item.path);
+    const iconPath = await getDragIconPath();
+
+    cleanup();
+
+    await startOutboundDrag({
+      item: filePaths,
+      icon: iconPath,
+      mode: 'copy',
+    });
+
+    isOutboundDragActive = false;
+  }
+
+  function handleDragMouseDown(entry: DirEntry, event: MouseEvent) {
+    if (event.button !== 0) return;
+
+    mouseDownEntry = entry;
+    mouseDownX = event.clientX;
+    mouseDownY = event.clientY;
+    thresholdReached = false;
+    isMouseDown = true;
+
+    window.addEventListener('mousemove', handleDragMouseMove);
+    window.addEventListener('mouseup', handleDragMouseUp);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+  }
+
+  function handleDragMouseMove(event: MouseEvent) {
+    if (!isMouseDown || !mouseDownEntry) return;
+
+    const deltaX = Math.abs(event.clientX - mouseDownX);
+    const deltaY = Math.abs(event.clientY - mouseDownY);
+
+    if (!thresholdReached) {
+      if (
+        deltaX > UI_CONSTANTS.DRAG_ACTIVATION_THRESHOLD
+        || deltaY > UI_CONSTANTS.DRAG_ACTIVATION_THRESHOLD
+      ) {
+        thresholdReached = true;
+        startDrag(mouseDownEntry, event);
+      }
+
+      return;
+    }
+
+    cursorX.value = event.clientX;
+    cursorY.value = event.clientY;
+    operationType.value = event.shiftKey ? 'copy' : 'move';
+
+    collectDropTargets();
+
+    if (isCursorOutsideViewport(event.clientX, event.clientY)) {
+      initiateOutboundDrag();
+      return;
+    }
+
+    const target = findDropTarget(event.clientX, event.clientY);
+    let newTargetPath = target ? target.path : '';
+    const newTargetElement = target?.element ?? null;
+
+    if (target) {
+      crossPaneDropTargetPaneId.value = null;
+    }
+    else {
+      const crossPane = findCrossPanePath(event.clientX, event.clientY);
+      newTargetPath = crossPane.path;
+      crossPaneDropTargetPaneId.value = crossPane.targetPaneId;
+    }
+
+    if (dropTargetPath.value !== newTargetPath || currentTargetElement !== newTargetElement) {
+      dropTargetPath.value = newTargetPath;
+      currentTargetElement = newTargetElement;
+      updateDropTargetAttributes(newTargetPath, newTargetElement);
+    }
+  }
+
+  function startDrag(entry: DirEntry, event: MouseEvent) {
+    if (!options.isEntrySelected(entry)) {
+      options.replaceSelection(entry);
+    }
+
+    dragItems.value = [...options.selectedEntries.value];
+    isDragging.value = true;
+    cursorX.value = event.clientX;
+    cursorY.value = event.clientY;
+    operationType.value = event.shiftKey ? 'copy' : 'move';
+
+    collectDropTargets();
+
+    dismissalLayerId = dismissalLayerStore.registerLayer('drag', () => cancelDrag(), 300);
+
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'grabbing';
+  }
+
+  function handleKeyDown(event: KeyboardEvent) {
+    if (!isDragging.value) return;
+
+    if (event.key === 'Shift') {
+      operationType.value = 'copy';
+    }
+  }
+
+  function handleKeyUp(event: KeyboardEvent) {
+    if (!isDragging.value) return;
+
+    if (event.key === 'Shift') {
+      operationType.value = 'move';
+    }
+  }
+
+  function handleDragMouseUp(event: MouseEvent) {
+    if (!isMouseDown) return;
+
+    const wasDragging = isDragging.value;
+    const targetPath = dropTargetPath.value;
+    const items = [...dragItems.value];
+    const operation = event.shiftKey ? 'copy' : operationType.value;
+
+    cleanup();
+
+    if (wasDragging && targetPath && items.length > 0) {
+      options.onDrop(items, targetPath, operation);
+    }
+  }
+
+  function cancelDrag() {
+    cleanup();
+  }
+
+  function cleanup() {
+    isMouseDown = false;
+    mouseDownEntry = null;
+    thresholdReached = false;
+    isDragging.value = false;
+    dragItems.value = [];
+    dropTargetPath.value = '';
+    dropTargets = [];
+    currentTargetElement = null;
+    crossPaneDropTargetPaneId.value = null;
+
+    if (dismissalLayerId) {
+      dismissalLayerStore.unregisterLayer(dismissalLayerId);
+      dismissalLayerId = null;
+    }
+
+    updateDropTargetAttributes('');
+
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+
+    window.removeEventListener('mousemove', handleDragMouseMove);
+    window.removeEventListener('mouseup', handleDragMouseUp);
+    window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('keyup', handleKeyUp);
+  }
+
+  onUnmounted(() => {
+    cleanup();
+    unregisterDropContainer(paneId);
+  });
+
+  return {
+    isDragging,
+    dragItems,
+    operationType,
+    cursorX,
+    cursorY,
+    dropTargetPath,
+    dragState,
+    isCrossPaneTarget,
+    handleDragMouseDown,
+    cancelDrag,
+  };
+}
