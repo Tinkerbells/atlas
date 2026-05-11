@@ -1,12 +1,12 @@
-import type { ScanCode } from "@/platform/keybindings/renderer/scan-code";
-import type { ContextKeyExpression } from "@/platform/context/renderer/context-key";
+import type { ScanCode } from "@platform/keybindings/renderer/scan-code";
+import type { ContextKeyExpression } from "@platform/context/renderer/context-key";
 
-import { OperatingSystem } from "@/core/base";
-import { ResolvedKeybindingItem } from "@/platform/keybindings/renderer/resolved-keybinding-item";
-import { decodeKeybinding, ScanCodeChord, ScanCodeMod } from "@/platform/keybindings/renderer/keybindings";
-import { USLayoutResolvedKeybinding } from "@/platform/keybindings/renderer/us-layout-resolved-keybinding";
+import { OperatingSystem } from "@core/base";
+import { ResolvedKeybindingItem } from "@platform/keybindings/renderer/resolved-keybinding-item";
+import { decodeKeybinding, ScanCodeChord, ScanCodeMod } from "@platform/keybindings/renderer/keybindings";
+import { USLayoutResolvedKeybinding } from "@platform/keybindings/renderer/us-layout-resolved-keybinding";
 
-export { createContext } from "@/platform/context/renderer/mock-context-key-service";
+export { createContext } from "@platform/context/renderer/mock-context-key-service";
 
 export function kbItem(
   keybinding: number | number[],

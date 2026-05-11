@@ -1,7 +1,7 @@
-import type { IDisposable } from "@/core/base";
+import type { IDisposable } from "@core/base";
 
-import { Disposable } from "@/core/base";
-import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+import { Disposable } from "@core/base";
+import { createDecorator, InstantiationType, registerSingleton } from "@core/di";
 
 export interface KeypressEvent {
   readonly timestamp: number;

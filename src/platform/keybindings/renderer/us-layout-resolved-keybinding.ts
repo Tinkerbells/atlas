@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { OperatingSystem } from "@/core/base";
+import type { OperatingSystem } from "@core/base";
 
 import type { Keybinding, ScanCodeChord } from "./keybindings";
 

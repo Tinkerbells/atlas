@@ -1,4 +1,4 @@
-import type { ICommandService } from "@/platform/commands/renderer/commands-service";
+import type { ICommandService } from "@platform/commands/renderer/commands-service";
 
 export interface TrackedCommandCall {
   commandId: string;

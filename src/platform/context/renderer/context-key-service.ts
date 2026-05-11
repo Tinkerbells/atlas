@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { InstantiationType, registerSingleton } from "@/core/di";
-import { Disposable, equals, isEditableElement } from "@/core/base";
+import { InstantiationType, registerSingleton } from "@core/di";
+import { Disposable, equals, isEditableElement } from "@core/base";
 
 import type {
   ContextKeyExpression,

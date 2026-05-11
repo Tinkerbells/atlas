@@ -22,8 +22,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "~": resolve(__dirname, "src/ui"),
-      "@": resolve(__dirname, "src"),
+      "@renderer": resolve(__dirname, "src/renderer"),
+      "@main": resolve(__dirname, "src/main"),
+      "@preload": resolve(__dirname, "src/preload"),
+      "@shared-process": resolve(__dirname, "src/shared-process"),
+      "@core": resolve(__dirname, "src/core"),
+      "@platform": resolve(__dirname, "src/platform"),
     },
   },
 });

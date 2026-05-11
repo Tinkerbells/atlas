@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { ILogger } from "@/platform/logger/common/logger";
-import type { ICommandService } from "@/platform/commands/renderer/commands-service";
-import type { IContextKeyService, IContextKeyServiceTarget } from "@/platform/context/renderer/context-key";
+import type { ILogger } from "@platform/logger/common/logger";
+import type { ICommandService } from "@platform/commands/renderer/commands-service";
+import type { IContextKeyService, IContextKeyServiceTarget } from "@platform/context/renderer/context-key";
 
-import { Disposable, IntervalTimer } from "@/core/base";
+import { Disposable, IntervalTimer } from "@core/base";
 
 import type { Keybinding } from "./keybindings";
 import type { IKeybindingItem } from "./keybindings-registry";

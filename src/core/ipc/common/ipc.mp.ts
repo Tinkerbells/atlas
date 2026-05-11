@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { IMessagePassingProtocol } from "@/core/ipc/ipc";
+import type { IMessagePassingProtocol } from "@core/ipc/ipc";
 
-import { Emitter } from "@/core/base/event";
+import { Emitter } from "@core/base/event";
 
 export class MessagePortProtocol implements IMessagePassingProtocol {
   private _onMessage = new Emitter<any>();

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { IChannel, IChannelClient } from "@/core/ipc/ipc";
+import type { IChannel, IChannelClient } from "@core/ipc/ipc";
 
-import { Disposable } from "@/core/base/lifecycle";
-import { ChannelClient } from "@/core/ipc/ipc-client";
-import { MessagePortProtocol } from "@/core/ipc/common/ipc.mp";
+import { Disposable } from "@core/base/lifecycle";
+import { ChannelClient } from "@core/ipc/ipc-client";
+import { MessagePortProtocol } from "@core/ipc/common/ipc.mp";
 
 export class MessagePortClient extends Disposable implements IChannelClient {
   private readonly _client: ChannelClient;

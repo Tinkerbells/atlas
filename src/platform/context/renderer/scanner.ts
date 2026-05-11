@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { CharCode, illegalState } from "@/core/base";
+import { CharCode, illegalState } from "@core/base";
 
 export const enum TokenType {
   LParen,

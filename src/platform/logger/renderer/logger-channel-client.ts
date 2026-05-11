@@ -1,7 +1,7 @@
-import type { IChannel } from "@/core/ipc/ipc";
-import type { ILogger, LogContext } from "@/platform/logger/common/logger";
+import type { IChannel } from "@core/ipc/ipc";
+import type { ILogger, LogContext } from "@platform/logger/common/logger";
 
-import { createChannelProxy } from "@/core/ipc/channel";
+import { createChannelProxy } from "@core/ipc/channel";
 
 export class LoggerChannelClient implements ILogger {
   declare readonly _serviceBrand: undefined;

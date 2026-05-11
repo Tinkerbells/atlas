@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { BrandedService, ServiceIdentifier } from "@/core/di/instantiation.js";
+import type { BrandedService, ServiceIdentifier } from "@core/di/instantiation.js";
 
-import { SyncDescriptor } from "@/core/di/descriptors.js";
+import { SyncDescriptor } from "@core/di/descriptors.js";
 
 const _registry: [ServiceIdentifier<any>, SyncDescriptor<any>][] = [];
 

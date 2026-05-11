@@ -3,14 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
+import type { Event } from "@core/base/event";
 import type { MessagePortMain, UtilityProcess } from "electron";
 
+import { Emitter } from "@core/base/event";
+import { Disposable } from "@core/base/lifecycle";
 import { MessageChannelMain, utilityProcess } from "electron";
-
-import type { Event } from "@/core/base/event";
-
-import { Emitter } from "@/core/base/event";
-import { Disposable } from "@/core/base/lifecycle";
 
 export class SharedProcess extends Disposable {
   private readonly _onDidExit = this._register(new Emitter<number | null>());

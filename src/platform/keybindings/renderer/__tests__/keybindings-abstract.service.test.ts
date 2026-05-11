@@ -1,24 +1,23 @@
+import type { ILogger } from "@platform/logger/common/logger";
+import type { Keybinding } from "@platform/keybindings/renderer/keybindings";
+import type { ICommandService } from "@platform/commands/renderer/commands-service";
+import type { IKeypressEventBus } from "@platform/keybindings/renderer/keypress-event-bus";
+import type { IKeybindingItem } from "@platform/keybindings/renderer/keybindings-registry";
+import type { ResolvedKeybinding } from "@platform/keybindings/renderer/resolved-keybinding";
+import type { ResolvedKeybindingItem } from "@platform/keybindings/renderer/resolved-keybinding-item";
+import type { IContextKeyService, IContextKeyServiceTarget } from "@platform/context/renderer/context-key";
+
+import { OperatingSystem } from "@core/base";
 import { describe, expect, it } from "vitest";
-
-import type { ILogger } from "@/platform/logger/common/logger";
-import type { Keybinding } from "@/platform/keybindings/renderer/keybindings";
-import type { ICommandService } from "@/platform/commands/renderer/commands-service";
-import type { IKeypressEventBus } from "@/platform/keybindings/renderer/keypress-event-bus";
-import type { IKeybindingItem } from "@/platform/keybindings/renderer/keybindings-registry";
-import type { ResolvedKeybinding } from "@/platform/keybindings/renderer/resolved-keybinding";
-import type { ResolvedKeybindingItem } from "@/platform/keybindings/renderer/resolved-keybinding-item";
-import type { IContextKeyService, IContextKeyServiceTarget } from "@/platform/context/renderer/context-key";
-
-import { OperatingSystem } from "@/core/base";
-import { ContextKeyExpr } from "@/platform/context/renderer/context-key";
-import { createMockLogger } from "@/platform/logger/renderer/mock-logger";
-import { KeyboardMapper } from "@/platform/keybindings/renderer/keyboard-mapper";
-import { ScanCode, ScanCodeUtils } from "@/platform/keybindings/renderer/scan-code";
-import { KeybindingResolver } from "@/platform/keybindings/renderer/keybindings-resolver";
-import { createMockCommandService } from "@/platform/commands/renderer/mock-command-service";
-import { createMockContextKeyService } from "@/platform/context/renderer/mock-context-key-service";
-import { AbstractKeybindingService } from "@/platform/keybindings/renderer/keybindings-abstract.service";
-import { createContext, kbItem, keyChord, KeyMod, scanCodeChord } from "@/platform/keybindings/renderer/test-utils";
+import { ContextKeyExpr } from "@platform/context/renderer/context-key";
+import { createMockLogger } from "@platform/logger/renderer/mock-logger";
+import { KeyboardMapper } from "@platform/keybindings/renderer/keyboard-mapper";
+import { ScanCode, ScanCodeUtils } from "@platform/keybindings/renderer/scan-code";
+import { KeybindingResolver } from "@platform/keybindings/renderer/keybindings-resolver";
+import { createMockCommandService } from "@platform/commands/renderer/mock-command-service";
+import { createMockContextKeyService } from "@platform/context/renderer/mock-context-key-service";
+import { AbstractKeybindingService } from "@platform/keybindings/renderer/keybindings-abstract.service";
+import { createContext, kbItem, keyChord, KeyMod, scanCodeChord } from "@platform/keybindings/renderer/test-utils";
 
 function createMockKeypressBus(): IKeypressEventBus {
   return {

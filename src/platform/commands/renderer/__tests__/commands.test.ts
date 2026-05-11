@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-
-import { CommandRegistry } from "@/platform/commands/renderer/commands";
-import { createTrackingLogger } from "@/platform/logger/renderer/mock-logger";
-import { CommandService } from "@/platform/commands/renderer/commands-service";
+import { CommandRegistry } from "@platform/commands/renderer/commands";
+import { createTrackingLogger } from "@platform/logger/renderer/mock-logger";
+import { CommandService } from "@platform/commands/renderer/commands-service";
 
 describe("commandRegistry", () => {
   function createRegistry() {

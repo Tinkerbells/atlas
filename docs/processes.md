@@ -48,7 +48,7 @@ main.ts
 
 ## Renderer Process (процесс отрисовки)
 
-**Где:** `src/ui/`
+**Где:** `src/renderer/`
 **Запускается:** при создании BrowserWindow
 **Доступ к Node.js:** нет (sandboxed)
 **Количество:** по одному на каждое окно
@@ -73,9 +73,9 @@ Renderer **не может** напрямую:
 
 | Класс | Файл | Назначение |
 |-------|------|------------|
-| `ElectronIPCMainProcessService` | `src/ui/services/main-process/...` | Клиент к main process IPC |
-| `SharedProcessService` | `src/ui/services/shared-process/...` | Клиент к shared process через MessagePort |
-| Vue composables | `src/ui/composables/` | Мост между Vue и DI-сервисами |
+| `ElectronIPCMainProcessService` | `src/renderer/services/main-process/...` | Клиент к main process IPC |
+| `SharedProcessService` | `src/renderer/services/shared-process/...` | Клиент к shared process через MessagePort |
+| Vue composables | `src/renderer/composables/` | Мост между Vue и DI-сервисами |
 
 ### Как renderer получает сервисы
 

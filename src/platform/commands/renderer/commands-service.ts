@@ -1,6 +1,6 @@
-import { Disposable } from "@/core/base";
-import { ILogger } from "@/platform/logger/common/logger";
-import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+import { Disposable } from "@core/base";
+import { ILogger } from "@platform/logger/common/logger";
+import { createDecorator, InstantiationType, registerSingleton } from "@core/di";
 
 import { ICommandRegistry } from "./commands";
 

@@ -1,10 +1,9 @@
+import type { ContextKeyExpression } from "@platform/context/renderer/context-key";
+
 import { describe, expect, it } from "vitest";
-
-import type { ContextKeyExpression } from "@/platform/context/renderer/context-key";
-
-import { ScanCode } from "@/platform/keybindings/renderer/scan-code";
-import { ContextKeyExpr } from "@/platform/context/renderer/context-key";
-import { KeybindingResolver, ResultKind } from "@/platform/keybindings/renderer/keybindings-resolver";
+import { ScanCode } from "@platform/keybindings/renderer/scan-code";
+import { ContextKeyExpr } from "@platform/context/renderer/context-key";
+import { KeybindingResolver, ResultKind } from "@platform/keybindings/renderer/keybindings-resolver";
 import {
   createContext,
   getDispatchStr,
@@ -12,7 +11,7 @@ import {
   keyChord,
   KeyMod,
   scanCodeChord,
-} from "@/platform/keybindings/renderer/test-utils";
+} from "@platform/keybindings/renderer/test-utils";
 
 describe("keybindingResolver", () => {
   describe("resolve key", () => {

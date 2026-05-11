@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { isEditableElement } from "@/core/base";
-import { ILogger } from "@/platform/logger/common/logger";
-import { IContextKeyService } from "@/platform/context/renderer/context-key";
-import { ICommandService } from "@/platform/commands/renderer/commands-service";
-import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+import { isEditableElement } from "@core/base";
+import { ILogger } from "@platform/logger/common/logger";
+import { IContextKeyService } from "@platform/context/renderer/context-key";
+import { ICommandService } from "@platform/commands/renderer/commands-service";
+import { createDecorator, InstantiationType, registerSingleton } from "@core/di";
 
 import type { Keybinding } from "./keybindings";
 import type { IKeyboardMapper } from "./keyboard-mapper";

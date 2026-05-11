@@ -1,9 +1,9 @@
+import type { INodeProcess, SpawnOptions, SpawnResult } from "@platform/node-process/common/node-process";
+import type { IEnvironmentMainService } from "@platform/environment/electron-main/environment-main-service";
+
 import { Buffer } from "node:buffer";
 import { rgPath } from "@vscode/ripgrep";
 import { spawn } from "node:child_process";
-
-import type { INodeProcess, SpawnOptions, SpawnResult } from "@/platform/node-process/common/node-process";
-import type { IEnvironmentMainService } from "@/platform/environment/electron-main/environment-main-service";
 
 const BINARIES: Record<string, string> = {
   rg: rgPath.replace(/\bnode_modules\.asar\b/, "node_modules.asar.unpacked"),

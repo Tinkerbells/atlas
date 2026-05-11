@@ -1,16 +1,15 @@
 import { app } from "electron";
-
-import { SyncDescriptor } from "@/core/di/descriptors";
-import { ILogger } from "@/platform/logger/common/logger";
-import { FileLogger } from "@/platform/logger/main/file-logger";
-import { ServiceCollection } from "@/core/di/service-collection";
-import { InstantiationService } from "@/core/di/instantiation-service";
-import { INodeProcess } from "@/platform/node-process/common/node-process";
-import { IProductService } from "@/platform/product/common/product-service";
-import { ILifecycleMainService } from "@/platform/lifecycle/common/lifecycle";
-import { NodeProcessService } from "@/platform/node-process/main/node-process-service";
-import { LifecycleMainService } from "@/platform/lifecycle/electron-main/lifecycle-main-service";
-import { IEnvironmentMainService } from "@/platform/environment/electron-main/environment-main-service";
+import { SyncDescriptor } from "@core/di/descriptors";
+import { ILogger } from "@platform/logger/common/logger";
+import { FileLogger } from "@platform/logger/main/file-logger";
+import { ServiceCollection } from "@core/di/service-collection";
+import { InstantiationService } from "@core/di/instantiation-service";
+import { INodeProcess } from "@platform/node-process/common/node-process";
+import { IProductService } from "@platform/product/common/product-service";
+import { ILifecycleMainService } from "@platform/lifecycle/common/lifecycle";
+import { NodeProcessService } from "@platform/node-process/main/node-process-service";
+import { LifecycleMainService } from "@platform/lifecycle/electron-main/lifecycle-main-service";
+import { IEnvironmentMainService } from "@platform/environment/electron-main/environment-main-service";
 
 import type { AppInitConfig } from "./app-init-config";
 

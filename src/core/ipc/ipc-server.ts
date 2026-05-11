@@ -1,6 +1,6 @@
-import type { IDisposable } from "@/core/base/lifecycle";
+import type { IDisposable } from "@core/base/lifecycle";
 
-import { dispose } from "@/core/base/lifecycle";
+import { dispose } from "@core/base/lifecycle";
 
 import type { IChannelServer, IMessagePassingProtocol, IServerChannel } from "./ipc.ts";
 

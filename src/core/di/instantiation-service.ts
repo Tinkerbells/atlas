@@ -3,16 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { IDisposable } from "@/core/di/lifecycle.js";
-import type { SyncDescriptor0 } from "@/core/di/descriptors.js";
-import type { GetLeadingNonServiceArgs, ServiceIdentifier, ServicesAccessor } from "@/core/di/instantiation.js";
+import type { IDisposable } from "@core/di/lifecycle.js";
+import type { SyncDescriptor0 } from "@core/di/descriptors.js";
+import type { GetLeadingNonServiceArgs, ServiceIdentifier, ServicesAccessor } from "@core/di/instantiation.js";
 
-import { Graph } from "@/core/di/graph.js";
-import { LinkedList } from "@/core/di/linked-list.js";
-import { SyncDescriptor } from "@/core/di/descriptors.js";
-import { ServiceCollection } from "@/core/di/service-collection.js";
-import { _util, IInstantiationService } from "@/core/di/instantiation.js";
-import { dispose, isDisposable, toDisposable } from "@/core/di/lifecycle.js";
+import { Graph } from "@core/di/graph.js";
+import { LinkedList } from "@core/di/linked-list.js";
+import { SyncDescriptor } from "@core/di/descriptors.js";
+import { ServiceCollection } from "@core/di/service-collection.js";
+import { _util, IInstantiationService } from "@core/di/instantiation.js";
+import { dispose, isDisposable, toDisposable } from "@core/di/lifecycle.js";
 
 const _enableAllTracing = false;
 

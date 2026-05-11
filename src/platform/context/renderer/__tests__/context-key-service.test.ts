@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-
-import { Context, ContextKeyService } from "@/platform/context/renderer/context-key-service";
+import { Context, ContextKeyService } from "@platform/context/renderer/context-key-service";
 
 describe("context", () => {
   it("sets and gets a value", () => {

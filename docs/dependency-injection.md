@@ -184,7 +184,7 @@ const child = root.createChild(childServices, this._store);
 В renderer DI работает иначе — сервисы приходят через IPC:
 
 ```ts
-// src/ui/main.ts
+// src/renderer/main.ts
 const main-process-service = new ElectronIPCMainProcessService();
 
 const services = new ServiceCollection();

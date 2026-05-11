@@ -1,4 +1,4 @@
-import { createDecorator } from "@/core/di/instantiation";
+import { createDecorator } from "@core/di/instantiation";
 
 export interface IClipboardService {
   readonly _serviceBrand: undefined;

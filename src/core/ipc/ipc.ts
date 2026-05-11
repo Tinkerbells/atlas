@@ -1,4 +1,4 @@
-import type { Event } from "@/core/base/event";
+import type { Event } from "@core/base/event";
 
 export interface IMessagePassingProtocol {
   send: (message: any) => void;

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { IDisposable } from "@/core/base";
-import type { ContextKeyExpression } from "@/platform/context/renderer/context-key";
+import type { IDisposable } from "@core/base";
+import type { ContextKeyExpression } from "@platform/context/renderer/context-key";
 
-import { ILogger } from "@/platform/logger/common/logger";
-import { DisposableStore, OperatingSystem, OS } from "@/core/base";
-import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+import { ILogger } from "@platform/logger/common/logger";
+import { DisposableStore, OperatingSystem, OS } from "@core/base";
+import { createDecorator, InstantiationType, registerSingleton } from "@core/di";
 
 import type { Keybinding } from "./keybindings";
 

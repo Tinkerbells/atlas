@@ -5,8 +5,8 @@
 
 import type { AppUpdater } from "electron-updater";
 
-import { Disposable } from "@/core/base/lifecycle";
-import { createDecorator } from "@/core/di/instantiation";
+import { Disposable } from "@core/base/lifecycle";
+import { createDecorator } from "@core/di/instantiation";
 
 export interface IUpdateService {
   readonly _serviceBrand: undefined;

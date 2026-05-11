@@ -62,7 +62,7 @@ Atlas — это кроссплатформенный файловый мене�
 - `FileLogger` — логирование в файл
 - `NodeProcessService` — запуск дочерних процессов
 
-### 2. Renderer Process (`src/ui/`)
+### 2. Renderer Process (`src/renderer/`)
 
 **Роль:** UI приложения. Работает в sandboxed-окружении (без доступа к Node.js).
 

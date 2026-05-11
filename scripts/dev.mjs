@@ -1,4 +1,5 @@
 import path from "node:path";
+import electronPath from "electron";
 import { fileURLToPath } from "node:url";
 import { build, createServer } from "vite";
 import { execSync, spawn } from "node:child_process";
@@ -13,7 +14,12 @@ process.env.MODE = mode;
 // --- Helper: kill any Electron processes holding port 5173 ---
 function killElectronZombies() {
   try {
-    execSync("pkill -9 -f \"electron\" 2>/dev/null || true");
+    if (process.platform === "win32") {
+      execSync("taskkill /F /IM electron.exe 2>nul || exit 0");
+    }
+    else {
+      execSync("pkill -9 -f \"electron\" 2>/dev/null || true");
+    }
   }
   catch {
     // ignore
@@ -25,7 +31,7 @@ async function waitForPort(maxWaitMs = 5000) {
   const start = Date.now();
   while (Date.now() - start < maxWaitMs) {
     try {
-      execSync("lsof -ti:5173 2>/dev/null || true");
+      execSync("lsof -ti:5173 2>/dev/null");
       // Port is still in use, wait
       await new Promise(r => setTimeout(r, 200));
     }
@@ -81,24 +87,18 @@ const rendererWatchServerProvider = {
   },
 };
 
-// 2. Build preload in watch mode
+// 2. Build preload once to ensure the file exists before Electron starts
 await build({
   mode,
   configFile: path.resolve(rootDir, "vite.preload.config.ts"),
   plugins: [rendererWatchServerProvider],
-  build: {
-    watch: {},
-  },
 });
 
-// 3. Build shared process in watch mode
+// 3. Build shared process once to ensure the file exists before Electron starts
 await build({
   mode,
   configFile: path.resolve(rootDir, "vite.shared.config.ts"),
   plugins: [rendererWatchServerProvider],
-  build: {
-    watch: {},
-  },
 });
 
 // 4. Build main in watch mode with electron restart
@@ -141,8 +141,8 @@ async function startElectron() {
 
   console.log(`[dev] Starting Electron with VITE_DEV_SERVER_URL=${process.env.VITE_DEV_SERVER_URL}`);
 
-  // Use --inspect=0 so Electron picks a random free port (avoids "address already in use")
-  electronApp = spawn("npx", ["electron", "--inspect=0", "."], {
+  // Launch Electron binary directly (avoid npx wrapper which creates a zombie shell process)
+  electronApp = spawn(String(electronPath), ["--inspect=0", "."], {
     stdio: "inherit",
     cwd: rootDir,
     env: {
@@ -172,3 +172,35 @@ await build({
     watch: {},
   },
 });
+
+// 5. Watch preload for subsequent changes (does not block)
+await build({
+  mode,
+  configFile: path.resolve(rootDir, "vite.preload.config.ts"),
+  plugins: [rendererWatchServerProvider],
+  build: {
+    watch: {},
+  },
+});
+
+// 6. Watch shared process for subsequent changes (does not block)
+await build({
+  mode,
+  configFile: path.resolve(rootDir, "vite.shared.config.ts"),
+  plugins: [rendererWatchServerProvider],
+  build: {
+    watch: {},
+  },
+});
+
+// Graceful shutdown on Ctrl+C / SIGTERM
+function cleanupAndExit() {
+  if (electronApp && !electronApp.killed) {
+    electronApp.removeListener("exit", process.exit);
+    electronApp.kill("SIGTERM");
+  }
+  process.exit();
+}
+
+process.on("SIGINT", cleanupAndExit);
+process.on("SIGTERM", cleanupAndExit);

@@ -1,4 +1,4 @@
-import type { Event } from "@/core/base/event";
+import type { Event } from "@core/base/event";
 
 import type { IChannel, IServerChannel } from "./ipc.ts";
 

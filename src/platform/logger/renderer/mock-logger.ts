@@ -1,4 +1,4 @@
-import type { ILogger, LogContext } from "@/platform/logger/common/logger";
+import type { ILogger, LogContext } from "@platform/logger/common/logger";
 
 function noop() {}
 

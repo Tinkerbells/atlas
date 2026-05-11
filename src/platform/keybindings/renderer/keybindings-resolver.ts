@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { ContextKeyExpression, IContext } from "@/platform/context/renderer/context-key";
+import type { ContextKeyExpression, IContext } from "@platform/context/renderer/context-key";
 
 import type { ResolvedKeybindingItem } from "./resolved-keybinding-item";
 

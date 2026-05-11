@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { createDecorator } from "@/core/di/instantiation";
+import { createDecorator } from "@core/di/instantiation";
 
 export interface IProductService {
   readonly _serviceBrand: undefined;

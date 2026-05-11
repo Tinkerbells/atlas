@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { OperatingSystem } from "@/core/base";
+import type { OperatingSystem } from "@core/base";
 
 import type { Chord } from "./keybindings";
 import type { ResolvedChord } from "./resolved-keybinding";

@@ -3,26 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
+import type { ServicesAccessor } from "@core/di/instantiation";
+
 import { app, ipcMain } from "electron";
-
-import type { ServicesAccessor } from "@/core/di/instantiation";
-
-import { SyncDescriptor } from "@/core/di/descriptors";
-import { ProxyChannel } from "@/core/ipc/proxy-channel";
-import { ILogger } from "@/platform/logger/common/logger";
-import { IInstantiationService } from "@/core/di/instantiation";
-import { ServiceCollection } from "@/core/di/service-collection";
-import { Disposable, DisposableStore } from "@/core/base/lifecycle";
-import { IClipboardService } from "@/platform/clipboard/common/clipboard";
-import { ElectronIPCServer } from "@/core/ipc/electron-main/ipc.electron";
-import { INodeProcess } from "@/platform/node-process/common/node-process";
-import { SharedProcess } from "@/platform/shared-process/electron-main/shared-process";
-import { ClipboardService } from "@/platform/clipboard/electron-main/clipboard-service";
-import { IUpdateService, UpdateService } from "@/platform/update/electron-main/update-service";
-import { ILifecycleMainService, LifecycleMainPhase } from "@/platform/lifecycle/common/lifecycle";
-import { IEnvironmentMainService } from "@/platform/environment/electron-main/environment-main-service";
-import { IWindowsMainService, WindowsMainService } from "@/platform/windows/electron-main/windows-main-service";
-import { INativeHostMainService, NativeHostMainService } from "@/platform/native-host/electron-main/native-host-main-service";
+import { SyncDescriptor } from "@core/di/descriptors";
+import { ProxyChannel } from "@core/ipc/proxy-channel";
+import { ILogger } from "@platform/logger/common/logger";
+import { IInstantiationService } from "@core/di/instantiation";
+import { ServiceCollection } from "@core/di/service-collection";
+import { Disposable, DisposableStore } from "@core/base/lifecycle";
+import { IClipboardService } from "@platform/clipboard/common/clipboard";
+import { ElectronIPCServer } from "@core/ipc/electron-main/ipc.electron";
+import { INodeProcess } from "@platform/node-process/common/node-process";
+import { SharedProcess } from "@platform/shared-process/electron-main/shared-process";
+import { ClipboardService } from "@platform/clipboard/electron-main/clipboard-service";
+import { IUpdateService, UpdateService } from "@platform/update/electron-main/update-service";
+import { ILifecycleMainService, LifecycleMainPhase } from "@platform/lifecycle/common/lifecycle";
+import { IEnvironmentMainService } from "@platform/environment/electron-main/environment-main-service";
+import { IWindowsMainService, WindowsMainService } from "@platform/windows/electron-main/windows-main-service";
+import { INativeHostMainService, NativeHostMainService } from "@platform/native-host/electron-main/native-host-main-service";
 
 import type { AppInitConfig } from "./app-init-config";
 

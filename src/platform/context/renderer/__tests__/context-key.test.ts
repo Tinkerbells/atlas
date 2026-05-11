@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
-
-import { createContext } from "@/platform/context/renderer/mock-context-key-service";
+import { createContext } from "@platform/context/renderer/mock-context-key-service";
 import {
   ContextKeyExpr,
   ContextKeyExprType,
   ContextKeyFalseExpr,
   ContextKeyTrueExpr,
   Parser,
-} from "@/platform/context/renderer/context-key";
+} from "@platform/context/renderer/context-key";
 
 function ctx(values: Record<string, unknown>) {
   return createContext(values);

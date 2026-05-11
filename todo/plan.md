@@ -82,7 +82,7 @@
   - `contextBridge.exposeInMainWorld("app", api)`
   - Каналы: `app:message`, `app:hello`, `app:receiveSharedProcessPort`
 
-- `src/ui/services/main-process/electron-browser/mainProcessService.ts`
+- `src/renderer/services/main-process/electron-browser/mainProcessService.ts`
   - `ElectronIPCMainProcessService` — обёртка над `ElectronIPCClient`
 
 ---
@@ -155,7 +155,7 @@ Renderer использует `ProxyChannel.toService()` для получени
 - `src/core/ipc/common/ipc.mp.ts` + `electron-browser/ipc.mp.ts`
   - `MessagePortProtocol` / `MessagePortClient`
 
-- `src/ui/services/shared-process/electron-browser/sharedProcessService.ts`
+- `src/renderer/services/shared-process/electron-browser/sharedProcessService.ts`
   - Renderer запрашивает `MessagePort` через `app:requestSharedProcessPort`
   - Получает прямое соединение с shared process
 

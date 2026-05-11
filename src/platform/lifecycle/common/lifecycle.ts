@@ -4,11 +4,10 @@
  *-------------------------------------------------------------------------------------------- */
 
 import type { BrowserWindow } from "electron";
+import type { Event } from "@core/base/event";
+import type { IDisposable } from "@core/base/lifecycle";
 
-import type { Event } from "@/core/base/event";
-import type { IDisposable } from "@/core/base/lifecycle";
-
-import { createDecorator } from "@/core/di/instantiation";
+import { createDecorator } from "@core/di/instantiation";
 
 export const enum LifecycleMainPhase {
   Starting = 1,

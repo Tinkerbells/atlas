@@ -11,7 +11,7 @@
 | Main | `src/main/main.ts` | `vite.main.config.ts` | `dist/main/main.js` | ESM | Node.js 22 |
 | Preload | `src/preload/preload.ts` | `vite.preload.config.ts` | `dist/preload/preload.js` | CJS | Node.js / Electron preload |
 | Shared | `src/shared-process/shared-process-main.ts` | `vite.shared.config.ts` | `dist/shared-process/shared-process-main.js` | ESM | Node.js 22 |
-| Renderer | `src/ui/main.ts` | `vite.config.ts` | `dist/renderer/` | ESM | Browser (es2023) |
+| Renderer | `src/renderer/main.ts` | `vite.config.ts` | `dist/renderer/` | ESM | Browser (es2023) |
 
 ## Зачем 4 отдельных бандла?
 
@@ -107,7 +107,7 @@ export default defineConfig({
 
 ### Что происходит при изменении файла
 
-**Изменение в renderer (`src/ui/`):**
+**Изменение в renderer (`src/renderer/`):**
 - Vite dev server обновляет страницу через HMR (Hot Module Replacement)
 - Electron window автоматически получает новый код
 

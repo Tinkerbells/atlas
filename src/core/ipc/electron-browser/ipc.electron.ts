@@ -1,8 +1,8 @@
-import type { IChannel, IChannelClient } from "@/core/ipc/ipc";
+import type { IChannel, IChannelClient } from "@core/ipc/ipc";
 
-import { Emitter } from "@/core/base/event";
-import { Disposable } from "@/core/base/lifecycle";
-import { ChannelClient } from "@/core/ipc/ipc-client";
+import { Emitter } from "@core/base/event";
+import { Disposable } from "@core/base/lifecycle";
+import { ChannelClient } from "@core/ipc/ipc-client";
 
 class ElectronClientProtocol extends Disposable {
   private _onMessage = new Emitter<any>();

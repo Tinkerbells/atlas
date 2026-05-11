@@ -1,7 +1,7 @@
-import type { IDisposable } from "@/core/base";
+import type { IDisposable } from "@core/base";
 
-import { ILogger } from "@/platform/logger/common/logger";
-import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+import { ILogger } from "@platform/logger/common/logger";
+import { createDecorator, InstantiationType, registerSingleton } from "@core/di";
 
 export type CommandHandler = (...args: any[]) => void;
 

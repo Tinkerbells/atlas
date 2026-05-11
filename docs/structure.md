@@ -187,16 +187,24 @@ export const IWindowsMainService = createDecorator<IWindowsMainService>("windows
 ```json
 {
   "paths": {
-    "~/*": ["src/ui/*"],
-    "@/*": ["src/*"]
+    "@renderer/*": ["src/renderer/*"],
+    "@main/*": ["src/main/*"],
+    "@preload/*": ["src/preload/*"],
+    "@shared-process/*": ["src/shared-process/*"],
+    "@core/*": ["src/core/*"],
+    "@platform/*": ["src/platform/*"]
   }
 }
 ```
 
 | Алиас | Куда ведёт | Пример использования |
 |-------|-----------|---------------------|
-| `@/` | `src/` | `import { ILogger } from "@/platform/logger/common/logger"` |
-| `~/` | `src/ui/` | `import { useLogger } from "~/composables/use-logger"` |
+| `@renderer/` | `src/renderer/` | `import { useLogger } from "@renderer/composables/use-logger"` |
+| `@main/` | `src/main/` | `import { initApp } from "@main/main"` |
+| `@preload/` | `src/preload/` | `import type { AppAPI } from "@preload/preload"` |
+| `@shared-process/` | `src/shared-process/` | `import { ChannelServer } from "@shared-process/shared-process-main"` |
+| `@core/` | `src/core/` | `import { Event, Emitter } from "@core/base/event"` |
+| `@platform/` | `src/platform/` | `import { ILogger } from "@platform/logger/common/logger"` |
 
 ## Импорты
 
@@ -210,26 +218,26 @@ import { join } from "node:path";
 import { app } from "electron";
 
 // 3. Internal core
-import { Event, Emitter } from "@/core/base/event";
-import { createDecorator } from "@/core/di/instantiation";
+import { Event, Emitter } from "@core/base/event";
+import { createDecorator } from "@core/di/instantiation";
 
 // 4. Internal platform
-import { ILogger } from "@/platform/logger/common/logger";
+import { ILogger } from "@platform/logger/common/logger";
 
 // 5. Internal UI (только в renderer)
-import { useLogger } from "~/composables/use-logger";
+import { useLogger } from "@renderer/composables/use-logger";
 ```
 
 ### Разделение типов и runtime
 
 ```ts
 // Типы — import type
-import type { IDisposable } from "@/core/base/lifecycle";
-import type { IChannel } from "@/core/ipc/ipc";
+import type { IDisposable } from "@core/base/lifecycle";
+import type { IChannel } from "@core/ipc/ipc";
 
 // Runtime — обычный import
-import { Disposable } from "@/core/base/lifecycle";
-import { ChannelClient } from "@/core/ipc/ipc-client";
+import { Disposable } from "@core/base/lifecycle";
+import { ChannelClient } from "@core/ipc/ipc-client";
 ```
 
 ## Где писать новый код
@@ -249,18 +257,18 @@ src/platform/<domain>/
 ### Новый IPC канал
 
 1. Регистрация в `src/main/app.ts` (`initChannels`)
-2. Потребление в `src/ui/main.ts` (`ProxyChannel.toService`)
+2. Потребление в `src/renderer/main.ts` (`ProxyChannel.toService`)
 
 ### Новый Vue composable
 
 ```
-src/ui/composables/use-<name>.ts
+src/renderer/composables/use-<name>.ts
 ```
 
 ### Новый компонент Vue
 
 ```
-src/ui/components/<PascalCase>.vue
+src/renderer/components/<PascalCase>.vue
 ```
 
 ### Новый модуль core

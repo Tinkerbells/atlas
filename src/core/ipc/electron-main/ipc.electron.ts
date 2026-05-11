@@ -1,13 +1,11 @@
+import type { IDisposable } from "@core/base/lifecycle";
 import type { MessagePortMain, WebContents } from "electron";
+import type { IChannelServer, IServerChannel } from "@core/ipc/ipc";
 
 import { ipcMain } from "electron";
-
-import type { IDisposable } from "@/core/base/lifecycle";
-import type { IChannelServer, IServerChannel } from "@/core/ipc/ipc";
-
-import { Emitter } from "@/core/base/event";
-import { ChannelServer } from "@/core/ipc/ipc-server";
-import { Disposable, toDisposable } from "@/core/base/lifecycle";
+import { Emitter } from "@core/base/event";
+import { ChannelServer } from "@core/ipc/ipc-server";
+import { Disposable, toDisposable } from "@core/base/lifecycle";
 
 class ElectronServerProtocol implements IDisposable {
   private _onMessage = new Emitter<any>();

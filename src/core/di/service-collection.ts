@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { SyncDescriptor } from "@/core/di/descriptors.js";
-import type { ServiceIdentifier } from "@/core/di/instantiation.js";
+import type { SyncDescriptor } from "@core/di/descriptors.js";
+import type { ServiceIdentifier } from "@core/di/instantiation.js";
 
 export class ServiceCollection {
   private _entries = new Map<ServiceIdentifier<any>, any>();

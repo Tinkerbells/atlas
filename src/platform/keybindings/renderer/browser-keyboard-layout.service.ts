@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import { OperatingSystem } from "@/core/base";
-import { createDecorator, InstantiationType, registerSingleton } from "@/core/di";
+import { OperatingSystem } from "@core/base";
+import { createDecorator, InstantiationType, registerSingleton } from "@core/di";
 
 import type { IKeyboardMapper } from "./keyboard-mapper";
 

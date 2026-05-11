@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { IDisposable } from "@/core/base";
+import type { IDisposable } from "@core/base";
 
-import { createDecorator } from "@/core/di";
-import { CharCode, illegalArgument, isFalsyOrWhitespace } from "@/core/base";
+import { createDecorator } from "@core/di";
+import { CharCode, illegalArgument, isFalsyOrWhitespace } from "@core/base";
 
 import type { LexingError, Token } from "./scanner";
 

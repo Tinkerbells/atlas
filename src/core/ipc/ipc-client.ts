@@ -1,8 +1,8 @@
-import type { Event } from "@/core/base/event";
-import type { IDisposable } from "@/core/base/lifecycle";
+import type { Event } from "@core/base/event";
+import type { IDisposable } from "@core/base/lifecycle";
 
-import { Emitter } from "@/core/base/event";
-import { dispose, toDisposable } from "@/core/base/lifecycle";
+import { Emitter } from "@core/base/event";
+import { dispose, toDisposable } from "@core/base/lifecycle";
 
 import type { IChannel, IChannelClient, IMessagePassingProtocol } from "./ipc.ts";
 

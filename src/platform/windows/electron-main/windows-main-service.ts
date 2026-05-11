@@ -4,11 +4,10 @@
  *-------------------------------------------------------------------------------------------- */
 
 import type { BrowserWindow } from "electron";
+import type { AppInitConfig } from "@main/app-init-config";
 
-import type { AppInitConfig } from "@/main/app-init-config";
-
-import { Disposable } from "@/core/base/lifecycle";
-import { createDecorator } from "@/core/di/instantiation";
+import { Disposable } from "@core/base/lifecycle";
+import { createDecorator } from "@core/di/instantiation";
 
 export interface IWindowsMainService {
   readonly _serviceBrand: undefined;

@@ -1,7 +1,7 @@
+import type { ILogger, LogContext } from "@platform/logger/common/logger";
+
 import { dirname } from "node:path";
 import { appendFileSync, existsSync, mkdirSync } from "node:fs";
-
-import type { ILogger, LogContext } from "@/platform/logger/common/logger";
 
 export class FileLogger implements ILogger {
   declare readonly _serviceBrand: undefined;

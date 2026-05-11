@@ -5,7 +5,7 @@
 
 import type { App } from "electron";
 
-import { createDecorator } from "@/core/di/instantiation";
+import { createDecorator } from "@core/di/instantiation";
 
 export interface IEnvironmentMainService {
   readonly _serviceBrand: undefined;

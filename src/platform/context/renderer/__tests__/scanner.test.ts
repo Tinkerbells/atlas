@@ -1,8 +1,7 @@
+import type { Token } from "@platform/context/renderer/scanner";
+
 import { describe, expect, it } from "vitest";
-
-import type { Token } from "@/platform/context/renderer/scanner";
-
-import { Scanner, TokenType } from "@/platform/context/renderer/scanner";
+import { Scanner, TokenType } from "@platform/context/renderer/scanner";
 
 function tokenType(token: Token): TokenType {
   return token.type;

@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type { IMessagePassingProtocol } from "@/core/ipc/ipc";
+import type { IMessagePassingProtocol } from "@core/ipc/ipc";
 
-import { Emitter } from "@/core/base/event";
-import { ChannelServer } from "@/core/ipc/ipc-server";
+import { Emitter } from "@core/base/event";
+import { ChannelServer } from "@core/ipc/ipc-server";
 
 // In Electron utility process, parentPort is available as a global
 const parentPort = (globalThis as any).parentPort || (process as any).parentPort;

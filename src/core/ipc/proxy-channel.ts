@@ -1,5 +1,5 @@
-import type { Event } from "@/core/base/event";
-import type { IChannel, IServerChannel } from "@/core/ipc/ipc";
+import type { Event } from "@core/base/event";
+import type { IChannel, IServerChannel } from "@core/ipc/ipc";
 
 export class ProxyChannel {
   static fromService(service: any): IServerChannel {

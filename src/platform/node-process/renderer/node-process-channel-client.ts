@@ -1,7 +1,7 @@
-import type { IChannel } from "@/core/ipc/ipc";
-import type { INodeProcess, SpawnOptions, SpawnResult } from "@/platform/node-process/common/node-process";
+import type { IChannel } from "@core/ipc/ipc";
+import type { INodeProcess, SpawnOptions, SpawnResult } from "@platform/node-process/common/node-process";
 
-import { createChannelProxy } from "@/core/ipc/channel";
+import { createChannelProxy } from "@core/ipc/channel";
 
 export class NodeProcessChannelClient implements INodeProcess {
   declare readonly _serviceBrand: undefined;

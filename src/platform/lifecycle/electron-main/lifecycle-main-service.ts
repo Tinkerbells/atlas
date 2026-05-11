@@ -3,13 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
+import type { Event } from "@core/base/event";
+import type { IDisposable } from "@core/base/lifecycle";
+
+import { Emitter } from "@core/base/event";
 import { app, BrowserWindow } from "electron";
-
-import type { Event } from "@/core/base/event";
-import type { IDisposable } from "@/core/base/lifecycle";
-
-import { Emitter } from "@/core/base/event";
-import { Disposable, DisposableStore, toDisposable } from "@/core/base/lifecycle";
+import { Disposable, DisposableStore, toDisposable } from "@core/base/lifecycle";
 
 import type { ILifecycleMainService, IWindowUnloadEvent, LifecycleMainPhase } from "../common/lifecycle";
 

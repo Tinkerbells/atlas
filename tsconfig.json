@@ -18,8 +18,12 @@
     "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/ui/*"],
-      "@/*": ["src/*"]
+      "@renderer/*": ["src/renderer/*"],
+      "@main/*": ["src/main/*"],
+      "@preload/*": ["src/preload/*"],
+      "@shared-process/*": ["src/shared-process/*"],
+      "@core/*": ["src/core/*"],
+      "@platform/*": ["src/platform/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,

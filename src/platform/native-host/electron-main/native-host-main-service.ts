@@ -4,9 +4,8 @@
  *-------------------------------------------------------------------------------------------- */
 
 import { dialog, shell } from "electron";
-
-import { Disposable } from "@/core/base/lifecycle";
-import { createDecorator } from "@/core/di/instantiation";
+import { Disposable } from "@core/base/lifecycle";
+import { createDecorator } from "@core/di/instantiation";
 
 export interface INativeHostMainService {
   readonly _serviceBrand: undefined;

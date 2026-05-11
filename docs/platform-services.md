@@ -42,8 +42,8 @@ src/platform/
 
 ```ts
 // src/platform/search/common/search.ts
-import { createDecorator } from "@/core/di/instantiation";
-import { Event } from "@/core/base/event";
+import { createDecorator } from "@core/di/instantiation";
+import { Event } from "@core/base/event";
 
 export interface ISearchService {
   readonly _serviceBrand: undefined;
@@ -68,8 +68,8 @@ export interface SearchResult {
 
 ```ts
 // src/platform/search/electron-main/searchService.ts
-import { Emitter } from "@/core/base/event";
-import { Disposable } from "@/core/base/lifecycle";
+import { Emitter } from "@core/base/event";
+import { Disposable } from "@core/base/lifecycle";
 import { ISearchService } from "../common/search";
 
 export class SearchService extends Disposable implements ISearchService {
@@ -91,8 +91,8 @@ export class SearchService extends Disposable implements ISearchService {
 
 ```ts
 // src/main/app.ts
-import { ISearchService } from "@/platform/search/common/search";
-import { SearchService } from "@/platform/search/electron-main/searchService";
+import { ISearchService } from "@platform/search/common/search";
+import { SearchService } from "@platform/search/electron-main/searchService";
 
 private async initServices(): Promise<IInstantiationService> {
   const services = new ServiceCollection();
@@ -110,8 +110,8 @@ private initChannels(...) {
 ### Шаг 4. Использование в renderer
 
 ```ts
-// src/ui/main.ts
-import { ISearchService } from "@/platform/search/common/search";
+// src/renderer/main.ts
+import { ISearchService } from "@platform/search/common/search";
 
 services.set(ISearchService, ProxyChannel.toService<ISearchService>(
   main-process-service.getChannel("search")
@@ -235,8 +235,8 @@ export class ClipboardService implements IClipboardService {
 
 ```ts
 // src/main/app.ts
-import { IClipboardService } from "@/platform/clipboard/common/clipboard";
-import { ClipboardService } from "@/platform/clipboard/electron-main/clipboard-service";
+import { IClipboardService } from "@platform/clipboard/common/clipboard";
+import { ClipboardService } from "@platform/clipboard/electron-main/clipboard-service";
 
 private async initServices(): Promise<IInstantiationService> {
   const services = new ServiceCollection();
@@ -253,8 +253,8 @@ private initChannels(...) {
 ### Шаг 4. Использование в renderer
 
 ```ts
-// src/ui/main.ts
-import { IClipboardService } from "@/platform/clipboard/common/clipboard";
+// src/renderer/main.ts
+import { IClipboardService } from "@platform/clipboard/common/clipboard";
 
 services.set(IClipboardService, ProxyChannel.toService<IClipboardService>(
   main-process-service.getChannel("clipboard")
@@ -264,8 +264,8 @@ services.set(IClipboardService, ProxyChannel.toService<IClipboardService>(
 ### Шаг 5. Использование в Vue компоненте
 
 ```ts
-// src/ui/components/SomeComponent.vue
-import { useClipboard } from "@/ui/composables/use-clipboard";
+// src/renderer/components/SomeComponent.vue
+import { useClipboard } from "@renderer/composables/use-clipboard";
 
 const clipboard = useClipboard();
 
@@ -280,5 +280,5 @@ async function copy() {
 |------------|------------|
 | `src/platform/*` | Платформенные сервисы (домен-ориентированные) |
 | `src/main/app.ts` | Регистрация main-сервисов |
-| `src/ui/main.ts` | Регистрация renderer-сервисов |
+| `src/renderer/main.ts` | Регистрация renderer-сервисов |
 | `src/core/di/` | DI инфраструктура |

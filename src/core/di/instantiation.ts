@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *-------------------------------------------------------------------------------------------- */
 
-import type * as descriptors from "@/core/di/descriptors.js";
-import type { DisposableStore } from "@/core/di/lifecycle.js";
-import type { ServiceCollection } from "@/core/di/service-collection.js";
+import type * as descriptors from "@core/di/descriptors.js";
+import type { DisposableStore } from "@core/di/lifecycle.js";
+import type { ServiceCollection } from "@core/di/service-collection.js";
 
 // ------ internal util
 
