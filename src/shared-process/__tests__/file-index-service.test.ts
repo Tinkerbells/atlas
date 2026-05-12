@@ -1,11 +1,9 @@
-import type { CancellationToken } from "@platform/common/cancellation";
 import type { IFileSystemCrawler, ScannedEntry, ScanOptions } from "@platform/common/file-system-crawler";
 
 import { URI } from "@platform/common/uri/uri";
 import { DatabaseService } from "@shared-process/database-service";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { FileIndexService } from "@shared-process/file-index-service";
-import { CancellationTokenSource } from "@platform/common/cancellation";
 import { initialSchemaMigration } from "@shared-process/migrations/001-initial-schema";
 
 class MockCrawler implements IFileSystemCrawler {
@@ -16,11 +14,8 @@ class MockCrawler implements IFileSystemCrawler {
     this.entries = entries;
   }
 
-  async* scan(_drive: URI, _options: ScanOptions, token?: CancellationToken): AsyncIterable<ScannedEntry> {
+  async* scan(_drive: URI, _options: ScanOptions): AsyncIterable<ScannedEntry> {
     for (const entry of this.entries) {
-      if (token?.isCancellationRequested) {
-        break;
-      }
       yield entry;
     }
   }
@@ -71,8 +66,7 @@ describe("fileIndexService", () => {
         makeEntry("/home/user/documents/file2.md"),
       ]);
 
-      const tokenSource = new CancellationTokenSource();
-      const results = await service.scanDrives([URI.file("/")], tokenSource.token);
+      const results = await service.scanDrives([URI.file("/")]);
 
       expect(results).toHaveLength(1);
       expect(results[0]!.inserted).toBe(2);
@@ -87,12 +81,11 @@ describe("fileIndexService", () => {
       const entry = makeEntry("/home/user/file.txt", { size: 100, modifiedTime: 1000 });
       crawler.setEntries([entry]);
 
-      const tokenSource = new CancellationTokenSource();
-      await service.scanDrives([URI.file("/")], tokenSource.token);
+      await service.scanDrives([URI.file("/")]);
 
       // Modify file
       crawler.setEntries([makeEntry("/home/user/file.txt", { size: 200, modifiedTime: 2000 })]);
-      const results = await service.scanDrives([URI.file("/")], tokenSource.token);
+      const results = await service.scanDrives([URI.file("/")]);
 
       expect(results[0]!.updated).toBe(1);
       expect(results[0]!.inserted).toBe(0);
@@ -104,11 +97,10 @@ describe("fileIndexService", () => {
         makeEntry("/home/user/file2.txt"),
       ]);
 
-      const tokenSource = new CancellationTokenSource();
-      await service.scanDrives([URI.file("/")], tokenSource.token);
+      await service.scanDrives([URI.file("/")]);
 
       crawler.setEntries([makeEntry("/home/user/file1.txt")]);
-      const results = await service.scanDrives([URI.file("/")], tokenSource.token);
+      const results = await service.scanDrives([URI.file("/")]);
 
       expect(results[0]!.deleted).toBe(1);
 
@@ -116,17 +108,16 @@ describe("fileIndexService", () => {
       expect(countStmt.get()!.count).toBe(1);
     });
 
-    it("respects cancellation token", async () => {
+    it("respects cancellation", async () => {
       const entries: ScannedEntry[] = [];
       for (let i = 0; i < 100; i++) {
         entries.push(makeEntry(`/home/user/file${i}.txt`));
       }
       crawler.setEntries(entries);
 
-      const tokenSource = new CancellationTokenSource();
       // Start scan then cancel immediately (simulating race)
-      const promise = service.scanDrives([URI.file("/")], tokenSource.token);
-      tokenSource.cancel();
+      const promise = service.scanDrives([URI.file("/")]);
+      service.cancelCurrentScan();
 
       const results = await promise;
       // Should have some results but not all 100
@@ -142,8 +133,7 @@ describe("fileIndexService", () => {
         makeEntry("/other/file3.txt", { drive: "D:" }),
       ]);
 
-      const tokenSource = new CancellationTokenSource();
-      await service.scanDrives([URI.file("/")], tokenSource.token);
+      await service.scanDrives([URI.file("/")]);
 
       const stats = await service.getStats();
       expect(stats.totalFiles).toBe(3);
@@ -155,8 +145,7 @@ describe("fileIndexService", () => {
     it("removes all files", async () => {
       crawler.setEntries([makeEntry("/home/user/file.txt")]);
 
-      const tokenSource = new CancellationTokenSource();
-      await service.scanDrives([URI.file("/")], tokenSource.token);
+      await service.scanDrives([URI.file("/")]);
 
       await service.clearIndex();
 

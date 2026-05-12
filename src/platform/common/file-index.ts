@@ -1,6 +1,5 @@
 import type { Event } from "@core/base/event";
 import type { URI } from "@platform/common/uri/uri";
-import type { CancellationToken } from "@platform/common/cancellation";
 
 import { createDecorator } from "@core/di/instantiation";
 
@@ -21,7 +20,8 @@ export interface ScanResult {
 export interface IFileIndexService {
   readonly _serviceBrand: undefined;
   readonly onDidProgress: Event<ScanProgress>;
-  scanDrives: (uris: URI[], token?: CancellationToken) => Promise<ScanResult[]>;
+  scanDrives: (uris: URI[]) => Promise<ScanResult[]>;
+  cancelCurrentScan: () => void;
   getStats: () => Promise<{ totalFiles: number; totalDrives: number }>;
   clearIndex: () => Promise<void>;
 }

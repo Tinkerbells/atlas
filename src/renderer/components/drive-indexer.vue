@@ -4,7 +4,6 @@ import { URI } from "@platform/common/uri/uri";
 import { isWindows } from "@core/base/platform";
 import { useService } from "@renderer/composables/use-service";
 import { IFileIndexService } from "@platform/common/file-index";
-import { CancellationTokenSource } from "@platform/common/cancellation";
 
 const open = ref(false);
 const fileIndexService = useService(IFileIndexService);
@@ -47,7 +46,6 @@ const statusText = computed(() => {
   return `Scanned ${scanned.value.toLocaleString()} / ~${estimatedTotal.value.toLocaleString()} (${progressPercent.value}%)`;
 });
 
-let cancelSource: CancellationTokenSource | null = null;
 let progressDisposable: { dispose: () => void } | null = null;
 
 function startIndexing() {
@@ -66,7 +64,6 @@ function startIndexing() {
   lastUpdateTime.value = Date.now();
   currentDrive.value = drives[0]!.fsPath;
 
-  cancelSource = new CancellationTokenSource();
   console.log("[DriveIndexer] calling scanDrives with", drives.length, "drive(s)");
 
   // Subscribe to progress events
@@ -108,12 +105,11 @@ function startIndexing() {
       isScanning.value = false;
       progressDisposable?.dispose();
       progressDisposable = null;
-      cancelSource = null;
     });
 }
 
 function stopIndexing() {
-  cancelSource?.cancel();
+  fileIndexService.cancelCurrentScan();
 }
 
 function detectDrives(): URI[] {

@@ -5,6 +5,7 @@ import type { IFileIndexService, ScanProgress, ScanResult } from "@platform/comm
 import { Emitter } from "@core/base/event";
 import { URI } from "@platform/common/uri/uri";
 import { IDatabaseService } from "@platform/common/database";
+import { CancellationTokenSource } from "@platform/common/cancellation";
 import { IFileSystemCrawler } from "@platform/common/file-system-crawler";
 
 export class FileIndexService implements IFileIndexService {
@@ -12,23 +13,34 @@ export class FileIndexService implements IFileIndexService {
 
   private readonly _onDidProgress = new Emitter<ScanProgress>();
   readonly onDidProgress = this._onDidProgress.event;
+  private _cancelSource: CancellationTokenSource | null = null;
 
   constructor(
     @IDatabaseService private databaseService: IDatabaseService,
     @IFileSystemCrawler private crawler: IFileSystemCrawler,
   ) {}
 
-  async scanDrives(uris: URI[], token?: CancellationToken): Promise<ScanResult[]> {
+  cancelCurrentScan(): void {
+    if (this._cancelSource) {
+      console.log("[FileIndexService] Cancelling current scan");
+      this._cancelSource.cancel();
+    }
+  }
+
+  async scanDrives(uris: URI[]): Promise<ScanResult[]> {
     console.log(`[FileIndexService] Starting scan of ${uris.length} drive(s)`);
+    this._cancelSource = new CancellationTokenSource();
+    const token = this._cancelSource.token;
     const results: ScanResult[] = [];
     for (const uri of uris) {
-      if (token?.isCancellationRequested) {
+      if (token.isCancellationRequested) {
         console.log("[FileIndexService] Scan cancelled before next drive");
         break;
       }
       const result = await this._scanDrive(URI.revive(uri), token);
       results.push(result);
     }
+    this._cancelSource = null;
     const totalInserted = results.reduce((s, r) => s + r.inserted, 0);
     const totalUpdated = results.reduce((s, r) => s + r.updated, 0);
     const totalDeleted = results.reduce((s, r) => s + r.deleted, 0);
@@ -36,7 +48,7 @@ export class FileIndexService implements IFileIndexService {
     return results;
   }
 
-  private async _scanDrive(driveUri: URI, token?: CancellationToken): Promise<ScanResult> {
+  private async _scanDrive(driveUri: URI, token: CancellationToken): Promise<ScanResult> {
     const startTime = Date.now();
     const driveKey = this._getDriveKey(driveUri);
 
