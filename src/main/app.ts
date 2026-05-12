@@ -67,7 +67,7 @@ export class Application extends Disposable {
   }
 
   private setupSharedProcess(): SharedProcess {
-    const sharedProcess = this._register(new SharedProcess(this.initConfig.sharedProcess.path));
+    const sharedProcess = this._register(new SharedProcess(this.initConfig.sharedProcess.path, this.environmentMainService.userDataPath));
     sharedProcess.spawn();
 
     // Connect main to shared process
@@ -87,12 +87,16 @@ export class Application extends Disposable {
 
   private _registerSharedProcessPortHandler(sharedProcess: SharedProcess): void {
     const handler = async (event: Electron.IpcMainEvent, nonce: string) => {
+      console.log("[main] Received app:requestSharedProcessPort, nonce:", nonce);
       const webContents = event.sender;
       try {
-        const port = await sharedProcess.createConnection();
-        webContents.send("app:receiveSharedProcessPort", nonce, [port]);
+        const port = await sharedProcess.createConnection(webContents);
+        console.log("[main] Created shared process connection, posting port to renderer");
+        // VS Code: webContents.postMessage(responseChannel, responseNonce, [windowPort])
+        webContents.postMessage("app:receiveSharedProcessPort", nonce, [port]);
       }
       catch (err) {
+        console.error("[main] Failed to create shared process port:", err);
         this.logService.error(`Failed to create shared process port: ${err}`);
       }
     };

@@ -23,12 +23,13 @@
       "@preload/*": ["src/preload/*"],
       "@shared-process/*": ["src/shared-process/*"],
       "@core/*": ["src/core/*"],
-      "@platform/*": ["src/platform/*"]
+      "@platform/*": ["src/platform/*"],
+      "#build/ui/*": ["./node_modules/.nuxt-ui/ui/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

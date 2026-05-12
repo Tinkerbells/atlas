@@ -40,7 +40,7 @@ export class ProxyChannel {
         }
 
         if (propKey.startsWith("on") && propKey.length > 2 && propKey[2] === propKey[2].toUpperCase()) {
-          return (arg?: any) => channel.listen(propKey, arg);
+          return channel.listen(propKey);
         }
 
         return async (...args: any[]) => {

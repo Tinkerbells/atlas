@@ -20,9 +20,11 @@ export class SharedProcessService extends Disposable implements IChannelClient {
   private async _acquirePort(): Promise<void> {
     return new Promise((resolve, reject) => {
       const nonce = Math.random().toString(36).substring(2);
+      console.log("[SharedProcessService] Requesting MessagePort with nonce:", nonce);
 
+      // VS Code pattern: listen on window for MessagePort forwarded by preload
       const handler = (event: MessageEvent) => {
-        if (event.data?.type === "app:sharedProcessPort" && event.data?.nonce === nonce) {
+        if (event.data === nonce && event.ports && event.ports.length > 0) {
           window.removeEventListener("message", handler);
           const port = event.ports[0];
           if (!port) {
@@ -35,7 +37,10 @@ export class SharedProcessService extends Disposable implements IChannelClient {
       };
 
       window.addEventListener("message", handler);
+
+      // Request port from main process
       (window as any).app.ipcSend("app:requestSharedProcessPort", nonce);
+      console.log("[SharedProcessService] Sent app:requestSharedProcessPort");
 
       setTimeout(() => {
         window.removeEventListener("message", handler);

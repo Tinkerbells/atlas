@@ -34,7 +34,7 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
     this._window = new BrowserWindow({
       width: 1200,
       height: 800,
-      show: false,
+      show: true,
       webPreferences: {
         preload: this.initConfig.preload.path,
         contextIsolation: true,
@@ -42,6 +42,8 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
         nodeIntegration: false,
       },
     });
+
+    console.log(`[windows] BrowserWindow created, id=${this._window.id}, visible=${this._window.isVisible()}`);
 
     // Retry loading the renderer with backoff (dev server may not be ready yet)
     const window = this._window;

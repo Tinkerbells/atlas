@@ -1,13 +1,15 @@
 import type { ServicesAccessor } from "@core/di";
 
 import "@fontsource-variable/google-sans";
-import "@unocss/reset/tailwind.css";
-import "uno.css";
+
+import "./style.css";
 import { createApp } from "vue";
+import ui from "@nuxt/ui/vue-plugin";
 import { createI18n } from "vue-i18n";
 import { ProxyChannel } from "@core/ipc/proxy-channel";
 import { ILogger } from "@platform/logger/common/logger";
-import { createRouter, createWebHistory } from "vue-router";
+import { IFileIndexService } from "@platform/common/file-index";
+import { IFileSearchService } from "@platform/common/file-search";
 import { IClipboardService } from "@platform/clipboard/common/clipboard";
 import { ServiceAccessorSymbol } from "@renderer/composables/use-service";
 import { INodeProcess } from "@platform/node-process/common/node-process";
@@ -17,78 +19,89 @@ import {
   ServiceCollection,
 
 } from "@core/di";
+import { SharedProcessService } from "@renderer/services/shared-process/electron-browser/shared-process-service";
 import { ElectronIPCMainProcessService } from "@renderer/services/main-process/electron-browser/main-process-service";
 // Side-effect registration of renderer-only services
 import "@platform/commands/renderer";
 import "@platform/context/renderer";
 import "@platform/keybindings/renderer";
 
-import "./style.css";
 import "./shared/ui/styles/_tokens.scss";
 import App from "./app.vue";
 import { InstantiationServiceKey } from "./injection-keys";
 
-const i18n = createI18n({
-  locale: "en",
-  fallbackLocale: "en",
-  messages: {
-    en: {
-      commandPalette: {
-        placeholder: "Type a command or search...",
-        back: "Back",
-        close: "Close",
-        emptySearch: "No results for \"{searchTerm}\"",
-        empty: "No results found.",
-      },
-      sidebar: {
-        close: "Close sidebar",
-        toggle: "Toggle sidebar",
-      },
-      dashboardSidebar: {
-        title: "Sidebar",
-        description: "",
-      },
-      dashboardSidebarToggle: {
-        open: "Open sidebar",
-        close: "Close sidebar",
-      },
-      dashboardSidebarCollapse: {
-        expand: "Expand sidebar",
-        collapse: "Collapse sidebar",
+async function bootstrap() {
+  const i18n = createI18n({
+    legacy: false,
+    locale: "en",
+    fallbackLocale: "en",
+    messages: {
+      en: {
+        commandPalette: {
+          placeholder: "Type a command or search...",
+          back: "Back",
+          close: "Close",
+          emptySearch: "No results for \"{searchTerm}\"",
+          empty: "No results found.",
+        },
+        sidebar: {
+          close: "Close sidebar",
+          toggle: "Toggle sidebar",
+        },
+        dashboardSidebar: {
+          title: "Sidebar",
+          description: "",
+        },
+        dashboardSidebarToggle: {
+          open: "Open sidebar",
+          close: "Close sidebar",
+        },
+        dashboardSidebarCollapse: {
+          expand: "Expand sidebar",
+          collapse: "Collapse sidebar",
+        },
       },
     },
-  },
-});
+  });
 
-const mainProcessService = new ElectronIPCMainProcessService();
+  const mainProcessService = new ElectronIPCMainProcessService();
 
-const services = new ServiceCollection();
+  const services = new ServiceCollection();
 
-// IPC proxies for main-side services
-services.set(ILogger, ProxyChannel.toService<ILogger>(mainProcessService.getChannel("logger")));
-services.set(INodeProcess, ProxyChannel.toService<INodeProcess>(mainProcessService.getChannel("nodeProcess")));
-services.set(IClipboardService, ProxyChannel.toService<IClipboardService>(mainProcessService.getChannel("clipboard")));
+  // IPC proxies for main-side services
+  services.set(ILogger, ProxyChannel.toService<ILogger>(mainProcessService.getChannel("logger")));
+  services.set(INodeProcess, ProxyChannel.toService<INodeProcess>(mainProcessService.getChannel("nodeProcess")));
+  services.set(IClipboardService, ProxyChannel.toService<IClipboardService>(mainProcessService.getChannel("clipboard")));
 
-// Renderer-only singletons
-const descriptors = getSingletonServiceDescriptors();
-for (const [id, descriptor] of descriptors) {
-  services.set(id, descriptor);
+  // Shared process services via relay through main process
+  console.log("[renderer] Creating SharedProcessService...");
+  const sharedProcessService = new SharedProcessService();
+  console.log("[renderer] SharedProcessService created");
+  const fileIndexChannel = await sharedProcessService.getChannel("fileIndex");
+  console.log("[renderer] Got fileIndex channel");
+  const fileSearchChannel = await sharedProcessService.getChannel("fileSearch");
+  console.log("[renderer] Got fileSearch channel");
+  services.set(IFileIndexService, ProxyChannel.toService<IFileIndexService>(fileIndexChannel));
+  services.set(IFileSearchService, ProxyChannel.toService<IFileSearchService>(fileSearchChannel));
+
+  // Renderer-only singletons
+  const descriptors = getSingletonServiceDescriptors();
+  for (const [id, descriptor] of descriptors) {
+    services.set(id, descriptor);
+  }
+
+  const instantiationService = new InstantiationService(services);
+
+  const accessor: ServicesAccessor = {
+    get: id => instantiationService.invokeFunction(a => a.get(id)),
+  };
+
+  const app = createApp(App);
+  app.provide(ServiceAccessorSymbol, accessor);
+  app.provide(InstantiationServiceKey, instantiationService);
+  app.use(i18n);
+  app.use(ui);
+  app.mount("#app");
 }
 
-const instantiationService = new InstantiationService(services);
-
-const accessor: ServicesAccessor = {
-  get: id => instantiationService.invokeFunction(a => a.get(id)),
-};
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes: [],
-});
-
-const app = createApp(App);
-app.provide(ServiceAccessorSymbol, accessor);
-app.provide(InstantiationServiceKey, instantiationService);
-app.use(router);
-app.use(i18n);
-app.mount("#app");
+bootstrap().catch(console.error);

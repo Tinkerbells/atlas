@@ -49,8 +49,10 @@ export class ChannelServer implements IChannelServer, IDisposable {
   }
 
   private onCall(request: IRawRequest): void {
+    console.log(`[IPC-Server] call ${request.channelName}.${request.name} id=${request.id}`);
     const channel = this.channels.get(request.channelName);
     if (!channel) {
+      console.error(`[IPC-Server] unknown channel ${request.channelName}`);
       this.send({
         id: request.id,
         type: "error",
@@ -64,25 +66,33 @@ export class ChannelServer implements IChannelServer, IDisposable {
       promise = channel.call(request.name, request.arg);
     }
     catch (err) {
+      console.error(`[IPC-Server] sync error in ${request.channelName}.${request.name}:`, err);
       promise = Promise.reject(err);
     }
 
     promise.then(
-      data => this.send({ id: request.id, type: "reply", data }),
-      err =>
+      (data) => {
+        console.log(`[IPC-Server] reply ${request.channelName}.${request.name} id=${request.id}`);
+        this.send({ id: request.id, type: "reply", data });
+      },
+      (err) => {
+        console.error(`[IPC-Server] error ${request.channelName}.${request.name} id=${request.id}:`, err);
         this.send({
           id: request.id,
           type: "error",
           error: err instanceof Error
             ? { message: err.message, stack: err.stack }
             : { message: String(err) },
-        }),
+        });
+      },
     );
   }
 
   private onListen(request: IRawRequest): void {
+    console.log(`[IPC-Server] listen ${request.channelName}.${request.name} id=${request.id}`);
     const channel = this.channels.get(request.channelName);
     if (!channel) {
+      console.error(`[IPC-Server] unknown channel ${request.channelName} for listen`);
       return;
     }
 
@@ -92,6 +102,7 @@ export class ChannelServer implements IChannelServer, IDisposable {
     });
 
     this.activeRequests.set(request.id, disposable);
+    console.log(`[IPC-Server] listener registered ${request.channelName}.${request.name} id=${request.id}`);
   }
 
   private disposeActiveRequest(id: number): void {

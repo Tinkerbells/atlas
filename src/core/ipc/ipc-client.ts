@@ -45,8 +45,10 @@ export class ChannelClient implements IChannelClient, IDisposable {
 
   private requestPromise(channelName: string, command: string, arg?: any): Promise<any> {
     const id = this.lastRequestId++;
+    console.log(`[IPC-Client] send call ${channelName}.${command} id=${id}`);
     return new Promise((resolve, reject) => {
       this.handlers.set(id, (response) => {
+        console.log(`[IPC-Client] received ${response.type} for ${channelName}.${command} id=${id}`);
         this.handlers.delete(id);
         if (response.type === "reply") {
           resolve(response.data);
@@ -68,8 +70,10 @@ export class ChannelClient implements IChannelClient, IDisposable {
     let emitter: Emitter<any> | undefined;
 
     const listen = () => {
+      console.log(`[IPC-Client] send listen ${channelName}.${eventName} id=${id}`);
       this.handlers.set(id, (response) => {
         if (response.type === "event") {
+          console.log(`[IPC-Client] received event for ${channelName}.${eventName} id=${id}`, response.data);
           emitter?.fire(response.data);
         }
       });
@@ -77,6 +81,7 @@ export class ChannelClient implements IChannelClient, IDisposable {
     };
 
     const disposeListener = () => {
+      console.log(`[IPC-Client] send dispose ${channelName}.${eventName} id=${id}`);
       this.handlers.delete(id);
       this.send({ id, type: "dispose", channelName: "", name: "", arg: undefined });
     };
@@ -110,6 +115,9 @@ export class ChannelClient implements IChannelClient, IDisposable {
   private onBuffer(msg: any): void {
     const response = msg as IRawResponse;
     const handler = this.handlers.get(response.id);
+    if (!handler) {
+      console.warn(`[IPC-Client] no handler for response id=${response.id} type=${response.type}`);
+    }
     handler?.(response);
   }
 

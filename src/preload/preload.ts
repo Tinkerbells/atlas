@@ -22,12 +22,11 @@ const api = {
 
 contextBridge.exposeInMainWorld("app", api);
 
-// Forward MessagePort from main to renderer for shared process communication
-ipcRenderer.on("app:receiveSharedProcessPort", (_event: Electron.IpcRendererEvent, nonce: string) => {
-  const port = _event.ports[0];
-  if (port) {
-    window.postMessage({ type: "app:sharedProcessPort", nonce }, "*", [port]);
-  }
+// VS Code pattern: forward MessagePort from main to renderer via window.postMessage
+ipcRenderer.on("app:receiveSharedProcessPort", (event: Electron.IpcRendererEvent, nonce: string) => {
+  // Forward the MessagePort to the renderer window
+  // e.ports contains the DOM MessagePort transferred from main
+  window.postMessage(nonce, "*", event.ports);
 });
 
 export type AppAPI = typeof api;

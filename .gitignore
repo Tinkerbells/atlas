@@ -17,5 +17,9 @@ thumbs.db
 # System Files
 Thumbs.db
 
+# Auto-generated type declarations
+auto-imports.d.ts
+components.d.ts
+
 # VSCode (external repository)
 vscode
