@@ -1,25 +1,25 @@
-export { IntervalTimer } from "./async.js";
-export { CharCode } from "./char-code.js";
+export { IntervalTimer } from "./async";
+export { CharCode } from "./char-code";
 
-export { isEditableElement, isHTMLElement } from "./dom.js";
-export { equals } from "./equals.js";
-export { illegalArgument, illegalState } from "./error-utils.js";
+export { isEditableElement, isHTMLElement } from "./dom";
+export { equals } from "./equals";
+export { illegalArgument, illegalState } from "./error-utils";
 export {
   Disposable,
   DisposableStore,
   dispose,
   isDisposable,
   toDisposable,
-} from "./lifecycle.js";
-export type { IDisposable } from "./lifecycle.js";
+} from "./lifecycle";
+export type { IDisposable } from "./lifecycle";
 export {
   basename,
   dirname,
   extname,
   join,
   relative,
-} from "./path.js";
-export { isLinux, isMacintosh, isWindows, OperatingSystem, OS } from "./platform.js";
+} from "./path";
+export { isLinux, isMacintosh, isWindows, OperatingSystem, OS } from "./platform";
 export {
   compareIgnoreCase,
   count,
@@ -36,4 +36,4 @@ export {
   isLowerAsciiLetter,
   isUpperAsciiLetter,
   startsWithIgnoreCase,
-} from "./string-utils.js";
+} from "./string-utils";

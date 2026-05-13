@@ -1,4 +1,4 @@
-import { CharCode } from "./char-code.js";
+import { CharCode } from "./char-code";
 
 export function isFalsyOrWhitespace(str: string | undefined): boolean {
   if (!str || typeof str !== "string") {

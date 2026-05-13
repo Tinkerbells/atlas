@@ -1,4 +1,4 @@
-import { isWindows } from "./platform.js";
+import { isWindows } from "./platform";
 
 const sep = isWindows ? "\\" : "/";
 const sepPosix = "/";
