@@ -128,7 +128,7 @@ function onOpenChange(value: boolean) {
   open.value = value;
 }
 
-defineExpose({ show });
+defineExpose({ show, startIndexing });
 </script>
 
 <template>
