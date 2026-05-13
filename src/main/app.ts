@@ -4,23 +4,32 @@
  *-------------------------------------------------------------------------------------------- */
 
 import type { ServicesAccessor } from "@core/di/instantiation";
+import type { IConfigurationRegistry } from "@platform/configuration/common/configuration-registry";
 
+import { join } from "node:path";
 import { app, ipcMain } from "electron";
+import { URI } from "@platform/common/uri/uri";
 import { SyncDescriptor } from "@core/di/descriptors";
 import { ProxyChannel } from "@core/ipc/proxy-channel";
 import { ILogger } from "@platform/logger/common/logger";
+import { IFileService } from "@platform/files/common/files";
+import { Registry } from "@platform/registry/common/platform";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { IInstantiationService } from "@core/di/instantiation";
+import { FileService } from "@platform/files/node/file-service";
 import { ServiceCollection } from "@core/di/service-collection";
 import { Disposable, DisposableStore } from "@core/base/lifecycle";
 import { IClipboardService } from "@platform/clipboard/common/clipboard";
 import { ElectronIPCServer } from "@core/ipc/electron-main/ipc.electron";
 import { INodeProcess } from "@platform/node-process/common/node-process";
+import { Extensions } from "@platform/configuration/common/configuration-registry";
 import { SharedProcess } from "@platform/shared-process/electron-main/shared-process";
 import { ClipboardService } from "@platform/clipboard/electron-main/clipboard-service";
 import { IUpdateService, UpdateService } from "@platform/update/electron-main/update-service";
 import { ILifecycleMainService, LifecycleMainPhase } from "@platform/lifecycle/common/lifecycle";
 import { IEnvironmentMainService } from "@platform/environment/electron-main/environment-main-service";
 import { IWindowsMainService, WindowsMainService } from "@platform/windows/electron-main/windows-main-service";
+import { ConfigurationService, IConfigurationService } from "@platform/configuration/common/configuration-service";
 import { INativeHostMainService, NativeHostMainService } from "@platform/native-host/electron-main/native-host-main-service";
 
 import type { AppInitConfig } from "./app-init-config";
@@ -53,6 +62,12 @@ export class Application extends Disposable {
 
     // Create child DI container with application-level services
     const appInstantiationService = await this.initServices();
+
+    // Initialize configuration service
+    await appInstantiationService.invokeFunction(async (accessor) => {
+      const configurationService = accessor.get<IConfigurationService>(IConfigurationService);
+      await configurationService.initialize();
+    });
 
     // Register IPC channels
     appInstantiationService.invokeFunction(accessor => this.initChannels(accessor, electronIpcServer));
@@ -141,6 +156,38 @@ export class Application extends Disposable {
     services.set(INativeHostMainService, new SyncDescriptor(NativeHostMainService));
     services.set(IUpdateService, new SyncDescriptor(UpdateService));
     services.set(IClipboardService, new SyncDescriptor(ClipboardService));
+    services.set(IFileService, new SyncDescriptor(FileService));
+
+    const userDataPath = this.environmentMainService.userDataPath;
+    if (!existsSync(userDataPath)) {
+      mkdirSync(userDataPath, { recursive: true });
+    }
+    const settingsUri = URI.file(join(userDataPath, "settings.json"));
+    if (!existsSync(settingsUri.fsPath)) {
+      writeFileSync(settingsUri.fsPath, "{}", "utf-8");
+    }
+    services.set(IConfigurationService, new SyncDescriptor(ConfigurationService, [settingsUri]));
+
+    // Register default configurations
+    Registry.as<IConfigurationRegistry>(Extensions.Configuration).registerConfiguration({
+      id: "files",
+      order: 1,
+      title: "Files",
+      type: "object",
+      properties: {
+        "files.exclude": {
+          type: "object",
+          markdownDescription: "Configure glob patterns for excluding files and folders.",
+          default: {
+            "**/node_modules": true,
+            "**/.git": true,
+            "**/.DS_Store": true,
+            "**/Thumbs.db": true,
+          },
+          scope: 4, // ConfigurationScope.RESOURCE
+        },
+      },
+    });
 
     return this.mainInstantiationService.createChild(services, this._store);
   }
@@ -155,17 +202,20 @@ export class Application extends Disposable {
     const nodeProcess = accessor.get(INodeProcess);
     const nativeHost = accessor.get(INativeHostMainService);
     const clipboard = accessor.get(IClipboardService);
+    const configurationService = accessor.get<IConfigurationService>(IConfigurationService);
 
     const loggerChannel = ProxyChannel.fromService(logger);
     const nodeProcessChannel = ProxyChannel.fromService(nodeProcess);
     const nativeHostChannel = ProxyChannel.fromService(nativeHost);
     const clipboardChannel = ProxyChannel.fromService(clipboard);
+    const configurationChannel = ProxyChannel.fromService(configurationService);
 
     // Register on main IPC server (renderer access)
     electronIpcServer.registerChannel("logger", loggerChannel);
     electronIpcServer.registerChannel("nodeProcess", nodeProcessChannel);
     electronIpcServer.registerChannel("nativeHost", nativeHostChannel);
     electronIpcServer.registerChannel("clipboard", clipboardChannel);
+    electronIpcServer.registerChannel("configuration", configurationChannel);
 
     // TODO: Register channels on shared process when needed
   }

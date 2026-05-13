@@ -3,19 +3,27 @@
  *-------------------------------------------------------------------------------------------- */
 
 import type { IMessagePassingProtocol } from "@core/ipc/ipc";
+import type { IConfigurationRegistry } from "@platform/configuration/common/configuration-registry";
 
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { Emitter } from "@core/base/event";
+import { URI } from "@platform/common/uri/uri";
 import { ChannelServer } from "@core/ipc/ipc-server";
 import { SyncDescriptor } from "@core/di/descriptors";
 import { ProxyChannel } from "@core/ipc/proxy-channel";
+import { ILogger } from "@platform/logger/common/logger";
+import { IFileService } from "@platform/files/common/files";
 import { IDatabaseService } from "@platform/common/database";
+import { Registry } from "@platform/registry/common/platform";
+import { FileService } from "@platform/files/node/file-service";
 import { ServiceCollection } from "@core/di/service-collection";
 import { IFileIndexService } from "@platform/common/file-index";
 import { IFileSearchService } from "@platform/common/file-search";
 import { InstantiationService } from "@core/di/instantiation-service";
 import { IFileSystemCrawler } from "@platform/common/file-system-crawler";
+import { Extensions } from "@platform/configuration/common/configuration-registry";
+import { ConfigurationService, IConfigurationService } from "@platform/configuration/common/configuration-service";
 
 import { FdirCrawler } from "./fdir-crawler";
 import { DatabaseService } from "./database-service";
@@ -30,6 +38,16 @@ function log(msg: string) {
     fs.appendFileSync(logFile, line);
   }
   catch { /* ignore */ }
+}
+
+class ConsoleLogger implements ILogger {
+  declare readonly _serviceBrand: undefined;
+  critical(message: string): void { log(`[CRITICAL] ${message}`); }
+  debug(message: string): void { log(`[DEBUG] ${message}`); }
+  error(message: string): void { log(`[ERROR] ${message}`); }
+  info(message: string): void { log(`[INFO] ${message}`); }
+  trace(message: string): void { log(`[TRACE] ${message}`); }
+  warning(message: string): void { log(`[WARNING] ${message}`); }
 }
 
 log("=== shared-process-main.ts starting ===");
@@ -63,10 +81,44 @@ function bootstrapServices(): InstantiationService {
   }
 
   const services = new ServiceCollection();
+  services.set(ILogger, new ConsoleLogger());
   services.set(IDatabaseService, databaseService);
   services.set(IFileSystemCrawler, new SyncDescriptor(FdirCrawler));
   services.set(IFileIndexService, new SyncDescriptor(FileIndexService));
   services.set(IFileSearchService, new SyncDescriptor(FileSearchService));
+  services.set(IFileService, new SyncDescriptor(FileService));
+
+  const settingsUri = URI.file(path.join(userDataPath, "settings.json"));
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath, { recursive: true });
+    log(`[shared-process] Created user data directory: ${userDataPath}`);
+  }
+  if (!fs.existsSync(settingsUri.fsPath)) {
+    fs.writeFileSync(settingsUri.fsPath, "{}", "utf-8");
+    log(`[shared-process] Created default settings.json`);
+  }
+  services.set(IConfigurationService, new SyncDescriptor(ConfigurationService, [settingsUri]));
+
+  // Register default configurations
+  Registry.as<IConfigurationRegistry>(Extensions.Configuration).registerConfiguration({
+    id: "files",
+    order: 1,
+    title: "Files",
+    type: "object",
+    properties: {
+      "files.exclude": {
+        type: "object",
+        markdownDescription: "Configure glob patterns for excluding files and folders.",
+        default: {
+          "**/node_modules": true,
+          "**/.git": true,
+          "**/.DS_Store": true,
+          "**/Thumbs.db": true,
+        },
+        scope: 4, // ConfigurationScope.RESOURCE
+      },
+    },
+  });
 
   return new InstantiationService(services, true);
 }
@@ -79,6 +131,13 @@ catch (err: any) {
   log(`[shared-process] bootstrapServices failed: ${err.message}\n${err.stack}`);
   process.exit(1);
 }
+
+// Initialize configuration service
+instantiationService.invokeFunction(async (accessor) => {
+  const configurationService = accessor.get<IConfigurationService>(IConfigurationService);
+  await configurationService.initialize();
+  log("[shared-process] Configuration service initialized");
+});
 
 /**
  * Protocol over Node.js MessagePortMain (uses .on('message') / .postMessage)
