@@ -21,5 +21,10 @@ Thumbs.db
 auto-imports.d.ts
 components.d.ts
 
-# VSCode (external repository)
-vscode
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# External repositories
+vscode/
+dashboard-vue/
+
