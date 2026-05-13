@@ -91,6 +91,37 @@ The following rules are intentionally turned off:
 - `.ruler/`, `.claude/`, `.turbo/`
 - `*.md`, `**/docs.md`
 
+## Architecture Naming: Navigator (not Workbench)
+
+Atlas is a **file manager**, not a code editor. We intentionally avoid VS Code's "Workbench" terminology in favor of "Navigator" — a term that reflects exploration and file management rather than document editing.
+
+### Concept Mapping (VS Code → Atlas)
+
+| VS Code Concept | Atlas Concept | Meaning |
+|-----------------|---------------|---------|
+| Workbench | **Navigator** | The entire UI shell of a window |
+| Editor | **Pane** | A view showing files, folders, or preview |
+| Editor Group | **Pane Group** | A group of panes with tabs |
+| Editor Area | **Content Area** | The main content region |
+| Explorer | **Explorer** | File tree (unchanged, standard term) |
+| Panel | **Panel** | Bottom/side panels (terminal, details) |
+| Sidebar | **Sidebar** | Left/right sidebars |
+| Workbench Configuration | **Navigator Configuration** | Window/layout settings |
+
+### Why "Navigator"?
+
+- **Workbench** implies a surface for *creating/editing* — wrong metaphor for a file manager
+- **Navigator** implies *exploration, traversal, organization* — correct metaphor
+- Understandable by any developer without VS Code background
+- Future-proof: supports both Explorer (tree) and Commander (dual-pane) views
+
+### Where Navigator code lives
+
+```
+src/renderer/navigator/          # Navigator services and state
+src/renderer/components/         # Vue components (Explorer, Commander, etc.)
+```
+
 ## Dev Quick Reference
 
 ```bash
