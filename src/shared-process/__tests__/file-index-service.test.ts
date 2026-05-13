@@ -52,7 +52,14 @@ describe("fileIndexService", () => {
     db.registerMigrations([initialSchemaMigration]);
     db.migrate();
     crawler = new MockCrawler();
-    service = new FileIndexService(db, crawler);
+    const mockConfigService = {
+      _serviceBrand: undefined,
+      getValue: () => ({}),
+      onDidChangeConfiguration: () => ({ dispose: () => {} }),
+      setWorkspaceSettingsResource: () => {},
+      reloadConfiguration: async () => {},
+    } as any;
+    service = new FileIndexService(db, crawler, mockConfigService);
   });
 
   afterEach(() => {

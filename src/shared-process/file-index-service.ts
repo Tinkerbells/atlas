@@ -7,6 +7,7 @@ import { URI } from "@platform/common/uri/uri";
 import { IDatabaseService } from "@platform/common/database";
 import { CancellationTokenSource } from "@platform/common/cancellation";
 import { IFileSystemCrawler } from "@platform/common/file-system-crawler";
+import { IConfigurationService } from "@platform/configuration/common/configuration-service";
 
 export class FileIndexService implements IFileIndexService {
   declare readonly _serviceBrand: undefined;
@@ -18,7 +19,14 @@ export class FileIndexService implements IFileIndexService {
   constructor(
     @IDatabaseService private databaseService: IDatabaseService,
     @IFileSystemCrawler private crawler: IFileSystemCrawler,
-  ) {}
+    @IConfigurationService private configurationService: IConfigurationService,
+  ) {
+    this.configurationService.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("files.exclude")) {
+        console.log("[FileIndexService] files.exclude changed, will re-scan on next request");
+      }
+    });
+  }
 
   cancelCurrentScan(): void {
     if (this._cancelSource) {
@@ -51,6 +59,17 @@ export class FileIndexService implements IFileIndexService {
   private async _scanDrive(driveUri: URI, token: CancellationToken): Promise<ScanResult> {
     const startTime = Date.now();
     const driveKey = this._getDriveKey(driveUri);
+
+    // Load workspace-level settings from .atlas/settings.json at drive root
+    try {
+      const settingsPath = driveUri.path.endsWith("/") ? `${driveUri.path}.atlas/settings.json` : `${driveUri.path}/.atlas/settings.json`;
+      const workspaceSettingsUri = driveUri.with({ path: settingsPath });
+      this.configurationService.setWorkspaceSettingsResource(workspaceSettingsUri);
+      await this.configurationService.reloadConfiguration();
+    }
+    catch (err) {
+      console.error(`[FileIndexService] Failed to reload workspace configuration for ${driveKey}:`, err);
+    }
 
     console.log(`[FileIndexService] Scanning drive: ${driveKey}`);
 
@@ -108,7 +127,12 @@ export class FileIndexService implements IFileIndexService {
       }
     };
 
-    for await (const entry of this.crawler.scan(driveUri, { excludeHidden: true }, token)) {
+    const fileExcludes = this.configurationService.getValue<{ [pattern: string]: boolean }>("files.exclude") ?? {};
+    const excludeGlobs = Object.entries(fileExcludes).filter(([, v]) => v).map(([p]) => p);
+    console.log(`[FileIndexService] ${driveKey}: exclude globs = ${JSON.stringify(excludeGlobs)}`);
+
+    console.log(`[FileIndexService] ${driveKey}: starting crawler.scan...`);
+    for await (const entry of this.crawler.scan(driveUri, { excludeHidden: true, excludeGlobs }, token)) {
       if (token?.isCancellationRequested) {
         console.log(`[FileIndexService] ${driveKey}: cancelled after ${inserted + updated} entries`);
         break;

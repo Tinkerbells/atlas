@@ -22,6 +22,7 @@ export interface ScanOptions {
   maxDepth?: number;
   excludeHidden?: boolean;
   excludePaths?: string[];
+  excludeGlobs?: string[];
 }
 
 export interface IFileSystemCrawler {

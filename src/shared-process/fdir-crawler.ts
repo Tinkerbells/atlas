@@ -3,10 +3,11 @@ import type { IFileSystemCrawler, ScannedEntry, ScanOptions } from "@platform/co
 
 import { statSync } from "node:fs";
 import * as paths from "node:path";
+import { Minimatch } from "minimatch";
 import { fdir as FdirBuilder } from "fdir";
 import { URI } from "@platform/common/uri/uri";
 
-const LINUX_SPECIAL_DIRS = ["/proc", "/sys", "/dev", "/run", "/tmp"];
+const LINUX_SPECIAL_DIRS = ["/proc", "/sys", "/dev", "/run", "/tmp", "/var"];
 
 export class FdirCrawler implements IFileSystemCrawler {
   declare readonly _serviceBrand: undefined;
@@ -30,10 +31,6 @@ export class FdirCrawler implements IFileSystemCrawler {
         .withDirs()
         .withMaxDepth(options.maxDepth ?? Infinity);
 
-      if (options.excludeHidden) {
-        builder.exclude((_, dirPath) => paths.basename(dirPath).startsWith("."));
-      }
-
       const excludePaths = options.excludePaths ?? [];
       if (process.platform !== "win32" && drivePath === "/") {
         for (const dir of LINUX_SPECIAL_DIRS) {
@@ -43,9 +40,28 @@ export class FdirCrawler implements IFileSystemCrawler {
         }
       }
 
-      if (excludePaths.length > 0) {
+      const excludeGlobs = options.excludeGlobs ?? [];
+      const minimatchers = excludeGlobs.map(g => new Minimatch(g, { dot: true }));
+
+      // fdir.exclude() overwrites the previous predicate on each call.
+      // Combine everything into a single callback.
+      if (options.excludeHidden || excludePaths.length > 0 || minimatchers.length > 0) {
         const excludeSet = new Set(excludePaths.map(p => paths.resolve(p)));
-        builder.exclude((_, dirPath) => excludeSet.has(paths.resolve(dirPath)));
+        builder.exclude((dirName, dirPath) => {
+          if (options.excludeHidden && dirName.startsWith(".")) {
+            return true;
+          }
+          if (excludeSet.size > 0 && excludeSet.has(paths.resolve(dirPath))) {
+            return true;
+          }
+          if (minimatchers.length > 0) {
+            const relativePath = paths.relative(drivePath, dirPath);
+            if (minimatchers.some(m => m.match(relativePath) || m.match(dirName))) {
+              return true;
+            }
+          }
+          return false;
+        });
       }
 
       builder.withAbortSignal(abortController.signal);
@@ -67,9 +83,23 @@ export class FdirCrawler implements IFileSystemCrawler {
         try {
           const stats = statSync(filePath);
           const name = paths.basename(filePath);
+
+          if (options.excludeHidden && name.startsWith(".")) {
+            skipped++;
+            continue;
+          }
+
           const parentPath = paths.dirname(filePath);
           const ext = paths.extname(filePath);
           const stem = name.substring(0, name.length - ext.length);
+
+          if (minimatchers.length > 0) {
+            const relativePath = paths.relative(drivePath, filePath);
+            if (minimatchers.some(m => m.match(relativePath) || m.match(name))) {
+              skipped++;
+              continue;
+            }
+          }
 
           const entry: ScannedEntry = {
             uri: URI.file(filePath),
