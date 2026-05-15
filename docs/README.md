@@ -9,9 +9,10 @@
 3. **[Система DI](dependency-injection.md)** — как работает внедрение зависимостей
 4. **[IPC коммуникация](ipc.md)** — как процессы общаются друг с другом
 5. **[Платформенные сервисы](platform-services.md)** — организация и структура сервисов
-6. **[Build система](build.md)** — сборка, dev mode, конфигурация
-7. **[Структура проекта](structure.md)** — директории, naming conventions, алиасы
-8. **[Безопасность](security.md)** — sandbox, contextIsolation, preload, защита renderer
+6. **[Слой файловой системы](filesystem.md)** — IFileService, провайдеры, операции с файлами
+7. **[Build система](build.md)** — сборка, dev mode, конфигурация
+8. **[Структура проекта](structure.md)** — директории, naming conventions, алиасы
+9. **[Безопасность](security.md)** — sandbox, contextIsolation, preload, защита renderer
 
 ## Быстрый старт для разработчика
 

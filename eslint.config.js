@@ -12,6 +12,7 @@ const config = antfu({
     "*.md",
     "**/*.md",
     "**/docs.md",
+    "**/test/**/fixtures/**/*",
   ],
   stylistic: {
     indent: 2,

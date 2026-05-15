@@ -6,8 +6,37 @@
 // Adapted from VS Code's URI implementation for Atlas.
 // Uses Node.js 'path' and 'process' instead of VS Code's platform abstractions.
 
-import * as paths from "node:path";
 import { isWindows } from "@core/base/platform";
+
+function _posixJoin(...segments: string[]): string {
+  let result = "";
+  for (const segment of segments) {
+    if (!segment)
+      continue;
+    if (result) {
+      result = `${result.replace(/\/+$/, "")}/${segment.replace(/^\/+/, "")}`;
+    }
+    else {
+      result = segment;
+    }
+  }
+  return result || ".";
+}
+
+function _win32Join(...segments: string[]): string {
+  let result = "";
+  for (const segment of segments) {
+    if (!segment)
+      continue;
+    if (result) {
+      result = `${result.replace(/\\+$/, "")}\\${segment.replace(/^\\+/, "")}`;
+    }
+    else {
+      result = segment;
+    }
+  }
+  return result || ".";
+}
 
 const _schemePattern = /^\w[\w+.-]*$/;
 const _singleSlashStart = /^\//;
@@ -218,10 +247,10 @@ export class URI implements UriComponents {
     }
     let newPath: string;
     if (isWindows && uri.scheme === "file") {
-      newPath = URI.file(paths.win32.join(uriToFsPath(uri, true), ...pathFragment)).path;
+      newPath = URI.file(_win32Join(uriToFsPath(uri, true), ...pathFragment)).path;
     }
     else {
-      newPath = paths.posix.join(uri.path, ...pathFragment);
+      newPath = _posixJoin(uri.path, ...pathFragment);
     }
     return uri.with({ path: newPath });
   }

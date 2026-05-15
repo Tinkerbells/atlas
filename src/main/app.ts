@@ -25,6 +25,7 @@ import { INodeProcess } from "@platform/node-process/common/node-process";
 import { Extensions } from "@platform/configuration/common/configuration-registry";
 import { SharedProcess } from "@platform/shared-process/electron-main/shared-process";
 import { ClipboardService } from "@platform/clipboard/electron-main/clipboard-service";
+import { DiskFileSystemProvider } from "@platform/files/node/disk-file-system-provider";
 import { IUpdateService, UpdateService } from "@platform/update/electron-main/update-service";
 import { ILifecycleMainService, LifecycleMainPhase } from "@platform/lifecycle/common/lifecycle";
 import { IEnvironmentMainService } from "@platform/environment/electron-main/environment-main-service";
@@ -189,7 +190,15 @@ export class Application extends Disposable {
       },
     });
 
-    return this.mainInstantiationService.createChild(services, this._store);
+    const instantiationService = this.mainInstantiationService.createChild(services, this._store);
+
+    // Register disk file system provider for file:// scheme
+    instantiationService.invokeFunction((accessor) => {
+      const fileService = accessor.get(IFileService);
+      fileService.registerProvider("file", new DiskFileSystemProvider());
+    });
+
+    return instantiationService;
   }
 
   private initChannels(
@@ -203,12 +212,14 @@ export class Application extends Disposable {
     const nativeHost = accessor.get(INativeHostMainService);
     const clipboard = accessor.get(IClipboardService);
     const configurationService = accessor.get<IConfigurationService>(IConfigurationService);
+    const fileService = accessor.get(IFileService);
 
     const loggerChannel = ProxyChannel.fromService(logger);
     const nodeProcessChannel = ProxyChannel.fromService(nodeProcess);
     const nativeHostChannel = ProxyChannel.fromService(nativeHost);
     const clipboardChannel = ProxyChannel.fromService(clipboard);
     const configurationChannel = ProxyChannel.fromService(configurationService);
+    const fileServiceChannel = ProxyChannel.fromService(fileService);
 
     // Register on main IPC server (renderer access)
     electronIpcServer.registerChannel("logger", loggerChannel);
@@ -216,6 +227,7 @@ export class Application extends Disposable {
     electronIpcServer.registerChannel("nativeHost", nativeHostChannel);
     electronIpcServer.registerChannel("clipboard", clipboardChannel);
     electronIpcServer.registerChannel("configuration", configurationChannel);
+    electronIpcServer.registerChannel("fileService", fileServiceChannel);
 
     // TODO: Register channels on shared process when needed
   }

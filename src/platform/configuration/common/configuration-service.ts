@@ -11,6 +11,7 @@ import type { FileOperationError } from "@platform/files/common/files";
 
 import { Emitter } from "@core/base/event";
 import { equals } from "@core/base/objects";
+import { VSBuffer } from "@core/base/buffer";
 import { isLinux } from "@core/base/platform";
 import { Disposable } from "@core/base/lifecycle";
 import { ILogger } from "@platform/logger/common/logger";
@@ -229,7 +230,8 @@ class ConfigurationEditing {
   private async doWriteConfiguration(path: string[], value: unknown): Promise<void> {
     let content: string;
     try {
-      content = await this.fileService.readFile(this.settingsResource);
+      const fileContent = await this.fileService.readFile(this.settingsResource);
+      content = fileContent.value.toString();
     }
     catch (error) {
       if ((<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_NOT_FOUND) {
@@ -249,7 +251,7 @@ class ConfigurationEditing {
     const edits = this.getEdits(content, path, value);
     content = applyEdits(content, edits);
 
-    await this.fileService.writeFile(this.settingsResource, content);
+    await this.fileService.writeFile(this.settingsResource, VSBuffer.fromString(content));
   }
 
   private getEdits(content: string, path: string[], value: unknown): any[] {

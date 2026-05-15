@@ -854,7 +854,7 @@ export class WorkspaceSettings extends Disposable {
   async loadConfiguration(): Promise<ConfigurationModel> {
     try {
       const content = await this.fileService.readFile(this.settingsResource);
-      this.parser.parse(content, this.parseOptions);
+      this.parser.parse(content.value.toString(), this.parseOptions);
     }
     catch {
       this.parser.parse("{}", this.parseOptions);
@@ -896,7 +896,7 @@ export class UserSettings extends Disposable {
   async loadConfiguration(): Promise<ConfigurationModel> {
     try {
       const content = await this.fileService.readFile(this.settingsResource);
-      this.parser.parse(content, this.parseOptions);
+      this.parser.parse(content.value.toString(), this.parseOptions);
     }
     catch (e) {
       this.logService.error(String(e));

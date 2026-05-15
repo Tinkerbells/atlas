@@ -23,6 +23,7 @@ import { IFileSearchService } from "@platform/common/file-search";
 import { InstantiationService } from "@core/di/instantiation-service";
 import { IFileSystemCrawler } from "@platform/common/file-system-crawler";
 import { Extensions } from "@platform/configuration/common/configuration-registry";
+import { DiskFileSystemProvider } from "@platform/files/node/disk-file-system-provider";
 import { ConfigurationService, IConfigurationService } from "@platform/configuration/common/configuration-service";
 
 import { FdirCrawler } from "./fdir-crawler";
@@ -120,7 +121,15 @@ function bootstrapServices(): InstantiationService {
     },
   });
 
-  return new InstantiationService(services, true);
+  const instantiationService = new InstantiationService(services, true);
+
+  // Register disk file system provider for file:// scheme
+  instantiationService.invokeFunction((accessor) => {
+    const fileService = accessor.get(IFileService);
+    fileService.registerProvider("file", new DiskFileSystemProvider());
+  });
+
+  return instantiationService;
 }
 
 let instantiationService: InstantiationService;
