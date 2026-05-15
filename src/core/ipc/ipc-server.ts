@@ -4,6 +4,8 @@ import { dispose } from "@core/base/lifecycle";
 
 import type { IChannelServer, IMessagePassingProtocol, IServerChannel } from "./ipc.ts";
 
+import { marshal, unmarshal } from "./marshal";
+
 interface IRawRequest {
   id: number;
   type: "call" | "listen" | "dispose";
@@ -33,11 +35,11 @@ export class ChannelServer implements IChannelServer, IDisposable {
   }
 
   private send(response: IRawResponse): void {
-    this.protocol.send(response);
+    this.protocol.send(marshal(response));
   }
 
   private onRawMessage(msg: any): void {
-    const request = msg as IRawRequest;
+    const request = unmarshal(msg) as IRawRequest;
     switch (request.type) {
       case "call":
         return this.onCall(request);

@@ -6,6 +6,8 @@ import { dispose, toDisposable } from "@core/base/lifecycle";
 
 import type { IChannel, IChannelClient, IMessagePassingProtocol } from "./ipc.ts";
 
+import { marshal, unmarshal } from "./marshal";
+
 interface IRawRequest {
   id: number;
   type: "call" | "listen" | "dispose";
@@ -109,11 +111,11 @@ export class ChannelClient implements IChannelClient, IDisposable {
   }
 
   private send(request: IRawRequest): void {
-    this.protocol.send(request);
+    this.protocol.send(marshal(request));
   }
 
   private onBuffer(msg: any): void {
-    const response = msg as IRawResponse;
+    const response = unmarshal(msg) as IRawResponse;
     const handler = this.handlers.get(response.id);
     if (!handler) {
       console.warn(`[IPC-Client] no handler for response id=${response.id} type=${response.type}`);
