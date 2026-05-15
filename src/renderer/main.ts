@@ -9,12 +9,15 @@ import { createI18n } from "vue-i18n";
 import { ProxyChannel } from "@core/ipc/proxy-channel";
 import { INavigatorService } from "@renderer/navigator";
 import { ILogger } from "@platform/logger/common/logger";
+import { IFileService } from "@platform/files/common/files";
 import { IFileIndexService } from "@platform/common/file-index";
 import { IFileSearchService } from "@platform/common/file-search";
+import { INavigatorHistoryService } from "@renderer/navigator/history";
 import { IClipboardService } from "@platform/clipboard/common/clipboard";
 import { NavigatorService } from "@renderer/navigator/navigator-service";
 import { ServiceAccessorSymbol } from "@renderer/composables/use-service";
 import { INodeProcess } from "@platform/node-process/common/node-process";
+import { NavigatorHistoryService } from "@renderer/navigator/history/history-service";
 import { IConfigurationService } from "@platform/configuration/common/configuration-service";
 import {
   getSingletonServiceDescriptors,
@@ -78,6 +81,7 @@ async function bootstrap() {
   services.set(INodeProcess, ProxyChannel.toService<INodeProcess>(mainProcessService.getChannel("nodeProcess")));
   services.set(IClipboardService, ProxyChannel.toService<IClipboardService>(mainProcessService.getChannel("clipboard")));
   services.set(IConfigurationService, ProxyChannel.toService<IConfigurationService>(mainProcessService.getChannel("configuration")));
+  services.set(IFileService, ProxyChannel.toService<IFileService>(mainProcessService.getChannel("fileService")));
 
   // Shared process services via relay through main process
   console.log("[renderer] Creating SharedProcessService...");
@@ -92,6 +96,7 @@ async function bootstrap() {
 
   // Navigator service
   services.set(INavigatorService, new NavigatorService());
+  services.set(INavigatorHistoryService, new NavigatorHistoryService());
 
   // Renderer-only singletons
   const descriptors = getSingletonServiceDescriptors();

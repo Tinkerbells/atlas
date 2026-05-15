@@ -22,6 +22,9 @@ export class NavigatorService extends Disposable implements INavigatorService {
   private readonly _onDidActivePaneChange = this._register(new Emitter<IPane | undefined>());
   readonly onDidActivePaneChange: Event<IPane | undefined> = this._onDidActivePaneChange.event;
 
+  private readonly _onDidActivePaneResourceChange = this._register(new Emitter<{ paneId: string; resource: URI }>());
+  readonly onDidActivePaneResourceChange: Event<{ paneId: string; resource: URI }> = this._onDidActivePaneResourceChange.event;
+
   get layout(): INavigatorLayout {
     const paneGroups = [...this._paneGroups.values()];
     const activePaneGroup = this._activeGroupId
@@ -37,7 +40,7 @@ export class NavigatorService extends Disposable implements INavigatorService {
     const pane: IPane = {
       id: paneId,
       type,
-      title: options?.title ?? resource.path,
+      title: options?.title ?? this._getBaseName(resource.path),
       resource,
       isActive: false,
     };
@@ -56,6 +59,41 @@ export class NavigatorService extends Disposable implements INavigatorService {
     }
 
     this._activatePane(paneId);
+    this._fireLayoutChange();
+  }
+
+  navigateActivePane(resource: URI): void {
+    if (!this._activePaneId)
+      return;
+
+    const pane = this._panes.get(this._activePaneId);
+    if (!pane)
+      return;
+
+    const updatedPane: IPane = {
+      ...pane,
+      resource,
+      title: this._getBaseName(resource.path),
+    };
+
+    this._panes.set(this._activePaneId, updatedPane);
+
+    // Update in group
+    for (const [groupId, group] of this._paneGroups) {
+      const paneIndex = group.panes.findIndex(p => p.id === this._activePaneId);
+      if (paneIndex !== -1) {
+        const updatedPanes = [...group.panes];
+        updatedPanes[paneIndex] = updatedPane;
+        this._paneGroups.set(groupId, {
+          ...group,
+          panes: updatedPanes,
+          activePane: updatedPane,
+        });
+        break;
+      }
+    }
+
+    this._onDidActivePaneResourceChange.fire({ paneId: this._activePaneId, resource });
     this._fireLayoutChange();
   }
 
@@ -182,6 +220,11 @@ export class NavigatorService extends Disposable implements INavigatorService {
     }
 
     this._onDidActivePaneChange.fire(this._panes.get(paneId));
+  }
+
+  private _getBaseName(path: string): string {
+    const parts = path.split("/").filter(Boolean);
+    return parts[parts.length - 1] || "/";
   }
 
   private _fireLayoutChange(): void {

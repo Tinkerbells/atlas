@@ -4,6 +4,8 @@ import type { IPane } from "@renderer/navigator/navigator";
 import { computed, ref } from "vue";
 import { useService } from "@renderer/composables/use-service";
 import { INavigatorService } from "@renderer/navigator/navigator";
+import PaneExplorer from "@renderer/components/pane-explorer.vue";
+import PaneBreadcrumbs from "@renderer/components/pane-breadcrumbs.vue";
 
 const navigatorService = useService(INavigatorService);
 
@@ -70,13 +72,9 @@ function getPaneIcon(type: number): string {
         v-for="group in paneGroups" :key="group.id" class="flex-1 flex flex-col border-r last:border-r-0"
         :class="group.isActive ? 'ring-1 ring-inset ring-primary/20' : ''"
       >
-        <div v-if="group.activePane" class="flex-1 p-4 overflow-auto">
-          <div class="text-sm text-muted mb-2">
-            {{ group.activePane.resource?.path }}
-          </div>
-          <div class="text-dimmed">
-            Pane content will be rendered here based on type: {{ group.activePane.type }}
-          </div>
+        <div v-if="group.activePane" class="flex-1 flex flex-col overflow-hidden">
+          <PaneBreadcrumbs :resource="group.activePane.resource" />
+          <PaneExplorer :resource="group.activePane.resource" />
         </div>
         <div v-else class="flex-1 flex items-center justify-center text-muted">
           No active pane

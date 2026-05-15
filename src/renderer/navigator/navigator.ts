@@ -38,10 +38,12 @@ export interface INavigatorService extends IDisposable {
 
   readonly onDidChangeLayout: Event<INavigatorLayout>;
   readonly onDidActivePaneChange: Event<IPane | undefined>;
+  readonly onDidActivePaneResourceChange: Event<{ paneId: string; resource: URI }>;
 
   readonly layout: INavigatorLayout;
 
-  openPane: (resource: URI, options?: { group?: string }) => void;
+  openPane: (resource: URI, options?: { group?: string; type?: PaneType; title?: string }) => void;
+  navigateActivePane: (resource: URI) => void;
   closePane: (paneId: string) => void;
   activatePane: (paneId: string) => void;
   movePane: (paneId: string, targetGroupId: string) => void;
