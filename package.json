@@ -21,7 +21,9 @@
     "compile": "npm run build && electron-builder build --config electron-builder.mjs",
     "compile:mac": "npm run build && electron-builder build --config electron-builder.mjs --mac",
     "compile:win": "npm run build && electron-builder build --config electron-builder.mjs --win",
-    "compile:linux": "npm run build && electron-builder build --config electron-builder.mjs --linux"
+    "compile:linux": "npm run build && electron-builder build --config electron-builder.mjs --linux",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@fontsource-variable/google-sans": "5.2.1",
