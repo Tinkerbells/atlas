@@ -1,6 +1,8 @@
+import { VSBuffer } from "@core/base/buffer";
 import { URI } from "@platform/common/uri/uri";
 
 const URI_MARKER = "$uri";
+const VSBUFFER_MARKER = "$vsbuffer";
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object"
@@ -17,6 +19,13 @@ export function marshal(value: unknown): unknown {
       path: value.path,
       query: value.query,
       fragment: value.fragment,
+    };
+  }
+
+  if (value instanceof VSBuffer) {
+    return {
+      [VSBUFFER_MARKER]: true,
+      data: value.buffer,
     };
   }
 
@@ -44,6 +53,10 @@ export function unmarshal(value: unknown): unknown {
       query: String(value.query ?? ""),
       fragment: String(value.fragment ?? ""),
     });
+  }
+
+  if (isPlainObject(value) && value[VSBUFFER_MARKER] === true) {
+    return VSBuffer.wrap(value.data as Uint8Array);
   }
 
   if (Array.isArray(value)) {
