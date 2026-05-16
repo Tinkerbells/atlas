@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { IPane } from "@renderer/navigator/navigator";
-
 import { computed, ref } from "vue";
 import { useService } from "@renderer/composables/use-service";
 import { INavigatorService } from "@renderer/navigator/navigator";
 import PaneExplorer from "@renderer/components/pane-explorer.vue";
+import NavigatorLayout from "@renderer/shared/ui/navigator-layout.vue";
 import PaneBreadcrumbs from "@renderer/components/pane-breadcrumbs.vue";
 
 const navigatorService = useService(INavigatorService);
@@ -24,73 +23,43 @@ const activePane = computed(() => {
   return undefined;
 });
 
-function onPaneClick(pane: IPane) {
-  navigatorService.activatePane(pane.id);
+const uiPaneGroups = computed(() => {
+  return paneGroups.value.map(group => ({
+    id: group.id,
+    isActive: group.isActive,
+    panes: group.panes.map(pane => ({
+      id: pane.id,
+      type: pane.type,
+      title: pane.title,
+      isActive: pane.isActive,
+    })),
+  }));
+});
+
+function onPaneClick(paneId: string) {
+  navigatorService.activatePane(paneId);
 }
 
-function onPaneClose(pane: IPane) {
-  navigatorService.closePane(pane.id);
-}
-
-function getPaneIcon(type: number): string {
-  switch (type) {
-    case 1: return "folder-open";
-    case 2: return "columns-2";
-    case 3: return "eye";
-    case 4: return "terminal";
-    default: return "file";
-  }
+function onPaneClose(paneId: string) {
+  navigatorService.closePane(paneId);
 }
 </script>
 
 <template>
-  <div class="flex flex-col h-screen w-screen">
-    <!-- Title bar / Tab bar -->
-    <div class="flex items-center border-b bg-surface">
-      <div v-for="group in paneGroups" :key="group.id" class="flex flex-1">
-        <div
-          v-for="pane in group.panes" :key="pane.id"
-          class="flex items-center gap-2 px-3 py-2 cursor-pointer select-none border-r transition-colors"
-          :class="pane.isActive ? 'bg-background text-foreground' : 'bg-surface text-muted hover:bg-surface-hover'"
-          @click="onPaneClick(pane)"
-        >
-          <span :class="`i-lucide-${getPaneIcon(pane.type)}`" class="w-4 h-4" />
-          <span class="text-sm truncate max-w-48">{{ pane.title }}</span>
-          <button
-            class="w-4 h-4 flex items-center justify-center rounded hover:bg-destructive/10 hover:text-destructive ml-1"
-            @click.stop="onPaneClose(pane)"
-          >
-            <span class="i-lucide-x w-3 h-3" />
-          </button>
-        </div>
+  <NavigatorLayout
+    :pane-groups="uiPaneGroups"
+    :active-pane-title="activePane?.title"
+    @pane-click="onPaneClick"
+    @pane-close="onPaneClose"
+  >
+    <template v-for="(group, index) in paneGroups" :key="group.id" #[`group-${index}`]>
+      <div v-if="group.activePane" class="flex-1 flex flex-col overflow-hidden">
+        <PaneBreadcrumbs :resource="group.activePane.resource" />
+        <PaneExplorer :resource="group.activePane.resource" />
       </div>
-    </div>
-
-    <!-- Content area -->
-    <div class="flex flex-1 overflow-hidden">
-      <div
-        v-for="group in paneGroups" :key="group.id" class="flex-1 flex flex-col border-r last:border-r-0"
-        :class="group.isActive ? 'ring-1 ring-inset ring-primary/20' : ''"
-      >
-        <div v-if="group.activePane" class="flex-1 flex flex-col overflow-hidden">
-          <PaneBreadcrumbs :resource="group.activePane.resource" />
-          <PaneExplorer :resource="group.activePane.resource" />
-        </div>
-        <div v-else class="flex-1 flex items-center justify-center text-muted">
-          No active pane
-        </div>
+      <div v-else class="flex-1 flex items-center justify-center text-muted">
+        No active pane
       </div>
-    </div>
-
-    <!-- Status bar -->
-    <div class="flex items-center justify-between px-3 py-1.5 border-t bg-surface text-xs text-muted">
-      <div class="flex items-center gap-4">
-        <span>{{ paneGroups.length }} group(s)</span>
-        <span v-if="activePane">{{ activePane.title }}</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <span>Atlas Navigator</span>
-      </div>
-    </div>
-  </div>
+    </template>
+  </NavigatorLayout>
 </template>
