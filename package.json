@@ -1,47 +1,62 @@
 {
-  "name": "atlas-monorepo",
-  "type": "module",
+  "name": "atlas",
   "version": "1.0.0",
-  "description": "Atlas - Cross-platform file manager inspired by VSCode",
-  "homepage": "https://github.com/atlas/atlas",
+  "private": true,
+  "description": "Atlas - Cross-platform file manager",
   "author": {
     "name": "Atlas Team",
     "email": "daniel.kasatkin.work@gmail.com"
   },
-  "private": true,
-  "main": "packages/electron-main/entry-point.mjs",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "prepare": "husky",
-    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "lint": "npm -ws run --if-present lint",
-    "typecheck": "npm -ws run --if-present typecheck",
-    "test": "npm run test -ws --if-present",
-    "build": "npm run build -ws --if-present",
-    "compile": "npm run build && electron-builder build --config electron-builder.mjs",
-    "compile:mac": "npm run build && electron-builder build --config electron-builder.mjs --mac",
-    "compile:win": "npm run build && electron-builder build --config electron-builder.mjs --win",
-    "compile:linux": "npm run build && electron-builder build --config electron-builder.mjs --linux",
-    "electron:dev": "node scripts/ensure-electron.mjs && npm run dev -w @atlas/electron-main"
-  },
-  "dependencies": {
-    "@atlas/electron-main": "*"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^20.3.1",
-    "@commitlint/config-conventional": "^20.3.1",
-    "@npmcli/map-workspaces": "5.0.3",
-    "conventional-changelog": "7.1.1",
-    "electron": "41.0.3",
-    "electron-builder": "26.8.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7"
-  },
+  "homepage": "https://github.com/atlas/atlas",
+  "main": "./out/main/index.js",
   "engines": {
     "node": ">= 22.12.0 || >= 24.0.0",
     "typescript": ">= 5.9.0 < 5.10.0"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "lint": "eslint --cache .",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "vue-tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "test": "npm run test -ws --if-present",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "npm run typecheck && electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "npm run build && electron-builder --dir",
+    "build:win": "npm run build && electron-builder --win",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:linux": "npm run build && electron-builder --linux",
+    "compile": "npm run build && electron-builder",
+    "compile:mac": "npm run build && electron-builder --mac",
+    "compile:win": "npm run build && electron-builder --win",
+    "compile:linux": "npm run build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron-toolkit/utils": "^4.0.0",
+    "inversify": "8.1.0",
+    "reflect-metadata": "0.2.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.2.0",
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@electron-toolkit/tsconfig": "^2.0.0",
+    "@types/node": "^22.19.1",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "conventional-changelog": "7.1.1",
+    "electron": "41.0.3",
+    "electron-builder": "26.8.1",
+    "electron-vite": "^5.0.0",
+    "eslint": "^9.39.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6",
+    "vue": "^3.5.25",
+    "vue-tsc": "^3.1.6"
   }
 }

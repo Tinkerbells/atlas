@@ -5,6 +5,8 @@ dist
 thumbs.db
 
 .eslintcache
+out
+*.log*
 .angular
 
 # IDEs
