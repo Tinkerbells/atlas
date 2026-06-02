@@ -1,14 +1,23 @@
-import type { ElectronAPI } from "@electron-toolkit/preload";
+import type { IQueries, IEvents } from "~/common/bridge";
 
-export interface RawIpc {
-  invoke: (channel: string, ...args: any[]) => Promise<any>;
-  on: (channel: string, callback: (...args: any[]) => void) => () => void;
-  send: (channel: string, ...args: any[]) => void;
+export interface Api {
+  process: { versions: Record<string, string> };
+
+  logger: {
+    log: IQueries["logger:log"];
+  };
+
+  system: {
+    ping: IQueries["ping"];
+  };
+
+  events: {
+    on: <K extends keyof IEvents>(channel: K, callback: IEvents[K]) => () => void;
+  };
 }
 
 declare global {
   interface Window {
-    electron: ElectronAPI;
-    rawIpc: RawIpc;
+    api: Api;
   }
 }

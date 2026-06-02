@@ -1,23 +1,33 @@
+import log from "electron-log";
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
-import log from "electron-log";
 
-const rawIpc = {
-  invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args),
-  on: (channel: string, callback: (...args: any[]) => void) => {
-    const subscription = (_event: any, ...args: any[]) => callback(...args);
-    ipcRenderer.on(channel, subscription);
-    return () => {
-      ipcRenderer.removeListener(channel, subscription);
-    };
+const api = {
+  process: electronAPI.process,
+
+  logger: {
+    log: (level: string, message: string, ...args: any[]) =>
+      ipcRenderer.invoke("logger:log", level, message, ...args),
   },
-  send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
+
+  system: {
+    ping: () => ipcRenderer.invoke("ping"),
+  },
+
+  events: {
+    on: (channel: string, callback: (...args: any[]) => void): (() => void) => {
+      const subscription = (_event: any, ...args: any[]) => callback(...args);
+      ipcRenderer.on(channel, subscription);
+      return () => {
+        ipcRenderer.removeListener(channel, subscription);
+      };
+    },
+  },
 };
 
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld("electron", electronAPI);
-    contextBridge.exposeInMainWorld("rawIpc", rawIpc);
+    contextBridge.exposeInMainWorld("api", api);
   }
   catch (error) {
     log.error("[Preload] Failed to expose APIs", error);
@@ -25,7 +35,5 @@ if (process.contextIsolated) {
 }
 else {
   // @ts-expect-error (define in dts)
-  window.electron = electronAPI;
-  // @ts-expect-error (define in dts)
-  window.rawIpc = rawIpc;
+  window.api = api;
 }
