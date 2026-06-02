@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import Versions from "./components/Versions.vue";
-import { bridge } from "./bridge/bridge-client";
 import { logger } from "./services/Logger";
+import Versions from "./components/Versions.vue";
+import { systemService } from "./services/system-service";
 
-const ipcHandle = async (): Promise<void> => {
-  logger.info("Sending ping via bridge...");
-  const result = await bridge['ping']();
+async function ipcHandle(): Promise<void> {
+  logger.info("Sending ping via api...");
+  const result = await systemService.ping();
   logger.info(`IPC response: ${result}`);
-};
+}
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 import type { ILogger } from '~/common/logger';
-import { bridge } from '../bridge/bridge-client';
+import { loggerService } from './logger-service';
 
 export class Logger implements ILogger {
   readonly _serviceBrand = undefined as undefined;
@@ -10,19 +10,19 @@ export class Logger implements ILogger {
   }
 
   debug(message: string, ...args: any[]): void {
-    bridge['logger:log']('debug', message, ...args);
+    loggerService.log('debug', message, ...args);
   }
 
   info(message: string, ...args: any[]): void {
-    bridge['logger:log']('info', message, ...args);
+    loggerService.log('info', message, ...args);
   }
 
   warn(message: string, ...args: any[]): void {
-    bridge['logger:log']('warn', message, ...args);
+    loggerService.log('warn', message, ...args);
   }
 
   error(message: string, ...args: any[]): void {
-    bridge['logger:log']('error', message, ...args);
+    loggerService.log('error', message, ...args);
   }
 
   private _interceptConsole(): void {
