@@ -20,7 +20,12 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "vue-tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "test": "npm run test -ws --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:common": "vitest run src/common",
+    "test:main": "vitest run src/main",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "build": "npm run typecheck && electron-vite build",
@@ -37,7 +42,8 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "electron-log": "5.4.4"
+    "electron-log": "5.4.4",
+    "vscode-uri": "3.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
@@ -46,6 +52,7 @@
     "@electron-toolkit/tsconfig": "^2.0.0",
     "@types/node": "^22.19.1",
     "@vitejs/plugin-vue": "^6.0.2",
+    "@vitest/coverage-v8": "4.1.8",
     "conventional-changelog": "7.1.1",
     "electron": "41.0.3",
     "electron-builder": "26.8.1",
@@ -55,6 +62,7 @@
     "lint-staged": "^16.2.7",
     "typescript": "^5.9.3",
     "vite": "^7.2.6",
+    "vitest": "4.1.8",
     "vue": "^3.5.25",
     "vue-tsc": "^3.1.6"
   }
