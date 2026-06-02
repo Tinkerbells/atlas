@@ -29,7 +29,7 @@ export default antfu(
         "error",
         {
           type: "line-length",
-          internalPattern: ["^@web/.+", "^@/.+"],
+          internalPattern: ["^@web/.+", "^~/.+"],
         },
       ],
     },
@@ -48,6 +48,7 @@ export default antfu(
       ".husky/**",
       ".vscode/**",
       "resources/**",
+      "docs/**",
     ],
   },
   // {

@@ -14,12 +14,9 @@ importers:
       '@electron-toolkit/utils':
         specifier: ^4.0.0
         version: 4.0.0(electron@41.0.3)
-      inversify:
-        specifier: 8.1.0
-        version: 8.1.0(reflect-metadata@0.2.2)
-      reflect-metadata:
-        specifier: 0.2.2
-        version: 0.2.2
+      electron-log:
+        specifier: 5.4.4
+        version: 5.4.4
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^6.2.0
@@ -1046,28 +1043,6 @@ packages:
   '@intlify/shared@11.4.0':
     resolution: {integrity: sha512-r9qUeLeO0TMZmUZ+mXS6IGQ6xwzZJaVMK6j4CdoA3eQP8xp3JtCfwkZ30gB4+knlN40pmBdDXgx85SWhMCzHng==}
     engines: {node: '>= 16'}
-
-  '@inversifyjs/common@2.0.1':
-    resolution: {integrity: sha512-pJAR4IAcT2jkYfZ9bD9XhtUDBLJRr8QOiSjb+2XyaHru6DLvu0VD2Id2iP7+tVRKkEe3XFUwDUEdKxcYlF699Q==}
-
-  '@inversifyjs/container@2.0.1':
-    resolution: {integrity: sha512-xoZU4Mha5Vo+U04xWUnD01QbpQMNoIh0nUEFlb965E3rIneUbsYYiXeLUoKl57BjXjErsOL0q8o3mXi1si8rBA==}
-    peerDependencies:
-      reflect-metadata: ~0.2.2
-
-  '@inversifyjs/core@10.0.1':
-    resolution: {integrity: sha512-z+DHdTbHFETivPLPRgowz9wWhHA4FNYqQnKhPyDCz7zX9H/PIDcK4gZIF1YNaf5Uc2bd1nehSlVgfaTzVbb0AA==}
-
-  '@inversifyjs/plugin@0.3.1':
-    resolution: {integrity: sha512-ByklTw731fydBCTMwMpkmwm+lv0U+JWm9NEqRsz3n5KzAC5Om2XtLjqzEC2w+8Ote3gVC3Qxsx6YmG9XLIZpvg==}
-
-  '@inversifyjs/prototype-utils@0.2.1':
-    resolution: {integrity: sha512-53cVE3cw+RxnSkGlg+jOFNSox2owJF9Fv3HgFKe4f+4aPullscltIiio88QRkx2Sc5yo3VlqPsXQFGw2CVJZnw==}
-
-  '@inversifyjs/reflect-metadata-utils@1.5.0':
-    resolution: {integrity: sha512-NpJVbRbuQ6Ao2vO+aw96un3oHDFCwXI0+pplsFt0Jh0gyR8DWk4m7ml/GBNMjdbeKVW/QgJ2S6NGXjk042uwqg==}
-    peerDependencies:
-      reflect-metadata: ~0.2.2
 
   '@isaacs/fs-minipass@4.0.1':
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
@@ -3081,6 +3056,10 @@ packages:
   electron-devtools-installer@4.0.0:
     resolution: {integrity: sha512-9Tntu/jtfSn0n6N/ZI6IdvRqXpDyLQiDuuIbsBI+dL+1Ef7C8J2JwByw58P3TJiNeuqyV3ZkphpNWuZK5iSY2w==}
 
+  electron-log@5.4.4:
+    resolution: {integrity: sha512-istWgaXjBfURBSS8LWVW9C3jsc6+ac+tY1lXrQEOTp0lVj+a4OlO1Tmqb36GgnEUDv92DGC9VI1HNXwJinWpgA==}
+    engines: {node: '>= 14'}
+
   electron-publish@26.8.1:
     resolution: {integrity: sha512-q+jrSTIh/Cv4eGZa7oVR+grEJo/FoLMYBAnSL5GCtqwUpr1T+VgKB/dn1pnzxIxqD8S/jP1yilT9VrwCqINR4w==}
 
@@ -3758,9 +3737,6 @@ packages:
   ini@6.0.0:
     resolution: {integrity: sha512-IBTdIkzZNOpqm7q3dRqJvMaldXjDHWkEDfrwGEQTs5eaQMWV+djAhR+wahyNNMAa+qpbDUhBMVt4ZKNwpPm7xQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
-
-  inversify@8.1.0:
-    resolution: {integrity: sha512-LeMjL2MKHM0E8UmKo2ilRvdxG3o0pLZPYFjkaHwcjcFIrhzBGetphNkaWJ6YaM78uC1gK9v45i1R7CkCJDvG4Q==}
 
   is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
@@ -4679,9 +4655,6 @@ packages:
   refa@0.12.1:
     resolution: {integrity: sha512-J8rn6v4DBb2nnFqkqwy6/NnTYMcgLA+sLr0iIO41qpv0n+ngb7ksag2tMRl0inb1bbO/esUwzW1vbJi7K0sI0g==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
-
-  reflect-metadata@0.2.2:
-    resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
   regexp-ast-analysis@0.7.1:
     resolution: {integrity: sha512-sZuz1dYW/ZsfG17WSAG7eS85r5a0dDsvg+7BiiYR5o6lKCAtUrEwdmRmaGF6rwVj3LcmAeYkOWKEPlbPzN3Y3A==}
@@ -6476,34 +6449,6 @@ snapshots:
       source-map-js: 1.2.1
 
   '@intlify/shared@11.4.0': {}
-
-  '@inversifyjs/common@2.0.1': {}
-
-  '@inversifyjs/container@2.0.1(reflect-metadata@0.2.2)':
-    dependencies:
-      '@inversifyjs/common': 2.0.1
-      '@inversifyjs/core': 10.0.1(reflect-metadata@0.2.2)
-      '@inversifyjs/plugin': 0.3.1
-      '@inversifyjs/reflect-metadata-utils': 1.5.0(reflect-metadata@0.2.2)
-      reflect-metadata: 0.2.2
-
-  '@inversifyjs/core@10.0.1(reflect-metadata@0.2.2)':
-    dependencies:
-      '@inversifyjs/common': 2.0.1
-      '@inversifyjs/prototype-utils': 0.2.1
-      '@inversifyjs/reflect-metadata-utils': 1.5.0(reflect-metadata@0.2.2)
-    transitivePeerDependencies:
-      - reflect-metadata
-
-  '@inversifyjs/plugin@0.3.1': {}
-
-  '@inversifyjs/prototype-utils@0.2.1':
-    dependencies:
-      '@inversifyjs/common': 2.0.1
-
-  '@inversifyjs/reflect-metadata-utils@1.5.0(reflect-metadata@0.2.2)':
-    dependencies:
-      reflect-metadata: 0.2.2
 
   '@isaacs/fs-minipass@4.0.1':
     dependencies:
@@ -8478,6 +8423,8 @@ snapshots:
     dependencies:
       unzip-crx-3: 0.2.0
 
+  electron-log@5.4.4: {}
+
   electron-publish@26.8.1:
     dependencies:
       '@types/fs-extra': 9.0.13
@@ -9304,14 +9251,6 @@ snapshots:
   inherits@2.0.4: {}
 
   ini@6.0.0: {}
-
-  inversify@8.1.0(reflect-metadata@0.2.2):
-    dependencies:
-      '@inversifyjs/common': 2.0.1
-      '@inversifyjs/container': 2.0.1(reflect-metadata@0.2.2)
-      '@inversifyjs/core': 10.0.1(reflect-metadata@0.2.2)
-    transitivePeerDependencies:
-      - reflect-metadata
 
   is-arrayish@0.2.1: {}
 
@@ -10458,8 +10397,6 @@ snapshots:
   refa@0.12.1:
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-
-  reflect-metadata@0.2.2: {}
 
   regexp-ast-analysis@0.7.1:
     dependencies:

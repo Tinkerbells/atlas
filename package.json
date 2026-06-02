@@ -37,8 +37,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "inversify": "8.1.0",
-    "reflect-metadata": "0.2.2"
+    "electron-log": "5.4.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
