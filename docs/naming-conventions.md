@@ -8,11 +8,11 @@ The conventions are derived from the VS Code/Theia architecture and adapted for 
 
 ## The Three Cases
 
-| Case | What it names | Semantic meaning | Examples |
-|------|---------------|------------------|----------|
-| **`PascalCase`** | Classes, DI services, Vue components | *"This is a thing with state/lifecycle; it is instantiated via `new` or rendered as a component."* | `WindowManager.ts`, `BridgeRouter.ts`, `App.vue` |
-| **`kebab-case`** | Type contracts, utilities, assets, folders | *"This is static data, a pure helper, a system file, or a folder."* | `api-contract.ts`, `path-utils.ts`, `wavy-lines.svg` |
-| **`camelCase`** | Entry points, barrel files, ready-to-use instances | *"This is a script that boots a process, or an exported object you use directly."* | `index.ts`, `main.ts`, `env.d.ts` |
+| Case             | What it names                                      | Semantic meaning                                                                                   | Examples                                             |
+| ---------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **`PascalCase`** | Classes, DI services, Vue components               | _"This is a thing with state/lifecycle; it is instantiated via `new` or rendered as a component."_ | `WindowManager.ts`, `BridgeRouter.ts`, `App.vue`     |
+| **`kebab-case`** | Type contracts, utilities, assets, folders         | _"This is static data, a pure helper, a system file, or a folder."_                                | `api-contract.ts`, `path-utils.ts`, `wavy-lines.svg` |
+| **`camelCase`**  | Entry points, barrel files, ready-to-use instances | _"This is a script that boots a process, or an exported object you use directly."_                 | `index.ts`, `main.ts`, `env.d.ts`                    |
 
 ---
 
@@ -155,16 +155,16 @@ export default [
 ];
 ```
 
-> **Note:** Because `unicorn/filename-case` only validates against a single regex per file, it cannot enforce the *semantic* rule ("this folder must be PascalCase for classes"). The semantic convention is team discipline. You can approximate it by adding override blocks for specific directories.
+> **Note:** Because `unicorn/filename-case` only validates against a single regex per file, it cannot enforce the _semantic_ rule ("this folder must be PascalCase for classes"). The semantic convention is team discipline. You can approximate it by adding override blocks for specific directories.
 
 ---
 
 ## Summary
 
-| Rule | Pattern | Rationale |
-|------|---------|-----------|
-| Classes & DI services | `PascalCase.ts` | Instantiable entities with lifecycle |
-| Vue components | `PascalCase.vue` | Framework convention |
-| Type contracts & utilities | `kebab-case.ts` | Static, stateless code |
-| Entry points & barrels | `camelCase.ts` | Bootstrapping scripts |
-| Folders | `kebab-case` | Filesystem readability |
+| Rule                       | Pattern          | Rationale                            |
+| -------------------------- | ---------------- | ------------------------------------ |
+| Classes & DI services      | `PascalCase.ts`  | Instantiable entities with lifecycle |
+| Vue components             | `PascalCase.vue` | Framework convention                 |
+| Type contracts & utilities | `kebab-case.ts`  | Static, stateless code               |
+| Entry points & barrels     | `camelCase.ts`   | Bootstrapping scripts                |
+| Folders                    | `kebab-case`     | Filesystem readability               |
