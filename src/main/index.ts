@@ -1,11 +1,14 @@
-import "reflect-metadata";
+import log from "electron-log";
 
-import type { LifecycleManager } from "./lifecycle";
+import { ILifecycleManager } from "~/main/lifecycle";
+import { getSingletonServiceDescriptors, InstantiationService, ServiceCollection } from "~/common/di";
+import "~/main/logger/LoggerService";
 
-import { Services } from "../common/di/types";
-import { container } from "../common/di/container";
+const services = new ServiceCollection(...getSingletonServiceDescriptors());
+const instantiationService = new InstantiationService(services);
 
-const lifecycleManager = container.get<LifecycleManager>(Services.LifecycleManager);
-
-console.log("[Main] Starting lifecycle manager...");
-lifecycleManager.start();
+instantiationService.invokeFunction((accessor) => {
+  const lifecycleManager = accessor.get<ILifecycleManager>(ILifecycleManager);
+  log.info("[Main] Starting lifecycle manager...");
+  lifecycleManager.start();
+});

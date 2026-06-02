@@ -1,6 +1,7 @@
 import { join } from "node:path";
-import { injectable } from "inversify";
 import { BrowserWindow, shell } from "electron";
+
+import { createDecorator, InstantiationType, registerSingleton } from "~/common/di";
 
 import icon from "../../../resources/icon.png?asset";
 
@@ -11,8 +12,22 @@ export interface CreateMainWindowOptions {
   onWindowReady?: (window: BrowserWindow) => void;
 }
 
-@injectable()
-export class WindowManager {
+export interface IWindowManager {
+  readonly _serviceBrand: undefined;
+
+  createMainWindow: (options?: CreateMainWindowOptions) => BrowserWindow;
+  getMainWindow: () => BrowserWindow | undefined;
+  getAllWindows: () => BrowserWindow[];
+  closeMainWindow: () => void;
+  closeWindow: (id: string) => void;
+  closeAllWindows: () => void;
+}
+
+export const IWindowManager = createDecorator<IWindowManager>("windowManager");
+
+export class WindowManager implements IWindowManager {
+  readonly _serviceBrand: undefined;
+
   private windows = new Map<string, BrowserWindow>();
 
   createMainWindow(options: CreateMainWindowOptions = {}): BrowserWindow {
@@ -24,7 +39,7 @@ export class WindowManager {
     const {
       width = 900,
       height = 670,
-      preload = join(__dirname, "../../preload/index.js"),
+      preload = join(__dirname, "../preload/index.js"),
       onWindowReady,
     } = options;
 
@@ -91,3 +106,5 @@ export class WindowManager {
     this.windows.clear();
   }
 }
+
+registerSingleton(IWindowManager, WindowManager, InstantiationType.Delayed);
