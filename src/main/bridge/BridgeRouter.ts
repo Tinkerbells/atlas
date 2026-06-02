@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 
-import type { IMainEvents, IMainQueries } from "~/common/bridge/api-contract";
+import type { IEvents, IQueries } from "~/common/bridge";
 
 import { createDecorator, InstantiationType, registerSingleton } from "~/common/di";
 
@@ -9,12 +9,12 @@ import { IWindowManager } from "../windows";
 export interface IBridgeRouter {
   readonly _serviceBrand: undefined;
 
-  register: <K extends keyof IMainQueries>(
+  register: <K extends keyof IQueries>(
     channel: K,
     handler: (...args: any[]) => any,
   ) => void;
 
-  send: <K extends keyof IMainEvents>(
+  send: <K extends keyof IEvents>(
     channel: K,
     ...args: any[]
   ) => void;
@@ -29,7 +29,7 @@ export class BridgeRouter implements IBridgeRouter {
     @IWindowManager private readonly windowManager: IWindowManager,
   ) { }
 
-  register<K extends keyof IMainQueries>(
+  register<K extends keyof IQueries>(
     channel: K,
     handler: (...args: any[]) => any,
   ): void {
@@ -38,7 +38,7 @@ export class BridgeRouter implements IBridgeRouter {
     });
   }
 
-  send<K extends keyof IMainEvents>(
+  send<K extends keyof IEvents>(
     channel: K,
     ...args: any[]
   ): void {

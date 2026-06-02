@@ -1,1 +1,1 @@
-export { ILifecycleManager, LifecycleManager } from "./LifecycleManager";
+export { ILifecycleManager, LifecycleManager } from "./lifecycleManager";

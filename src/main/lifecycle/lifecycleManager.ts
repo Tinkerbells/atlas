@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 
 import { ILogger } from "~/common/logger";
+import { systemIpcChannel } from "~/common/system/system-protocol";
 import { IBridgeRouter } from "~/main/bridge/BridgeRouter";
 import { IWindowManager } from "~/main/windows/WindowManager";
 import { createDecorator, InstantiationType, registerSingleton } from "~/common/di";
@@ -45,7 +46,7 @@ export class LifecycleManager implements ILifecycleManager {
       });
 
       // Register IPC handlers via BridgeRouter
-      this.bridgeRouter.register("ping", async () => {
+      this.bridgeRouter.register(systemIpcChannel, async () => {
         this.logger.info("IPC received: ping -> pong");
         return "pong";
       });

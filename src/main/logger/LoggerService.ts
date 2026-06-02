@@ -3,6 +3,7 @@ import log from "electron-log";
 import type { LogLevel } from "~/common/logger/logger";
 
 import { ILogger } from "~/common/logger";
+import { loggerIpcChannel } from "~/common/logger/logger-protocol";
 import { IBridgeRouter } from "~/main/bridge/BridgeRouter";
 import { InstantiationType, registerSingleton } from "~/common/di";
 
@@ -24,7 +25,7 @@ export class LoggerService implements ILogger {
     }
 
     // Register bridge handler for renderer logs
-    this.bridgeRouter.register("logger:log", async (level: LogLevel, message: string, ...args: any[]) => {
+    this.bridgeRouter.register(loggerIpcChannel, async (level: LogLevel, message: string, ...args: any[]) => {
       this._logFromRenderer(level, message, ...args);
     });
 
