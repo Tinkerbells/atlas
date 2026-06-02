@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import Versions from "./components/Versions.vue";
+import { bridge } from "./bridge/bridge-client";
+import { logger } from "./services/Logger";
 
-const ipcHandle = (): void => window.electron.ipcRenderer.send("ping");
+const ipcHandle = async (): Promise<void> => {
+  logger.info("Sending ping via bridge...");
+  const result = await bridge['ping']();
+  logger.info(`IPC response: ${result}`);
+};
 </script>
 
 <template>
