@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { FSService, URI, FileType } from "~/common/fs";
+import { FSService, URI, FileType, FileSystemProviderCapabilities } from "~/common/fs";
 import type { IFileSystemProvider, Stat } from "~/common/fs";
 
 class MockProvider implements IFileSystemProvider {
-  readonly capabilities = 0;
+  readonly capabilities = FileSystemProviderCapabilities.ReadWrite;
   private files = new Map<string, { type: FileType; size: number; content?: Uint8Array }>();
 
   addFile(uri: URI, type: FileType, size = 0, content?: Uint8Array) {
@@ -42,7 +42,6 @@ class MockProvider implements IFileSystemProvider {
   }
 
   async writeFile(resource: URI, content: Uint8Array): Promise<void> {
-    const existing = this.files.get(resource.toString());
     this.files.set(resource.toString(), {
       type: FileType.File,
       size: content.length,
