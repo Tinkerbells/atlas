@@ -1,3 +1,4 @@
+@import './keyframes.css';
 @import './base.css';
 
 body {
@@ -150,6 +151,14 @@ code {
   &:last-child {
     border: none;
   }
+}
+
+/* Nuxt UI gap preflight classes */
+.\[--gap\:--spacing\(4\)\] {
+  --gap: calc(var(--spacing) * 4);
+}
+.\[--gap\:--spacing\(16\)\] {
+  --gap: calc(var(--spacing) * 16);
 }
 
 @media (max-width: 720px) {
