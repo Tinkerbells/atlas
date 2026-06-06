@@ -22,10 +22,9 @@ export class StorageService implements IStorageService {
 
   constructor(
     @IBridgeRouter private readonly bridgeRouter: IBridgeRouter,
-    dbPath?: string,
   ) {
-    const resolvedPath = dbPath ?? join(app.getPath("userData"), "state.db");
-    this.db = new Database(resolvedPath);
+    const dbPath = join(app.getPath("userData"), "state.db");
+    this.db = new Database(dbPath);
     initSchema(this.db);
 
     this._registerIpcHandlers();
