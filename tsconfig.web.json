@@ -7,7 +7,8 @@
     "baseUrl": ".",
     "paths": {
       "~/common/*": ["src/common/*"],
-      "~/renderer/*": ["src/renderer/src/*"]
+      "~/renderer/*": ["src/renderer/src/*"],
+      "#build/ui/*": ["./node_modules/.nuxt-ui/ui/*"]
     }
   },
   "include": [
@@ -15,6 +16,8 @@
     "src/renderer/src/env.d.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
-    "src/preload/*.d.ts"
+    "src/preload/*.d.ts",
+    "auto-imports.d.ts",
+    "components.d.ts"
   ]
 }
