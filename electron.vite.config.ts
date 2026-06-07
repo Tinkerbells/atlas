@@ -1,5 +1,3 @@
-import ui from "@nuxt/ui/vite";
-import UnoCSS from "unocss/vite";
 import { resolve } from "node:path";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "electron-vite";
@@ -27,18 +25,18 @@ export default defineConfig({
     },
   },
   renderer: {
+    root: resolve("src/renderer"),
     resolve: {
       alias: {
         "~/common": resolve("src/common"),
         "~/renderer": resolve("src/renderer/src"),
       },
     },
-    plugins: [
-      UnoCSS(),
-      vue(),
-      ui({
-        router: false,
-      }),
-    ],
+    css: {
+      preprocessorOptions: {
+        scss: {},
+      },
+    },
+    plugins: [vue()],
   },
 });

@@ -6,10 +6,18 @@
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
-      "~/common/*": ["src/common/*"],
-      "~/main/*": ["src/main/*"],
-      "~/preload/*": ["src/preload/*"],
-      "#build/ui": ["./node_modules/.nuxt-ui/ui"]
+      "~/common/*": [
+        "src/common/*"
+      ],
+      "~/main/*": [
+        "src/main/*"
+      ],
+      "~/preload/*": [
+        "src/preload/*"
+      ],
+      "#build/ui": [
+        "./node_modules/.nuxt-ui/ui"
+      ]
     },
     "types": [
       "electron-vite/node"

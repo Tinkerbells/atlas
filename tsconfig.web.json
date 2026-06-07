@@ -6,9 +6,18 @@
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
-      "~/common/*": ["src/common/*"],
-      "~/renderer/*": ["src/renderer/src/*"],
-      "#build/ui/*": ["./node_modules/.nuxt-ui/ui/*"]
+      "~/common/*": [
+        "src/common/*"
+      ],
+      "~/renderer/*": [
+        "src/renderer/src/*"
+      ],
+      "#build/ui.css": [
+        "./src/renderer/node_modules/.nuxt-ui/ui.css"
+      ],
+      "#build/ui/*": [
+        "./src/renderer/node_modules/.nuxt-ui/ui/*"
+      ]
     }
   },
   "include": [
@@ -17,7 +26,7 @@
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
     "src/preload/*.d.ts",
-    "auto-imports.d.ts",
-    "components.d.ts"
+    "src/renderer/auto-imports.d.ts",
+    "src/renderer/components.d.ts"
   ]
 }
