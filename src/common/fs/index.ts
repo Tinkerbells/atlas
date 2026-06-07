@@ -1,11 +1,11 @@
-export { URI } from "./uri";
-export type { UriComponents } from "./uri";
 export { FileUri } from "./file-uri";
 export {
-  FileType,
-  FileSystemProviderCapabilities,
-  type Stat,
   type FileStat,
+  FileSystemProviderCapabilities,
+  FileType,
   type IFileSystemProvider,
+  type Stat,
 } from "./fs-provider";
 export { FSService, type ResolveFileOptions } from "./fs-service";
+export { URI } from "./uri";
+export type { UriComponents } from "./uri";

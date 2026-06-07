@@ -1,6 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { FSService, URI, FileType, FileSystemProviderCapabilities } from "~/common/fs";
+import { beforeEach, describe, expect, it } from "vitest";
+
 import type { IFileSystemProvider, Stat } from "~/common/fs";
+
+import { FileSystemProviderCapabilities, FileType, FSService, URI } from "~/common/fs";
 
 class MockProvider implements IFileSystemProvider {
   readonly capabilities = FileSystemProviderCapabilities.ReadWrite;
@@ -12,7 +14,8 @@ class MockProvider implements IFileSystemProvider {
 
   async stat(resource: URI): Promise<Stat> {
     const entry = this.files.get(resource.toString());
-    if (!entry) throw new Error("ENOENT");
+    if (!entry)
+      throw new Error("ENOENT");
     return {
       type: entry.type,
       ctime: 0,
@@ -37,7 +40,8 @@ class MockProvider implements IFileSystemProvider {
 
   async readFile(resource: URI): Promise<Uint8Array> {
     const entry = this.files.get(resource.toString());
-    if (!entry) throw new Error("ENOENT");
+    if (!entry)
+      throw new Error("ENOENT");
     return entry.content ?? new Uint8Array();
   }
 
@@ -49,6 +53,10 @@ class MockProvider implements IFileSystemProvider {
     });
   }
 
+  async mkdir(resource: URI): Promise<void> {
+    this.files.set(resource.toString(), { type: FileType.Directory, size: 0 });
+  }
+
   async delete(): Promise<void> {}
   async rename(): Promise<void> {}
   watch(): () => void {
@@ -56,7 +64,7 @@ class MockProvider implements IFileSystemProvider {
   }
 }
 
-describe("FSService", () => {
+describe("fSService", () => {
   let service: FSService;
   let provider: MockProvider;
 
