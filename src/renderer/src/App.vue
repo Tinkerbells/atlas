@@ -1,42 +1,19 @@
 <script setup lang="ts">
-import { logger } from "./services/Logger";
-import Versions from "./components/Versions.vue";
+import FileExplorer from "./components/FileExplorer.vue";
+import ToastContainer from "./components/ToastContainer.vue";
 import ColorModeToggle from "./components/ColorModeToggle.vue";
-import { systemService } from "./services/system-service";
-
-async function ipcHandle(): Promise<void> {
-  logger.info("Sending ping via api...");
-  const result = await systemService.ping();
-  logger.info(`IPC response: ${result}`);
-}
 </script>
 
 <template>
-  <UApp>
-    <div class="fixed top-4 right-4">
+  <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div class="fixed top-4 right-4 z-50">
       <ColorModeToggle />
     </div>
-    <img alt="logo" class="logo" src="./assets/electron.svg">
-    <div class="creator">
-      Powered by electron-vite
-    </div>
-    <div class="text">
-      Build an Electron app with
-      <span class="vue">Vue</span>
-      and
-      <span class="ts">TypeScript</span>
-    </div>
-    <p class="tip">
-      Please try pressing <code>F12</code> to open the devTool
-    </p>
-    <div class="actions">
-      <div class="action">
-        <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
+    <main class="h-screen flex flex-col py-16 px-6">
+      <div class="flex-1 flex flex-col min-h-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+        <FileExplorer />
       </div>
-      <div class="action">
-        <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
-      </div>
-    </div>
-    <Versions />
-  </UApp>
+    </main>
+    <ToastContainer />
+  </div>
 </template>

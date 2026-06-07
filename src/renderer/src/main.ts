@@ -1,15 +1,14 @@
-import "@unocss/reset/tailwind-v4.css";
-import "virtual:uno.css";
-import "./assets/main.css";
-
 import { createApp } from "vue";
-import ui from "@nuxt/ui/vue-plugin";
+import { createPinia } from "pinia";
 
 import App from "./App.vue";
+import { createFsProviderPlugin } from "./plugins/fs-provider";
 import "./services/Logger";
+import "./styles/main.scss";
 
 const app = createApp(App);
 
-app.use(ui);
+app.use(createPinia());
+app.use(createFsProviderPlugin());
 
 app.mount("#app");
