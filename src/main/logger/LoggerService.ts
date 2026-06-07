@@ -1,18 +1,12 @@
 import log from "electron-log";
 
-import type { LogLevel } from "~/common/logger/logger";
-
 import { ILogger } from "~/common/logger";
-import { loggerIpcChannel } from "~/common/logger/logger-protocol";
-import { IBridgeRouter } from "~/main/bridge/BridgeRouter";
 import { InstantiationType, registerSingleton } from "~/common/di";
 
 export class LoggerService implements ILogger {
   readonly _serviceBrand = undefined as undefined;
 
-  constructor(
-    @IBridgeRouter private readonly bridgeRouter: IBridgeRouter,
-  ) {
+  constructor() {
     // Configure electron-log transports
     log.transports.file.level = "info";
     log.transports.file.maxSize = 5 * 1024 * 1024; // 5 MB
@@ -23,11 +17,6 @@ export class LoggerService implements ILogger {
     else {
       log.transports.console.level = false;
     }
-
-    // Register bridge handler for renderer logs
-    this.bridgeRouter.register(loggerIpcChannel, async (level: LogLevel, message: string, ...args: any[]) => {
-      this._logFromRenderer(level, message, ...args);
-    });
 
     this._interceptConsole();
     this._interceptGlobalErrors();
@@ -47,24 +36,6 @@ export class LoggerService implements ILogger {
 
   error(message: string, ...args: any[]): void {
     log.error(`[Main] ${message}`, ...args);
-  }
-
-  private _logFromRenderer(level: LogLevel, message: string, ...args: any[]): void {
-    const prefix = "[Renderer]";
-    switch (level) {
-      case "debug":
-        log.debug(`${prefix} ${message}`, ...args);
-        break;
-      case "info":
-        log.info(`${prefix} ${message}`, ...args);
-        break;
-      case "warn":
-        log.warn(`${prefix} ${message}`, ...args);
-        break;
-      case "error":
-        log.error(`${prefix} ${message}`, ...args);
-        break;
-    }
   }
 
   private _interceptConsole(): void {

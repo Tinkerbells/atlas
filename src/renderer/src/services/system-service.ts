@@ -1,3 +1,8 @@
-import { api } from "../bridge/bridge-client";
+import { systemRpc } from "../messaging/services/rpc-proxies";
 
-export const systemService = api.system;
+export const systemService = {
+  async ping(): Promise<string> {
+    const proxy = await systemRpc.get();
+    return proxy.ping();
+  },
+};

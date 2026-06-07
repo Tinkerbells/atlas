@@ -1,7 +1,16 @@
-import { api } from "../bridge/bridge-client";
+import { storageRpc } from "../messaging/services/rpc-proxies";
 
 export const storageService = {
-  get: api.storage.get,
-  set: api.storage.set,
-  delete: api.storage.delete,
+  async get<T>(key: string, defaultValue?: T): Promise<T | undefined> {
+    const proxy = await storageRpc.get();
+    return proxy.get(key, defaultValue) as Promise<T | undefined>;
+  },
+  async set<T>(key: string, value: T): Promise<void> {
+    const proxy = await storageRpc.get();
+    await proxy.set(key, value);
+  },
+  async delete(key: string): Promise<void> {
+    const proxy = await storageRpc.get();
+    await proxy.delete(key);
+  },
 };
